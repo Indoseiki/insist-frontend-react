@@ -1,0 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap");
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+@keyframes moveCircle {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) translateX(150px) rotate(0deg);
+  }
+  25% {
+    transform: translate(-50%, -50%) rotate(90deg) translateX(150px)
+      rotate(-90deg);
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(180deg) translateX(150px)
+      rotate(-180deg);
+  }
+  75% {
+    transform: translate(-50%, -50%) rotate(270deg) translateX(150px)
+      rotate(-270deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg) translateX(150px)
+      rotate(-360deg);
+  }
+}
+
+.hover-row:hover {
+  background-color: light-dark(
+    var(--mantine-color-gray-0),
+    var(--mantine-color-dark-6)
+  );
+}

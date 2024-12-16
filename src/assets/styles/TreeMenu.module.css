@@ -1,0 +1,35 @@
+.root {
+  font-size: 14px;
+}
+
+.label {
+  padding-block: 8px;
+  transition: all 0.1s ease;
+
+  &[data-hovered] {
+    font-size: 14.5px;
+
+    @mixin where-light {
+      background-color: var(--mantine-color-gray-0);
+    }
+
+    @mixin where-dark {
+      background-color: var(--mantine-color-dark-6);
+      color: var(--mantine-color-white);
+    }
+  }
+
+  &[data-selected] {
+    font-size: 14px;
+
+    @mixin light {
+      background-color: var(--mantine-color-blue-0);
+      color: var(--mantine-color-black);
+    }
+
+    @mixin dark {
+      background-color: alpha(var(--mantine-color-blue-8), 0.35);
+      color: var(--mantine-color-blue-0);
+    }
+  }
+}
