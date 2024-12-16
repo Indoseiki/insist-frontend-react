@@ -1,4 +1,4 @@
-import { ApprovalUser, ApprovalUserRequest } from "./approvalUser";
+import { ApprovalUser } from "./approvalUser";
 import { Menu } from "./menu";
 import { User } from "./user";
 
