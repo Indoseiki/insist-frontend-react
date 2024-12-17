@@ -17,14 +17,13 @@ import {
 import PageHeader from "../../components/layouts/PageHeader";
 import {
   IconBinoculars,
-  IconDeviceFloppy,
   IconEdit,
   IconSearch,
   IconX,
 } from "@tabler/icons-react";
 import { useSizes } from "../../contexts/useGlobalSizes";
 import { useMemo, useState } from "react";
-import { useUpdateRoleMenu, useRoleMenusQuery } from "../../hooks/roleMenu";
+import { useRolesQuery } from "../../hooks/role";
 import TableScrollable from "../../components/table/TableScrollable";
 import TableFooter from "../../components/table/TableFooter";
 import NoDataFound from "../../components/table/NoDataFound";
@@ -33,10 +32,13 @@ import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { StateTable } from "../../types/table";
 import { StateForm } from "../../types/form";
-import { RoleMenu } from "../../types/roleMenu";
 import { Role } from "../../types/role";
-import { useTreeMenu } from "../../hooks/menu";
-import TreeMenu from "../../components/Forms/TreeMenu";
+import {
+  useRolePermissionsQuery,
+  useUpdateRolePermission,
+} from "../../hooks/rolePermission";
+import TreeMenuPermission from "../../components/Forms/TreeMenuPermission";
+import { RolePermissionRequest } from "../../types/rolePermission";
 
 interface StateFilter {
   search: string;
@@ -91,11 +93,11 @@ const RolePermissionPage = () => {
   const handleClickRow = (row: Role) => updateStateTable({ selected: row });
 
   const {
-    data: dataRoleMenus,
-    isSuccess: isSuccessRoleMenus,
-    isLoading: isLoadingRoleMenus,
-    refetch: refetchRoleMenus,
-  } = useRoleMenusQuery({
+    data: dataRoles,
+    isSuccess: isSuccessRoles,
+    isLoading: isLoadingRoles,
+    refetch: refetchRoles,
+  } = useRolesQuery({
     page: stateTable.activePage,
     rows: stateTable.rowsPerPage,
     search: stateFilter.search,
@@ -104,31 +106,24 @@ const RolePermissionPage = () => {
   });
 
   const {
-    data: dataTreeMenu,
-    isSuccess: isSuccessTreeMenu,
-    isLoading: isLoadingTreeMenu,
-  } = useTreeMenu();
+    data: dataRolePermission,
+    isSuccess: isSuccessRolePermission,
+    isLoading: isLoadingRolePermission,
+    refetch: refetchRolePermission,
+  } = useRolePermissionsQuery(stateTable.selected?.id!);
 
-  const {
-    mutate: mutateCreateRoleMenu,
-    isPending: isPendingMutateCreateRoleMenu,
-  } = useUpdateRoleMenu();
+  const { mutate: mutateUpdateRolePesmission } = useUpdateRolePermission();
 
   const rows = useMemo(() => {
-    if (!isSuccessRoleMenus || !dataRoleMenus?.data?.pagination.total_rows)
-      return null;
+    if (!isSuccessRoles || !dataRoles?.data?.pagination.total_rows) return null;
 
-    return dataRoleMenus.data.items.map((row: Role) => {
+    return dataRoles.data.items.map((row: Role) => {
       const isSelected = stateTable.selected?.id === row.id;
       const rowBg = isSelected
         ? colorScheme === "light"
           ? "#f8f9fa"
           : "#2e2e2e"
         : undefined;
-
-      const roleNames = row.role_menus
-        ?.map((item: RoleMenu) => item.menu?.label)
-        .join(", ");
 
       return (
         <Table.Tr
@@ -138,11 +133,10 @@ const RolePermissionPage = () => {
           style={{ cursor: "pointer", backgroundColor: rowBg }}
         >
           <Table.Td w={300}>{row.name}</Table.Td>
-          <Table.Td>{roleNames}</Table.Td>
         </Table.Tr>
       );
     });
-  }, [isSuccessRoleMenus, dataRoleMenus, stateTable.selected, colorScheme]);
+  }, [isSuccessRoles, dataRoles, stateTable.selected, colorScheme]);
 
   const formRoleMenu = useForm<FormValues>({
     mode: "uncontrolled",
@@ -171,18 +165,12 @@ const RolePermissionPage = () => {
     }
 
     updateStateForm({
-      title: "Setup Menu",
+      title: "Setup Permission",
       action: "setup",
     });
 
-    const menuIds =
-      stateTable.selected.role_menus
-        ?.map((item) => item.id_menu?.toString())
-        .filter((id): id is string => id !== undefined) || [];
-
     formRoleMenu.setValues({
       name: stateTable.selected.name,
-      id_menu: menuIds,
     });
 
     openFormRoleMenu();
@@ -205,55 +193,47 @@ const RolePermissionPage = () => {
       action: "view",
     });
 
-    const menuIds =
-      stateTable.selected.role_menus
-        ?.map((item) => item.id_menu?.toString())
-        .filter((id): id is string => id !== undefined) || [];
-
     formRoleMenu.setValues({
       name: stateTable.selected.name,
-      id_menu: menuIds,
     });
 
     openFormRoleMenu();
   };
 
-  const handleSubmitForm = () => {
-    const dataRoleMenu = formRoleMenu.getValues();
+  const handleChecked = (data: RolePermissionRequest) => {
+    const mappedData: RolePermissionRequest = {
+      ...data,
+      id_role: stateTable.selected?.id!,
+    };
 
-    mutateCreateRoleMenu(
+    mutateUpdateRolePesmission(
       {
-        id: stateTable.selected?.id!,
-        params: {
-          id_menu: dataRoleMenu.id_menu.map((id) => parseInt(id)),
-        },
+        params: mappedData,
       },
       {
         onSuccess(res) {
           notifications.show({
-            title: "Created Successfully!",
+            title: "Updated Successfully!",
             message: res.message,
             color: "green",
           });
 
-          updateStateTable({ selected: null });
-          refetchRoleMenus();
-          closeFormRoleMenu();
+          refetchRoles();
+          refetchRolePermission();
         },
         onError() {
           notifications.show({
-            title: "Created Failed!",
+            title: "Updated Failed!",
             message: "Please check and try again",
             color: "red",
           });
-
-          closeFormRoleMenu();
         },
       }
     );
   };
 
   const handleCloseFormRoleMenu = () => {
+    updateStateTable({ selected: null });
     closeFormRoleMenu();
     formRoleMenu.clearErrors();
     formRoleMenu.reset();
@@ -272,7 +252,7 @@ const RolePermissionPage = () => {
           {[
             {
               icon: IconEdit,
-              label: "Setup Menu",
+              label: "Setup Permission",
               onClick: () => handleSetupRole(),
             },
             {
@@ -322,78 +302,60 @@ const RolePermissionPage = () => {
         title={stateForm.title}
         closeOnClickOutside={false}
       >
-        <form onSubmit={formRoleMenu.onSubmit(handleSubmitForm)}>
-          <Stack gap={5}>
-            <TextInput
-              label="Name"
-              placeholder="Name"
-              key={formRoleMenu.key("name")}
-              size={size}
-              disabled={true}
-              {...formRoleMenu.getInputProps("name")}
-            />
-            <Stack gap={5} mt={10}>
-              <Text>Menu</Text>
-              <ScrollArea h={300} type="scroll">
-                <TreeMenu
-                  data={dataTreeMenu?.data || []}
-                  isLoading={isLoadingTreeMenu}
-                  isSuccess={isSuccessTreeMenu}
-                  onChange={(checked) => {
-                    formRoleMenu.setFieldValue("id_menu", checked);
-                  }}
-                  checkedValues={formRoleMenu.getValues().id_menu}
-                  disabled={stateForm.action === "view"}
-                />
-              </ScrollArea>
-            </Stack>
+        <Stack gap={5}>
+          <TextInput
+            label="Name"
+            placeholder="Name"
+            key={formRoleMenu.key("name")}
+            size={size}
+            disabled={true}
+            {...formRoleMenu.getInputProps("name")}
+          />
+          <Stack gap={5} mt={10}>
+            <Text>Menu</Text>
+            <ScrollArea h={300} type="scroll">
+              <TreeMenuPermission
+                data={dataRolePermission?.data || []}
+                isLoading={isLoadingRolePermission}
+                isSuccess={isSuccessRolePermission}
+                disabled={stateForm.action === "view"}
+                onChange={handleChecked}
+              />
+            </ScrollArea>
           </Stack>
-          <Group justify="end" gap={5} mt="md">
-            <Button
-              leftSection={<IconX size={16} />}
-              variant="default"
-              size={sizeButton}
-              onClick={handleCloseFormRoleMenu}
-            >
-              Close
-            </Button>
-            {stateForm.action !== "view" && (
-              <Button
-                leftSection={<IconDeviceFloppy size={16} />}
-                type="submit"
-                size={sizeButton}
-                loading={isPendingMutateCreateRoleMenu}
-              >
-                Save
-              </Button>
-            )}
-          </Group>
-        </form>
+        </Stack>
+        <Group justify="end" gap={5} mt="md">
+          <Button
+            leftSection={<IconX size={16} />}
+            variant="default"
+            size={sizeButton}
+            onClick={handleCloseFormRoleMenu}
+          >
+            Close
+          </Button>
+        </Group>
       </Modal>
-      {isLoadingRoleMenus && (
+      {isLoadingRoles && (
         <Center flex={1}>
           <Loader size={100} />
         </Center>
       )}
-      {isSuccessRoleMenus ? (
-        dataRoleMenus?.data?.pagination.total_rows > 0 ? (
+      {isSuccessRoles ? (
+        dataRoles?.data?.pagination.total_rows > 0 ? (
           <>
             <TableScrollable
               headers={[
                 {
                   name: "Role",
                 },
-                {
-                  name: "Menu",
-                },
               ]}
               rows={rows}
             />
             <TableFooter
-              from={dataRoleMenus.data.pagination.from}
-              to={dataRoleMenus.data.pagination.to}
-              totalPages={dataRoleMenus.data.pagination.total_pages}
-              totalRows={dataRoleMenus.data.pagination.total_rows}
+              from={dataRoles.data.pagination.from}
+              to={dataRoles.data.pagination.to}
+              totalPages={dataRoles.data.pagination.total_pages}
+              totalRows={dataRoles.data.pagination.total_rows}
               rowsPerPage={stateTable.rowsPerPage}
               onRowsPerPageChange={(rows) =>
                 updateStateTable({ rowsPerPage: rows || "" })
@@ -408,7 +370,7 @@ const RolePermissionPage = () => {
           <NoDataFound />
         )
       ) : (
-        !isLoadingRoleMenus && <NoDataFound />
+        !isLoadingRoles && <NoDataFound />
       )}
     </Stack>
   );

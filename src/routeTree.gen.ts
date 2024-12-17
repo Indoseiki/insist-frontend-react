@@ -16,6 +16,7 @@ import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexImport } from './routes/_authenticated/index'
 import { Route as ResetPasswordTokenImport } from './routes/reset-password.$token'
 import { Route as AuthenticatedAdminUserRoleImport } from './routes/_authenticated/admin/user-role'
+import { Route as AuthenticatedAdminRolePermissionImport } from './routes/_authenticated/admin/role-permission'
 import { Route as AuthenticatedAdminRoleMenuImport } from './routes/_authenticated/admin/role-menu'
 import { Route as AuthenticatedAdminApprovalStructureImport } from './routes/_authenticated/admin/approval-structure'
 import { Route as AuthenticatedAdminMasterUserImport } from './routes/_authenticated/admin/master/user'
@@ -58,6 +59,13 @@ const AuthenticatedAdminUserRoleRoute = AuthenticatedAdminUserRoleImport.update(
     getParentRoute: () => AuthenticatedRoute,
   } as any,
 )
+
+const AuthenticatedAdminRolePermissionRoute =
+  AuthenticatedAdminRolePermissionImport.update({
+    id: '/admin/role-permission',
+    path: '/admin/role-permission',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 const AuthenticatedAdminRoleMenuRoute = AuthenticatedAdminRoleMenuImport.update(
   {
@@ -169,6 +177,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRoleMenuImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/_authenticated/admin/role-permission': {
+      id: '/_authenticated/admin/role-permission'
+      path: '/admin/role-permission'
+      fullPath: '/admin/role-permission'
+      preLoaderRoute: typeof AuthenticatedAdminRolePermissionImport
+      parentRoute: typeof AuthenticatedImport
+    }
     '/_authenticated/admin/user-role': {
       id: '/_authenticated/admin/user-role'
       path: '/admin/user-role'
@@ -234,6 +249,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedAdminApprovalStructureRoute: typeof AuthenticatedAdminApprovalStructureRoute
   AuthenticatedAdminRoleMenuRoute: typeof AuthenticatedAdminRoleMenuRoute
+  AuthenticatedAdminRolePermissionRoute: typeof AuthenticatedAdminRolePermissionRoute
   AuthenticatedAdminUserRoleRoute: typeof AuthenticatedAdminUserRoleRoute
   AuthenticatedAdminMasterDepartmentRoute: typeof AuthenticatedAdminMasterDepartmentRoute
   AuthenticatedAdminMasterEmployeeRoute: typeof AuthenticatedAdminMasterEmployeeRoute
@@ -249,6 +265,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminApprovalStructureRoute:
     AuthenticatedAdminApprovalStructureRoute,
   AuthenticatedAdminRoleMenuRoute: AuthenticatedAdminRoleMenuRoute,
+  AuthenticatedAdminRolePermissionRoute: AuthenticatedAdminRolePermissionRoute,
   AuthenticatedAdminUserRoleRoute: AuthenticatedAdminUserRoleRoute,
   AuthenticatedAdminMasterDepartmentRoute:
     AuthenticatedAdminMasterDepartmentRoute,
@@ -271,6 +288,7 @@ export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/admin/approval-structure': typeof AuthenticatedAdminApprovalStructureRoute
   '/admin/role-menu': typeof AuthenticatedAdminRoleMenuRoute
+  '/admin/role-permission': typeof AuthenticatedAdminRolePermissionRoute
   '/admin/user-role': typeof AuthenticatedAdminUserRoleRoute
   '/admin/master/department': typeof AuthenticatedAdminMasterDepartmentRoute
   '/admin/master/employee': typeof AuthenticatedAdminMasterEmployeeRoute
@@ -287,6 +305,7 @@ export interface FileRoutesByTo {
   '/': typeof AuthenticatedIndexRoute
   '/admin/approval-structure': typeof AuthenticatedAdminApprovalStructureRoute
   '/admin/role-menu': typeof AuthenticatedAdminRoleMenuRoute
+  '/admin/role-permission': typeof AuthenticatedAdminRolePermissionRoute
   '/admin/user-role': typeof AuthenticatedAdminUserRoleRoute
   '/admin/master/department': typeof AuthenticatedAdminMasterDepartmentRoute
   '/admin/master/employee': typeof AuthenticatedAdminMasterEmployeeRoute
@@ -305,6 +324,7 @@ export interface FileRoutesById {
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/admin/approval-structure': typeof AuthenticatedAdminApprovalStructureRoute
   '/_authenticated/admin/role-menu': typeof AuthenticatedAdminRoleMenuRoute
+  '/_authenticated/admin/role-permission': typeof AuthenticatedAdminRolePermissionRoute
   '/_authenticated/admin/user-role': typeof AuthenticatedAdminUserRoleRoute
   '/_authenticated/admin/master/department': typeof AuthenticatedAdminMasterDepartmentRoute
   '/_authenticated/admin/master/employee': typeof AuthenticatedAdminMasterEmployeeRoute
@@ -324,6 +344,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin/approval-structure'
     | '/admin/role-menu'
+    | '/admin/role-permission'
     | '/admin/user-role'
     | '/admin/master/department'
     | '/admin/master/employee'
@@ -339,6 +360,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin/approval-structure'
     | '/admin/role-menu'
+    | '/admin/role-permission'
     | '/admin/user-role'
     | '/admin/master/department'
     | '/admin/master/employee'
@@ -355,6 +377,7 @@ export interface FileRouteTypes {
     | '/_authenticated/'
     | '/_authenticated/admin/approval-structure'
     | '/_authenticated/admin/role-menu'
+    | '/_authenticated/admin/role-permission'
     | '/_authenticated/admin/user-role'
     | '/_authenticated/admin/master/department'
     | '/_authenticated/admin/master/employee'
@@ -399,6 +422,7 @@ export const routeTree = rootRoute
         "/_authenticated/",
         "/_authenticated/admin/approval-structure",
         "/_authenticated/admin/role-menu",
+        "/_authenticated/admin/role-permission",
         "/_authenticated/admin/user-role",
         "/_authenticated/admin/master/department",
         "/_authenticated/admin/master/employee",
@@ -425,6 +449,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/admin/role-menu": {
       "filePath": "_authenticated/admin/role-menu.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/admin/role-permission": {
+      "filePath": "_authenticated/admin/role-permission.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/admin/user-role": {

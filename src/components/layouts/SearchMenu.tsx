@@ -7,7 +7,6 @@ import {
   ScrollArea,
   Stack,
   Text,
-  ThemeIcon,
 } from "@mantine/core";
 import { Spotlight, spotlight } from "@mantine/spotlight";
 import {

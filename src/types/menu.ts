@@ -20,7 +20,7 @@ export interface Menu {
   menu_approvals?: Approval[];
   parent?: Menu;
   children?: Menu[];
-  role_permissions?: RolePermission[];
+  role_permissions?: RolePermission;
 }
 
 export interface MenuParams {
