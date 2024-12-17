@@ -3,6 +3,7 @@ import {
   createMenu,
   deleteMenu,
   getMenus,
+  getMenusUser,
   getTreeMenu,
   getTreeMenuUser,
   updateMenu,
@@ -24,6 +25,24 @@ const useMenusInfinityQuery = ({ search }: { search: string }) => {
     queryFn: ({ pageParam }: { pageParam?: unknown }) => {
       const page = pageParam as number;
       return getMenus({
+        page,
+        rows: "10",
+        search,
+      });
+    },
+    getNextPageParam: (lastPage) => {
+      return lastPage?.data?.pagination?.next_page ?? undefined;
+    },
+    initialPageParam: 1,
+  });
+};
+
+const useMenusUserInfinityQuery = ({ search }: { search: string }) => {
+  return useInfiniteQuery<ApiResponse<Result<Menu[]>>, Error>({
+    queryKey: ["InfinityMenusUser", search],
+    queryFn: ({ pageParam }: { pageParam?: unknown }) => {
+      const page = pageParam as number;
+      return getMenusUser({
         page,
         rows: "10",
         search,
@@ -75,6 +94,7 @@ const useTreeMenuUser = () => {
 export {
   useMenusQuery,
   useMenusInfinityQuery,
+  useMenusUserInfinityQuery,
   useCreateMenu,
   useUpdateMenu,
   useDeleteMenu,

@@ -14,6 +14,18 @@ const getMenus = async (
   return response.data;
 };
 
+const getMenusUser = async (
+  params: MenuParams
+): Promise<ApiResponse<Result<Menu[]>>> => {
+  const response = await apiClient.get<ApiResponse<Result<Menu[]>>>(
+    `${url}/user`,
+    {
+      params,
+    }
+  );
+  return response.data;
+};
+
 const createMenu = async (
   params: MenuRequest
 ): Promise<ApiResponse<MenuRequest>> => {
@@ -53,6 +65,7 @@ const getTreeMenuUser = async (): Promise<ApiResponse<Menu[]>> => {
 
 export {
   getMenus,
+  getMenusUser,
   createMenu,
   updateMenu,
   deleteMenu,
