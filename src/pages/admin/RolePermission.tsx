@@ -51,7 +51,7 @@ interface StateFormRoleMenu extends StateForm {
   menu: string[];
 }
 
-const RoleMenuPage = () => {
+const RolePermissionPage = () => {
   const { size, sizeButton, fullWidth } = useSizes();
 
   const { colorScheme } = useMantineColorScheme();
@@ -261,7 +261,7 @@ const RoleMenuPage = () => {
 
   return (
     <Stack h="100%">
-      <PageHeader title="Role Menu" />
+      <PageHeader title="Role Permission" />
       <Flex
         direction={{ base: "column-reverse", sm: "row" }}
         justify="space-between"
@@ -414,4 +414,4 @@ const RoleMenuPage = () => {
   );
 };
 
-export default RoleMenuPage;
+export default RolePermissionPage;

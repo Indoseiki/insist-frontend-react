@@ -336,7 +336,7 @@ const UserRolePage = () => {
 
   return (
     <Stack h="100%">
-      <PageHeader title="Setup User Role" />
+      <PageHeader title="User Role" />
       <Flex
         direction={{ base: "column-reverse", sm: "row" }}
         justify="space-between"
