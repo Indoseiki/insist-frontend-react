@@ -246,7 +246,8 @@ const KeyValuePage = () => {
         onError() {
           notifications.show({
             title: "Created Failed!",
-            message: "Please check and try again",
+            message:
+              "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
             color: "red",
           });
 
@@ -276,7 +277,8 @@ const KeyValuePage = () => {
           onError() {
             notifications.show({
               title: "Updated Failed!",
-              message: "Please check and try again",
+              message:
+                "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
               color: "red",
             });
 
@@ -302,7 +304,8 @@ const KeyValuePage = () => {
         onError() {
           notifications.show({
             title: "Deleted Failed!",
-            message: "Please check and try again",
+            message:
+              "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
             color: "red",
           });
 
@@ -324,7 +327,7 @@ const KeyValuePage = () => {
 
   return (
     <Stack h="100%">
-      <PageHeader title="Master KeyValue" />
+      <PageHeader title="Master Key Value" />
       <Flex
         direction={{ base: "column-reverse", sm: "row" }}
         justify="space-between"

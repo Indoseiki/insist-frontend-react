@@ -247,7 +247,8 @@ const DepartmentPage = () => {
         onError() {
           notifications.show({
             title: "Created Failed!",
-            message: "Please check and try again",
+            message:
+              "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
             color: "red",
           });
 
@@ -277,7 +278,8 @@ const DepartmentPage = () => {
           onError() {
             notifications.show({
               title: "Updated Failed!",
-              message: "Please check and try again",
+              message:
+                "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
               color: "red",
             });
 
@@ -303,7 +305,8 @@ const DepartmentPage = () => {
         onError() {
           notifications.show({
             title: "Deleted Failed!",
-            message: "Please check and try again",
+            message:
+              "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
             color: "red",
           });
 

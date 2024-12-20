@@ -9,7 +9,6 @@ export interface Menu {
   id_parent?: number;
   icon?: string;
   sort?: number;
-  is_delete?: number;
   id_createdby?: number;
   id_updatedby?: number;
   created_at?: string;

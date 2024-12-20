@@ -182,7 +182,8 @@ const EmployeePage = () => {
           notifications.update({
             id,
             title: "Data Synchronization Failed!",
-            message: "Please check and try again",
+            message:
+              "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
             color: "red",
             loading: false,
             autoClose: 3000,

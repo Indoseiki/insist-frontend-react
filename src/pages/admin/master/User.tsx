@@ -458,7 +458,8 @@ const UserPage = () => {
         onError() {
           notifications.show({
             title: "Deleted Failed!",
-            message: "Please check and try again",
+            message:
+              "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
             color: "red",
           });
 
@@ -506,7 +507,8 @@ const UserPage = () => {
         onError() {
           notifications.show({
             title: "Status Updated Failed!",
-            message: "Please check and try again",
+            message:
+              "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
             color: "red",
           });
         },
@@ -542,7 +544,8 @@ const UserPage = () => {
         onError() {
           notifications.show({
             title: "Status Updated Failed!",
-            message: "Please check and try again",
+            message:
+              "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
             color: "red",
           });
         },
@@ -573,7 +576,8 @@ const UserPage = () => {
       onError() {
         notifications.show({
           title: "Two-Factor Auth Updated Failed!",
-          message: "Please check and try again",
+          message:
+            "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
           color: "red",
         });
       },
@@ -608,7 +612,8 @@ const UserPage = () => {
         onError() {
           notifications.show({
             title: "Two-Factor Auth Updated Failed!",
-            message: "Please check and try again",
+            message:
+              "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
             color: "red",
           });
         },
@@ -668,7 +673,8 @@ const UserPage = () => {
           loading: false,
           autoClose: 3000,
           title: "Send Reset Password Failed!",
-          message: "Please check and try again",
+          message:
+            "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
           color: "red",
         });
       },
@@ -736,7 +742,8 @@ const UserPage = () => {
         onError() {
           notifications.show({
             title: "Change Password Failed!",
-            message: "Please check and try again",
+            message:
+              "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
             color: "red",
           });
         },
