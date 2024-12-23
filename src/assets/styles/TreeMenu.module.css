@@ -7,10 +7,10 @@
   transition: all 0.1s ease;
 
   &[data-hovered] {
-    font-size: 14.5px;
+    font-size: 14px;
 
     @mixin where-light {
-      background-color: var(--mantine-color-gray-0);
+      background-color: #fff3bf;
     }
 
     @mixin where-dark {
