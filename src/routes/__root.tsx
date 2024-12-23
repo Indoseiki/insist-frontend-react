@@ -1,17 +1,23 @@
-import { Outlet, createRootRoute, useLocation } from "@tanstack/react-router";
+import { useEffect } from "react";
+import {
+  Outlet,
+  createRootRoute,
+  useLocation,
+  useNavigate,
+} from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { AppShell } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useIdle } from "@mantine/hooks";
 import Header from "../components/layouts/Header";
 import Navbar from "../components/layouts/Navbar";
 import NotFound from "../components/layouts/NotFound";
 import { memo } from "react";
+import { useLogout } from "../hooks/auth";
+import { notifications } from "@mantine/notifications";
 
 export const Route = createRootRoute({
   component: RootComponent,
-  notFoundComponent: () => {
-    return <NotFound />;
-  },
+  notFoundComponent: () => <NotFound />,
 });
 
 const HeaderMemo = memo(Header);
@@ -21,8 +27,43 @@ function RootComponent() {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
+  const { mutate: mutateLogout } = useLogout();
+
+  const idle = useIdle(15 * 60 * 1000, { initialState: false });
+
+  const navigate = useNavigate();
   const location = useLocation();
   const path = location.pathname;
+
+  useEffect(() => {
+    if (idle && path !== "/login" && !path.includes("/reset-password")) {
+      mutateLogout(
+        {},
+        {
+          onSuccess() {
+            localStorage.removeItem("accessToken");
+            setTimeout(() => {
+              notifications.show({
+                title: "Logged Out Successfully",
+                message:
+                  "You've been inactive for 15 minutes. For your security, you've been logged out.",
+                color: "green",
+              });
+              navigate({ to: "/login", replace: true });
+            }, 500);
+          },
+          onError() {
+            notifications.show({
+              title: "Logged Out Failed",
+              message:
+                "Unable to log out due to a system error. Please contact support.",
+              color: "red",
+            });
+          },
+        }
+      );
+    }
+  }, [idle, mutateLogout, path]);
 
   if (path === "/login" || path.includes("/reset-password")) {
     return (
