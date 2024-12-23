@@ -20,7 +20,7 @@ import {
   useComputedColorScheme,
   useMantineColorScheme,
 } from "@mantine/core";
-import ImageISMOffice from "../assets/images/office_ism.png";
+import ImageISMOffice from "../assets/images/office_ism.webp";
 import LogoLight from "../assets/images/logo_light.gif";
 import LogoDark from "../assets/images/logo_dark.gif";
 import {
@@ -288,7 +288,7 @@ const LoginPage = () => {
           </form>
         </Modal>
       </Flex>
-      <Box h="100%" w="65%" visibleFrom="sm" pos="relative">
+      <Box h="100%" w="60%" visibleFrom="sm" pos="relative">
         <Group h="100%" pos="relative">
           <Box
             style={{
