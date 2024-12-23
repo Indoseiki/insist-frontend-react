@@ -111,7 +111,7 @@ const ActivityLogPage = () => {
 
   return (
     <Stack h="100%">
-      <PageHeader title="Master Activity Log" />
+      <PageHeader title="Activity Log" />
       <Flex
         direction={{ base: "column-reverse", sm: "row" }}
         justify="space-between"
