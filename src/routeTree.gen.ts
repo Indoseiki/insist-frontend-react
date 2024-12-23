@@ -19,6 +19,7 @@ import { Route as AuthenticatedAdminUserRoleImport } from './routes/_authenticat
 import { Route as AuthenticatedAdminRolePermissionImport } from './routes/_authenticated/admin/role-permission'
 import { Route as AuthenticatedAdminRoleMenuImport } from './routes/_authenticated/admin/role-menu'
 import { Route as AuthenticatedAdminApprovalStructureImport } from './routes/_authenticated/admin/approval-structure'
+import { Route as AuthenticatedAdminActivityLogImport } from './routes/_authenticated/admin/activity-log'
 import { Route as AuthenticatedAdminMasterUserImport } from './routes/_authenticated/admin/master/user'
 import { Route as AuthenticatedAdminMasterRoleImport } from './routes/_authenticated/admin/master/role'
 import { Route as AuthenticatedAdminMasterReasonImport } from './routes/_authenticated/admin/master/reason'
@@ -79,6 +80,13 @@ const AuthenticatedAdminApprovalStructureRoute =
   AuthenticatedAdminApprovalStructureImport.update({
     id: '/admin/approval-structure',
     path: '/admin/approval-structure',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+
+const AuthenticatedAdminActivityLogRoute =
+  AuthenticatedAdminActivityLogImport.update({
+    id: '/admin/activity-log',
+    path: '/admin/activity-log',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
@@ -161,6 +169,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedIndexImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/admin/activity-log': {
+      id: '/_authenticated/admin/activity-log'
+      path: '/admin/activity-log'
+      fullPath: '/admin/activity-log'
+      preLoaderRoute: typeof AuthenticatedAdminActivityLogImport
       parentRoute: typeof AuthenticatedImport
     }
     '/_authenticated/admin/approval-structure': {
@@ -247,6 +262,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteChildren {
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedAdminActivityLogRoute: typeof AuthenticatedAdminActivityLogRoute
   AuthenticatedAdminApprovalStructureRoute: typeof AuthenticatedAdminApprovalStructureRoute
   AuthenticatedAdminRoleMenuRoute: typeof AuthenticatedAdminRoleMenuRoute
   AuthenticatedAdminRolePermissionRoute: typeof AuthenticatedAdminRolePermissionRoute
@@ -262,6 +278,7 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedAdminActivityLogRoute: AuthenticatedAdminActivityLogRoute,
   AuthenticatedAdminApprovalStructureRoute:
     AuthenticatedAdminApprovalStructureRoute,
   AuthenticatedAdminRoleMenuRoute: AuthenticatedAdminRoleMenuRoute,
@@ -286,6 +303,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/reset-password/$token': typeof ResetPasswordTokenRoute
   '/': typeof AuthenticatedIndexRoute
+  '/admin/activity-log': typeof AuthenticatedAdminActivityLogRoute
   '/admin/approval-structure': typeof AuthenticatedAdminApprovalStructureRoute
   '/admin/role-menu': typeof AuthenticatedAdminRoleMenuRoute
   '/admin/role-permission': typeof AuthenticatedAdminRolePermissionRoute
@@ -303,6 +321,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/reset-password/$token': typeof ResetPasswordTokenRoute
   '/': typeof AuthenticatedIndexRoute
+  '/admin/activity-log': typeof AuthenticatedAdminActivityLogRoute
   '/admin/approval-structure': typeof AuthenticatedAdminApprovalStructureRoute
   '/admin/role-menu': typeof AuthenticatedAdminRoleMenuRoute
   '/admin/role-permission': typeof AuthenticatedAdminRolePermissionRoute
@@ -322,6 +341,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/reset-password/$token': typeof ResetPasswordTokenRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/admin/activity-log': typeof AuthenticatedAdminActivityLogRoute
   '/_authenticated/admin/approval-structure': typeof AuthenticatedAdminApprovalStructureRoute
   '/_authenticated/admin/role-menu': typeof AuthenticatedAdminRoleMenuRoute
   '/_authenticated/admin/role-permission': typeof AuthenticatedAdminRolePermissionRoute
@@ -342,6 +362,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password/$token'
     | '/'
+    | '/admin/activity-log'
     | '/admin/approval-structure'
     | '/admin/role-menu'
     | '/admin/role-permission'
@@ -358,6 +379,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password/$token'
     | '/'
+    | '/admin/activity-log'
     | '/admin/approval-structure'
     | '/admin/role-menu'
     | '/admin/role-permission'
@@ -375,6 +397,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password/$token'
     | '/_authenticated/'
+    | '/_authenticated/admin/activity-log'
     | '/_authenticated/admin/approval-structure'
     | '/_authenticated/admin/role-menu'
     | '/_authenticated/admin/role-permission'
@@ -420,6 +443,7 @@ export const routeTree = rootRoute
       "filePath": "_authenticated.tsx",
       "children": [
         "/_authenticated/",
+        "/_authenticated/admin/activity-log",
         "/_authenticated/admin/approval-structure",
         "/_authenticated/admin/role-menu",
         "/_authenticated/admin/role-permission",
@@ -441,6 +465,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/": {
       "filePath": "_authenticated/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/admin/activity-log": {
+      "filePath": "_authenticated/admin/activity-log.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/admin/approval-structure": {
