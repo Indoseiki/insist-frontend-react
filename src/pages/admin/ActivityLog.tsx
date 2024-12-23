@@ -33,7 +33,7 @@ const ActivityLogPage = () => {
     rowsPerPage: "20",
     selected: null,
     sortBy: "created_at",
-    sortDirection: false,
+    sortDirection: true,
   });
 
   const [stateFilter, setStateFilter] = useState<StateFilter>({
