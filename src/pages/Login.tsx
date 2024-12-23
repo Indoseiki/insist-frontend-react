@@ -29,7 +29,7 @@ import {
   IconPassword,
   IconSun,
 } from "@tabler/icons-react";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useOs } from "@mantine/hooks";
 import { useNavigate } from "@tanstack/react-router";
 import { notifications } from "@mantine/notifications";
 import { useForm } from "@mantine/form";
@@ -43,8 +43,10 @@ import {
 import { AxiosError } from "axios";
 import { ApiResponse } from "../types/response";
 import { useSizes } from "../contexts/useGlobalSizes";
+import { createActivityLog } from "../api/activityLog";
 
 const LoginPage = () => {
+  const os = useOs();
   const navigate = useNavigate();
 
   const { size } = useSizes();
@@ -98,8 +100,15 @@ const LoginPage = () => {
         password: payload.password,
       },
       {
-        onSuccess: (res) => {
+        onSuccess: async (res) => {
           localStorage.setItem("accessToken", res.data.access_token);
+
+          await createActivityLog({
+            action: "login",
+            is_success: true,
+            os: os,
+            message: "Login successfully",
+          });
 
           notifications.show({
             title: "Login Successfully",
@@ -112,10 +121,17 @@ const LoginPage = () => {
             replace: true,
           });
         },
-        onError: (err) => {
+        onError: async (err) => {
           const error = err as AxiosError<ApiResponse<LoginResponse>>;
           const res = error.response;
           if (res?.status !== 403) {
+            await createActivityLog({
+              action: "login",
+              is_success: false,
+              os: os,
+              message: res?.data.message,
+            });
+
             notifications.show({
               title: "Login Failed",
               message: res?.data.message,
@@ -137,8 +153,15 @@ const LoginPage = () => {
         otp_key: payload.otp_key,
       },
       {
-        onSuccess: (res) => {
+        onSuccess: async (res) => {
           localStorage.setItem("accessToken", res.data.access_token);
+
+          await createActivityLog({
+            action: "login",
+            is_success: true,
+            os: os,
+            message: "Login Successfully",
+          });
 
           notifications.show({
             title: "Login Successfully",
@@ -151,10 +174,17 @@ const LoginPage = () => {
             replace: true,
           });
         },
-        onError: (err) => {
+        onError: async (err) => {
           const error = err as AxiosError<ApiResponse<TwoFactorAuthResponse>>;
           const res = error.response;
           if (res?.status) {
+            await createActivityLog({
+              action: "login",
+              is_success: false,
+              os: os,
+              message: res?.data.message,
+            });
+
             notifications.show({
               title: "Login Failed",
               message: res?.data.message,
