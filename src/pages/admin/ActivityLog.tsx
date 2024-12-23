@@ -84,6 +84,7 @@ const ActivityLogPage = () => {
           style={{ cursor: "pointer", backgroundColor: rowBg }}
         >
           <Table.Td>{row.user?.name}</Table.Td>
+          <Table.Td>{row.ip_address}</Table.Td>
           <Table.Td>{row.action}</Table.Td>
           <Table.Td>
             <Badge color={row.is_success ? "blue" : "red"}>
@@ -152,6 +153,9 @@ const ActivityLogPage = () => {
               headers={[
                 {
                   name: "User",
+                },
+                {
+                  name: "IP Address",
                 },
                 {
                   name: "Action",
