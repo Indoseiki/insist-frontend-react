@@ -214,6 +214,7 @@ const LoginPage = () => {
                   size={size}
                   key={formLogin.key("username")}
                   {...formLogin.getInputProps("username")}
+                  autoFocus
                 />
                 <PasswordInput
                   label="Password"

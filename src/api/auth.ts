@@ -9,12 +9,13 @@ import { ApiResponse } from "../types/response";
 import apiClient from "./apiClient";
 import { User } from "../types/user";
 
+const baseURL = import.meta.env.VITE_API_URL;
 const url = "/auth";
 
 const login = async (
   payload: LoginPayload
 ): Promise<ApiResponse<LoginResponse>> => {
-  const url = "http://localhost:5050/api/auth/login";
+  const url = `${baseURL}/auth/login`;
   const { data } = await axios.post<ApiResponse<LoginResponse>>(url, payload, {
     withCredentials: true,
   });
@@ -24,7 +25,7 @@ const login = async (
 const twoFactorAuth = async (
   payload: TwoFactorAuthPayload
 ): Promise<ApiResponse<TwoFactorAuthResponse>> => {
-  const url = "http://localhost:5050/api/auth/two-fa";
+  const url = `${baseURL}/auth/two-fa`;
   const { data } = await axios.post<ApiResponse<TwoFactorAuthResponse>>(
     url,
     payload,

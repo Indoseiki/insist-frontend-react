@@ -2,8 +2,10 @@ import axios from "axios";
 import { getToken, removeToken, setToken } from "../utils/auth";
 import { redirect } from "@tanstack/react-router";
 
+const baseURL = import.meta.env.VITE_API_URL;
+
 const apiClient = axios.create({
-  baseURL: "http://localhost:5050/api",
+  baseURL: baseURL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -32,10 +34,9 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const response = await axios.get(
-          "http://localhost:5050/api/auth/token",
-          { withCredentials: true }
-        );
+        const response = await axios.get(`${baseURL}/auth/token`, {
+          withCredentials: true,
+        });
 
         const accessToken = response.data.data.access_token;
 
