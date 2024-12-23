@@ -52,7 +52,7 @@ const sendResetPassword = async (id: number): Promise<ApiResponse<null>> => {
   return response.data;
 };
 
-const changePassword = async ({
+const resetPassword = async ({
   token,
   password,
   confirm_password,
@@ -64,6 +64,20 @@ const changePassword = async ({
   const response = await apiClient.post<ApiResponse<null>>(
     `${url}/password-reset?token=${token}`,
     { password, confirm_password }
+  );
+  return response.data;
+};
+
+const changePassword = async ({
+  current_password,
+  new_password,
+}: {
+  current_password: string;
+  new_password: string;
+}): Promise<ApiResponse<null>> => {
+  const response = await apiClient.put<ApiResponse<null>>(
+    `${url}/change-password`,
+    { current_password, new_password }
   );
   return response.data;
 };
@@ -83,6 +97,7 @@ export {
   twoFactorAuth,
   setTwoFactorAuth,
   sendResetPassword,
+  resetPassword,
   changePassword,
   userInfo,
   logout,

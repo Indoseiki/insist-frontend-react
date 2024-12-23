@@ -4,6 +4,7 @@ import {
   changePassword,
   login,
   logout,
+  resetPassword,
   sendResetPassword,
   setTwoFactorAuth,
   twoFactorAuth,
@@ -36,11 +37,20 @@ const useSendResetPassword = () => {
   });
 };
 
-const useChangePassword = () => {
+const useResetPassword = () => {
   return useMutation<
     ApiResponse<null>,
     Error,
     { token: string; password: string; confirm_password: string }
+  >({
+    mutationFn: (params) => resetPassword(params),
+  });
+};
+const useChangePassword = () => {
+  return useMutation<
+    ApiResponse<null>,
+    Error,
+    { current_password: string; new_password: string }
   >({
     mutationFn: (params) => changePassword(params),
   });
@@ -64,6 +74,7 @@ export {
   useTwoFactorAuth,
   useSetTwoFactorAuth,
   useSendResetPassword,
+  useResetPassword,
   useChangePassword,
   useUserInfoQuery,
   useLogout,

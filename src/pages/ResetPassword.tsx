@@ -16,7 +16,7 @@ import { useSizes } from "../contexts/useGlobalSizes";
 import { IconMoon, IconSun } from "@tabler/icons-react";
 import LogoLight from "../assets/images/logo_light.gif";
 import LogoDark from "../assets/images/logo_dark.gif";
-import { useChangePassword } from "../hooks/auth";
+import { useResetPassword } from "../hooks/auth";
 import { notifications } from "@mantine/notifications";
 import { useForm } from "@mantine/form";
 import { useNavigate } from "@tanstack/react-router";
@@ -38,9 +38,9 @@ const ResetPasswordPage = ({ token }: { token: string }) => {
   const {
     mutate: mutateChangePassword,
     isPending: isPendingMutateChangePassword,
-  } = useChangePassword();
+  } = useResetPassword();
 
-  const formChangePassword = useForm({
+  const formResetPassword = useForm({
     mode: "uncontrolled",
     initialValues: {
       password: "",
@@ -83,7 +83,7 @@ const ResetPasswordPage = ({ token }: { token: string }) => {
     mutateChangePassword(
       {
         token,
-        ...formChangePassword.getValues(),
+        ...formResetPassword.getValues(),
       },
       {
         onSuccess() {
@@ -93,7 +93,7 @@ const ResetPasswordPage = ({ token }: { token: string }) => {
             color: "green",
           });
 
-          formChangePassword.reset();
+          formResetPassword.reset();
 
           navigate({
             to: "/login",
@@ -144,7 +144,7 @@ const ResetPasswordPage = ({ token }: { token: string }) => {
         </Box>
         <Paper shadow="xl" radius="md" withBorder w="380px" p={20}>
           <form
-            onSubmit={formChangePassword.onSubmit(handleSubmitChangePassword)}
+            onSubmit={formResetPassword.onSubmit(handleSubmitChangePassword)}
           >
             <Stack gap={10} justify="center" align="center">
               <Text fw="bold" fz="h3">
@@ -158,15 +158,15 @@ const ResetPasswordPage = ({ token }: { token: string }) => {
                   label="New Password"
                   placeholder="Password"
                   size={size}
-                  key={formChangePassword.key("password")}
-                  {...formChangePassword.getInputProps("password")}
+                  key={formResetPassword.key("password")}
+                  {...formResetPassword.getInputProps("password")}
                 />
                 <PasswordInput
                   label="Confirm Password"
                   placeholder="Password"
                   size={size}
-                  key={formChangePassword.key("confirm_password")}
-                  {...formChangePassword.getInputProps("confirm_password")}
+                  key={formResetPassword.key("confirm_password")}
+                  {...formResetPassword.getInputProps("confirm_password")}
                 />
               </Stack>
               <Button
