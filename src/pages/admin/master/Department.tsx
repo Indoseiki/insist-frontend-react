@@ -37,11 +37,15 @@ import { formatDateTime } from "../../../utils/formatTime";
 import TableScrollable from "../../../components/table/TableScrollable";
 import TableFooter from "../../../components/table/TableFooter";
 import NoDataFound from "../../../components/table/NoDataFound";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useOs } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { StateTable } from "../../../types/table";
 import { StateForm } from "../../../types/form";
+import { useUserInfoQuery } from "../../../hooks/auth";
+import { createActivityLog } from "../../../api/activityLog";
+import { AxiosError } from "axios";
+import { ApiResponse } from "../../../types/response";
 
 interface StateFilter {
   search: string;
@@ -54,6 +58,8 @@ interface FormValues {
 }
 
 const DepartmentPage = () => {
+  const os = useOs();
+
   const { size, sizeButton, fullWidth } = useSizes();
 
   const { colorScheme } = useMantineColorScheme();
@@ -93,6 +99,8 @@ const DepartmentPage = () => {
 
   const handleClickRow = (row: Department) =>
     updateStateTable({ selected: row });
+
+  const { data: dataUser } = useUserInfoQuery();
 
   const {
     data: dataDepartments,
@@ -234,7 +242,15 @@ const DepartmentPage = () => {
 
     if (stateForm.action === "add") {
       mutateCreateDepartment(dataDepartment, {
-        onSuccess(res) {
+        onSuccess: async (res) => {
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Create",
+            is_success: true,
+            os: os,
+            message: `(${dataDepartment.code}) ${res?.message}`,
+          });
+
           notifications.show({
             title: "Created Successfully!",
             message: res.message,
@@ -244,7 +260,17 @@ const DepartmentPage = () => {
           refetchDepartments();
           closeFormDepartment();
         },
-        onError() {
+        onError: async (err) => {
+          const error = err as AxiosError<ApiResponse<null>>;
+          const res = error.response;
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Create",
+            is_success: false,
+            os: os,
+            message: `(${dataDepartment.code}) ${res?.data.message}`,
+          });
+
           notifications.show({
             title: "Created Failed!",
             message:
@@ -264,7 +290,15 @@ const DepartmentPage = () => {
           params: dataDepartment,
         },
         {
-          onSuccess(res) {
+          onSuccess: async (res) => {
+            await createActivityLog({
+              username: dataUser?.data.username,
+              action: "Update",
+              is_success: true,
+              os: os,
+              message: `(${stateTable.selected?.code} ⮕ ${dataDepartment.code}) ${res?.message}`,
+            });
+
             notifications.show({
               title: "Updated Successfully!",
               message: res.message,
@@ -275,7 +309,17 @@ const DepartmentPage = () => {
             refetchDepartments();
             closeFormDepartment();
           },
-          onError() {
+          onError: async (err) => {
+            const error = err as AxiosError<ApiResponse<null>>;
+            const res = error.response;
+            await createActivityLog({
+              username: dataUser?.data.username,
+              action: "Update",
+              is_success: false,
+              os: os,
+              message: `(${stateTable.selected?.code} ⮕ ${dataDepartment.code}) ${res?.data.message}`,
+            });
+
             notifications.show({
               title: "Updated Failed!",
               message:
@@ -291,7 +335,15 @@ const DepartmentPage = () => {
 
     if (stateForm.action === "delete") {
       mutateDeleteDepartment(stateTable.selected?.id!, {
-        onSuccess(res) {
+        onSuccess: async (res) => {
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Delete",
+            is_success: true,
+            os: os,
+            message: `(${stateTable.selected?.code}) ${res?.message}`,
+          });
+
           notifications.show({
             title: "Deleted Successfully!",
             message: res.message,
@@ -302,7 +354,17 @@ const DepartmentPage = () => {
           refetchDepartments();
           closeFormDelete();
         },
-        onError() {
+        onError: async (err) => {
+          const error = err as AxiosError<ApiResponse<null>>;
+          const res = error.response;
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Delete",
+            is_success: false,
+            os: os,
+            message: `(${stateTable.selected?.code}) ${res?.data.message}`,
+          });
+
           notifications.show({
             title: "Deleted Failed!",
             message:
