@@ -26,10 +26,14 @@ import {
 } from "../../hooks/auth";
 import { notifications } from "@mantine/notifications";
 import { useForm } from "@mantine/form";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useOs } from "@mantine/hooks";
 import { useSizes } from "../../contexts/useGlobalSizes";
+import { createActivityLog } from "../../api/activityLog";
+import { AxiosError } from "axios";
+import { ApiResponse } from "../../types/response";
 
 const Profile = () => {
+  const os = useOs();
   const { size, sizeButton } = useSizes();
 
   const navigate = useNavigate();
@@ -54,7 +58,15 @@ const Profile = () => {
     mutateLogout(
       {},
       {
-        onSuccess() {
+        onSuccess: async (res) => {
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Logout",
+            is_success: true,
+            os: os,
+            message: res?.message,
+          });
+
           notifications.show({
             title: "Logout Successfully!",
             message: "You're logged out! Hope to see you again soon",
@@ -64,7 +76,17 @@ const Profile = () => {
           localStorage.removeItem("accessToken");
           navigate({ to: "/login", replace: true });
         },
-        onError() {
+        onError: async (err) => {
+          const error = err as AxiosError<ApiResponse<null>>;
+          const res = error.response;
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Logout",
+            is_success: false,
+            os: os,
+            message: res?.data.message,
+          });
+
           notifications.show({
             title: "Logout Failed!",
             message:

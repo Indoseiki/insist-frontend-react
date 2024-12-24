@@ -104,7 +104,8 @@ const LoginPage = () => {
           localStorage.setItem("accessToken", res.data.access_token);
 
           await createActivityLog({
-            action: "login",
+            username: payload.username,
+            action: "Login",
             is_success: true,
             os: os,
             message: "Login successfully",
@@ -126,7 +127,8 @@ const LoginPage = () => {
           const res = error.response;
           if (res?.status !== 403) {
             await createActivityLog({
-              action: "login",
+              username: payload.username,
+              action: "Login",
               is_success: false,
               os: os,
               message: res?.data.message,
@@ -157,7 +159,8 @@ const LoginPage = () => {
           localStorage.setItem("accessToken", res.data.access_token);
 
           await createActivityLog({
-            action: "login",
+            username: payload.username,
+            action: "Login",
             is_success: true,
             os: os,
             message: "Login Successfully",
@@ -179,7 +182,8 @@ const LoginPage = () => {
           const res = error.response;
           if (res?.status) {
             await createActivityLog({
-              action: "login",
+              username: payload.username,
+              action: "Login",
               is_success: false,
               os: os,
               message: res?.data.message,
