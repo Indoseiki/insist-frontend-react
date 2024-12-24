@@ -46,6 +46,9 @@ import { useUserInfoQuery } from "../../../hooks/auth";
 import { createActivityLog } from "../../../api/activityLog";
 import { AxiosError } from "axios";
 import { ApiResponse } from "../../../types/response";
+import { useRolePermissionQuery } from "../../../hooks/rolePermission";
+import { useLocation } from "@tanstack/react-router";
+import { access } from "fs";
 
 interface StateFilter {
   search: string;
@@ -59,6 +62,8 @@ interface FormValues {
 
 const DepartmentPage = () => {
   const os = useOs();
+  const location = useLocation();
+  console.log("🚀 ~ DepartmentPage ~ location:", location);
 
   const { size, sizeButton, fullWidth } = useSizes();
 
@@ -129,6 +134,13 @@ const DepartmentPage = () => {
     mutate: mutateDeleteDepartment,
     isPending: isPendingMutateDeleteDepartment,
   } = useDeleteDepartment();
+
+  const {
+    data: dataRolePermission,
+    isSuccess: isSuccessRolePermission,
+    isLoading: isLoadingRolePermission,
+    refetch: refetchRolePermission,
+  } = useRolePermissionQuery(location.pathname);
 
   const rows = useMemo(() => {
     if (!isSuccessDepartments || !dataDepartments?.data?.pagination.total_rows)
@@ -399,17 +411,29 @@ const DepartmentPage = () => {
       >
         <Button.Group>
           {[
-            { icon: IconPlus, label: "Add", onClick: () => handleAddData() },
-            { icon: IconEdit, label: "Edit", onClick: () => handleEditData() },
+            {
+              icon: IconPlus,
+              label: "Add",
+              onClick: () => handleAddData(),
+              access: dataRolePermission?.data.is_create,
+            },
+            {
+              icon: IconEdit,
+              label: "Edit",
+              onClick: () => handleEditData(),
+              access: dataRolePermission?.data.is_update,
+            },
             {
               icon: IconTrash,
               label: "Delete",
               onClick: () => handleDeleteData(),
+              access: dataRolePermission?.data.is_delete,
             },
             {
               icon: IconBinoculars,
               label: "View",
               onClick: () => handleViewData(),
+              access: true,
             },
           ].map((btn, idx) => (
             <Button
@@ -419,6 +443,7 @@ const DepartmentPage = () => {
               fullWidth={fullWidth}
               size={sizeButton}
               onClick={btn.onClick}
+              style={{ display: btn.access ? "block" : "none" }}
             >
               {btn.label}
             </Button>

@@ -19,3 +19,13 @@ export interface RolePermissionRequest {
   is_update?: boolean;
   is_delete?: boolean;
 }
+
+export interface MenuWithPermissions {
+  label?: string;
+  path?: string;
+  id_role?: number;
+  id_menu?: number;
+  is_create?: boolean;
+  is_update?: boolean;
+  is_delete?: boolean;
+}

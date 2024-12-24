@@ -1,12 +1,24 @@
 import { Menu } from "../types/menu";
 import { ApiResponse } from "../types/response";
-import { RolePermissionRequest } from "../types/rolePermission";
+import {
+  MenuWithPermissions,
+  RolePermissionRequest,
+} from "../types/rolePermission";
 import apiClient from "./apiClient";
 
-const url = "/admin/role-Permission";
+const url = "/admin/role-permission";
 
 const getRolePermissions = async (id: number): Promise<ApiResponse<Menu[]>> => {
   const response = await apiClient.get<ApiResponse<Menu[]>>(`${url}/${id}`);
+  return response.data;
+};
+
+const getRolePermission = async (
+  path: string
+): Promise<ApiResponse<MenuWithPermissions>> => {
+  const response = await apiClient.get<ApiResponse<MenuWithPermissions>>(
+    `${url}?path=${path}`
+  );
   return response.data;
 };
 
@@ -17,4 +29,4 @@ const updateRolePermission = async (
   return response.data;
 };
 
-export { getRolePermissions, updateRolePermission };
+export { getRolePermissions, getRolePermission, updateRolePermission };
