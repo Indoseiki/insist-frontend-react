@@ -48,7 +48,6 @@ import { AxiosError } from "axios";
 import { ApiResponse } from "../../../types/response";
 import { useRolePermissionQuery } from "../../../hooks/rolePermission";
 import { useLocation } from "@tanstack/react-router";
-import { access } from "fs";
 
 interface StateFilter {
   search: string;
@@ -135,12 +134,9 @@ const DepartmentPage = () => {
     isPending: isPendingMutateDeleteDepartment,
   } = useDeleteDepartment();
 
-  const {
-    data: dataRolePermission,
-    isSuccess: isSuccessRolePermission,
-    isLoading: isLoadingRolePermission,
-    refetch: refetchRolePermission,
-  } = useRolePermissionQuery(location.pathname);
+  const { data: dataRolePermission } = useRolePermissionQuery(
+    location.pathname
+  );
 
   const rows = useMemo(() => {
     if (!isSuccessDepartments || !dataDepartments?.data?.pagination.total_rows)
