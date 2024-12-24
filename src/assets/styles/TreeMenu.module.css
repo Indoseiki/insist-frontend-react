@@ -10,11 +10,11 @@
     font-size: 14px;
 
     @mixin where-light {
-      background-color: #fff3bf;
+      background-color: var(--mantine-color-yellow-1);
     }
 
     @mixin where-dark {
-      background-color: var(--mantine-color-dark-6);
+      background-color: alpha(var(--mantine-color-yellow-8), 0.35);
       color: var(--mantine-color-white);
     }
   }
