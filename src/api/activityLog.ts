@@ -7,7 +7,7 @@ import {
 } from "../types/activityLog";
 import apiClient from "./apiClient";
 
-const url = "/admin/log";
+const url = "/log";
 
 const getActivityLogs = async (
   params: ActivityLogParams

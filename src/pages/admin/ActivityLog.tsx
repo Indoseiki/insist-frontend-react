@@ -1,17 +1,30 @@
 import {
+  ActionIcon,
   Badge,
+  Button,
   Center,
   CloseButton,
   Flex,
+  Grid,
   Input,
   Loader,
+  Menu,
+  rem,
+  Select,
+  SimpleGrid,
   Spoiler,
   Stack,
   Table,
+  Text,
   useMantineColorScheme,
 } from "@mantine/core";
 import PageHeader from "../../components/layouts/PageHeader";
-import { IconSearch } from "@tabler/icons-react";
+import {
+  IconCalendarWeek,
+  IconFilter,
+  IconSearch,
+  IconX,
+} from "@tabler/icons-react";
 import { useMemo, useState } from "react";
 import { ActivityLog } from "../../types/activityLog";
 import { formatDateTime } from "../../utils/formatTime";
@@ -20,12 +33,21 @@ import TableFooter from "../../components/table/TableFooter";
 import NoDataFound from "../../components/table/NoDataFound";
 import { StateTable } from "../../types/table";
 import { useActivityLogsQuery } from "../../hooks/activityLog";
+import { useSizes } from "../../contexts/useGlobalSizes";
+import { DatePickerInput } from "@mantine/dates";
+import dayjs from "dayjs";
 
 interface StateFilter {
+  open: boolean;
   search: string;
+  action: string;
+  isSuccess: string;
+  rangeDate: [Date | null, Date | null];
 }
 
 const ActivityLogPage = () => {
+  const { size, sizeButton } = useSizes();
+
   const { colorScheme } = useMantineColorScheme();
 
   const [stateTable, setStateTable] = useState<StateTable<ActivityLog>>({
@@ -37,7 +59,11 @@ const ActivityLogPage = () => {
   });
 
   const [stateFilter, setStateFilter] = useState<StateFilter>({
+    open: false,
     search: "",
+    action: "",
+    isSuccess: "",
+    rangeDate: [null, null],
   });
 
   const updateStateTable = (newState: Partial<StateTable<ActivityLog>>) =>
@@ -49,6 +75,12 @@ const ActivityLogPage = () => {
   const handleClickRow = (row: ActivityLog) =>
     updateStateTable({ selected: row });
 
+  const rangeDate = stateFilter.rangeDate
+    .map((date) => {
+      return dayjs(date).isValid() ? dayjs(date).format("YYYY-MM-DD") : null;
+    })
+    .join("~");
+
   const {
     data: dataActivityLogs,
     isSuccess: isSuccessActivityLogs,
@@ -57,6 +89,9 @@ const ActivityLogPage = () => {
     page: stateTable.activePage,
     rows: stateTable.rowsPerPage,
     search: stateFilter.search,
+    action: stateFilter.action,
+    isSuccess: stateFilter.isSuccess,
+    rangeDate: rangeDate,
     sortBy: stateTable.sortBy,
     sortDirection: stateTable.sortDirection,
   });
@@ -76,6 +111,18 @@ const ActivityLogPage = () => {
           : "#2e2e2e"
         : undefined;
 
+      type Action = "Login" | "Logout" | "Create" | "Update" | "Delete";
+      const actionColors: { [key in Action]: string } = {
+        Login: "cyan",
+        Logout: "red",
+        Create: "teal",
+        Update: "blue",
+        Delete: "orange",
+      };
+
+      const actionColor =
+        actionColors[row.action as keyof typeof actionColors] ?? "defaultColor";
+
       return (
         <Table.Tr
           key={row.id}
@@ -85,7 +132,9 @@ const ActivityLogPage = () => {
         >
           <Table.Td>{row.user?.name}</Table.Td>
           <Table.Td>{row.ip_address}</Table.Td>
-          <Table.Td>{row.action}</Table.Td>
+          <Table.Td>
+            <Badge color={actionColor}>{row.action}</Badge>
+          </Table.Td>
           <Table.Td>
             <Badge color={row.is_success ? "blue" : "red"}>
               {row.is_success ? "Success" : "Failure"}
@@ -139,6 +188,98 @@ const ActivityLogPage = () => {
               />
             }
           />
+          <Menu
+            shadow="md"
+            closeOnClickOutside={false}
+            opened={stateFilter.open}
+            onChange={(isOpen) => updateStateFilter({ open: isOpen })}
+          >
+            <Menu.Target>
+              <ActionIcon variant="filled">
+                <IconFilter
+                  style={{ width: rem(16), height: rem(16) }}
+                  stroke={1.5}
+                  onClick={() => updateStateFilter({ open: !stateFilter.open })}
+                />
+              </ActionIcon>
+            </Menu.Target>
+            <Menu.Dropdown p={15} maw="400px">
+              <Text mb={5}>Filter</Text>
+              <Grid>
+                <Grid.Col span={6}>
+                  <Select
+                    placeholder="Action"
+                    size={size}
+                    data={[
+                      { label: "Create", value: "Create" },
+                      { label: "Update", value: "Update" },
+                      { label: "Delete", value: "Delete" },
+                      { label: "Login", value: "Login" },
+                      { label: "Logout", value: "Logout" },
+                    ]}
+                    value={stateFilter.action ? stateFilter.action : ""}
+                    onChange={(value, _option) =>
+                      updateStateFilter({ action: value || "" })
+                    }
+                    clearable
+                    clearButtonProps={{
+                      onClick: () => updateStateFilter({ action: "" }),
+                    }}
+                  />
+                </Grid.Col>
+                <Grid.Col span={6}>
+                  <Select
+                    placeholder="Status"
+                    size={size}
+                    data={[
+                      { label: "Success", value: "true" },
+                      { label: "Failure", value: "false" },
+                    ]}
+                    value={stateFilter.isSuccess ? stateFilter.isSuccess : ""}
+                    onChange={(value, _option) =>
+                      updateStateFilter({ isSuccess: value || "" })
+                    }
+                    clearable
+                    clearButtonProps={{
+                      onClick: () => updateStateFilter({ isSuccess: "" }),
+                    }}
+                  />
+                </Grid.Col>
+                <Grid.Col span={12}>
+                  <DatePickerInput
+                    type="range"
+                    size={size}
+                    placeholder="Range Date"
+                    valueFormat="DD-MM-YYYY"
+                    value={
+                      stateFilter.rangeDate
+                        ? stateFilter.rangeDate
+                        : [null, null]
+                    }
+                    onChange={(value) =>
+                      updateStateFilter({ rangeDate: value })
+                    }
+                    clearable
+                    clearButtonProps={{
+                      onClick: () =>
+                        updateStateFilter({ rangeDate: [null, null] }),
+                    }}
+                    leftSection={<IconCalendarWeek size={16} />}
+                  />
+                </Grid.Col>
+              </Grid>
+              <Flex justify="end" pt={10}>
+                <Button
+                  leftSection={<IconX size={14} />}
+                  variant="default"
+                  size={sizeButton}
+                  onClick={() => updateStateFilter({ open: false })}
+                >
+                  Close
+                </Button>
+              </Flex>
+            </Menu.Dropdown>
+          </Menu>
         </Flex>
       </Flex>
       {isLoadingActivityLogs && (
@@ -173,7 +314,7 @@ const ActivityLogPage = () => {
                   name: "User Agent",
                 },
                 {
-                  name: "TIme",
+                  name: "Date TIme",
                 },
               ]}
               rows={rows}
