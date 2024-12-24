@@ -248,7 +248,7 @@ const DepartmentPage = () => {
             action: "Create",
             is_success: true,
             os: os,
-            message: `(${dataDepartment.code}) ${res?.message}`,
+            message: `${res?.message} (${dataDepartment.code})`,
           });
 
           notifications.show({
@@ -268,7 +268,7 @@ const DepartmentPage = () => {
             action: "Create",
             is_success: false,
             os: os,
-            message: `(${dataDepartment.code}) ${res?.data.message}`,
+            message: `${res?.data.message} (${dataDepartment.code})`,
           });
 
           notifications.show({
@@ -296,7 +296,7 @@ const DepartmentPage = () => {
               action: "Update",
               is_success: true,
               os: os,
-              message: `(${stateTable.selected?.code} ⮕ ${dataDepartment.code}) ${res?.message}`,
+              message: `${res?.message} (${stateTable.selected?.code} ⮕ ${dataDepartment.code})`,
             });
 
             notifications.show({
@@ -317,7 +317,7 @@ const DepartmentPage = () => {
               action: "Update",
               is_success: false,
               os: os,
-              message: `(${stateTable.selected?.code} ⮕ ${dataDepartment.code}) ${res?.data.message}`,
+              message: `${res?.data.message} (${stateTable.selected?.code} ⮕ ${dataDepartment.code})`,
             });
 
             notifications.show({
@@ -341,7 +341,7 @@ const DepartmentPage = () => {
             action: "Delete",
             is_success: true,
             os: os,
-            message: `(${stateTable.selected?.code}) ${res?.message}`,
+            message: `${res?.message} (${stateTable.selected?.code})`,
           });
 
           notifications.show({
@@ -362,7 +362,7 @@ const DepartmentPage = () => {
             action: "Delete",
             is_success: false,
             os: os,
-            message: `(${stateTable.selected?.code}) ${res?.data.message}`,
+            message: `${res?.data.message} (${stateTable.selected?.code}) `,
           });
 
           notifications.show({

@@ -11,7 +11,6 @@ import {
   Menu,
   rem,
   Select,
-  SimpleGrid,
   Spoiler,
   Stack,
   Table,
@@ -140,7 +139,11 @@ const ActivityLogPage = () => {
               {row.is_success ? "Success" : "Failure"}
             </Badge>
           </Table.Td>
-          <Table.Td>{row.message}</Table.Td>
+          <Table.Td w={400}>
+            <Spoiler maxHeight={25} showLabel="Show more" hideLabel="Hide">
+              {row.message}
+            </Spoiler>
+          </Table.Td>
           <Table.Td>{row.os}</Table.Td>
           <Table.Td w={400}>
             <Spoiler maxHeight={20} showLabel="Show more" hideLabel="Hide">
