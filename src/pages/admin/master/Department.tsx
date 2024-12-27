@@ -60,9 +60,7 @@ interface FormValues {
 }
 
 const DepartmentPage = () => {
-  const os = useOs();
   const location = useLocation();
-  console.log("🚀 ~ DepartmentPage ~ location:", location);
 
   const { size, sizeButton, fullWidth } = useSizes();
 
@@ -104,8 +102,6 @@ const DepartmentPage = () => {
   const handleClickRow = (row: Department) =>
     updateStateTable({ selected: row });
 
-  const { data: dataUser } = useUserInfoQuery();
-
   const {
     data: dataDepartments,
     isSuccess: isSuccessDepartments,
@@ -134,6 +130,8 @@ const DepartmentPage = () => {
     isPending: isPendingMutateDeleteDepartment,
   } = useDeleteDepartment();
 
+  const os = useOs();
+  const { data: dataUser } = useUserInfoQuery();
   const { data: dataRolePermission } = useRolePermissionQuery(
     location.pathname
   );

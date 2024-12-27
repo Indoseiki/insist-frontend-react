@@ -37,11 +37,16 @@ import { formatDateTime } from "../../../utils/formatTime";
 import TableScrollable from "../../../components/table/TableScrollable";
 import TableFooter from "../../../components/table/TableFooter";
 import NoDataFound from "../../../components/table/NoDataFound";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useOs } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { StateTable } from "../../../types/table";
 import { StateForm } from "../../../types/form";
+import { useUserInfoQuery } from "../../../hooks/auth";
+import { useRolePermissionQuery } from "../../../hooks/rolePermission";
+import { createActivityLog } from "../../../api/activityLog";
+import { AxiosError } from "axios";
+import { ApiResponse } from "../../../types/response";
 
 interface StateFilter {
   search: string;
@@ -120,6 +125,12 @@ const KeyValuePage = () => {
     mutate: mutateDeleteKeyValue,
     isPending: isPendingMutateDeleteKeyValue,
   } = useDeleteKeyValue();
+
+  const os = useOs();
+  const { data: dataUser } = useUserInfoQuery();
+  const { data: dataRolePermission } = useRolePermissionQuery(
+    location.pathname
+  );
 
   const rows = useMemo(() => {
     if (!isSuccessKeyValues || !dataKeyValues?.data?.pagination.total_rows)
@@ -233,7 +244,15 @@ const KeyValuePage = () => {
 
     if (stateForm.action === "add") {
       mutateCreateKeyValue(dataKeyValue, {
-        onSuccess(res) {
+        onSuccess: async (res) => {
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Create",
+            is_success: true,
+            os: os,
+            message: `${res?.message} (${dataKeyValue.key})`,
+          });
+
           notifications.show({
             title: "Created Successfully!",
             message: res.message,
@@ -243,7 +262,17 @@ const KeyValuePage = () => {
           refetchKeyValues();
           closeFormKeyValue();
         },
-        onError() {
+        onError: async (err) => {
+          const error = err as AxiosError<ApiResponse<null>>;
+          const res = error.response;
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Create",
+            is_success: false,
+            os: os,
+            message: `${res?.data.message} (${dataKeyValue.key})`,
+          });
+
           notifications.show({
             title: "Created Failed!",
             message:
@@ -263,7 +292,15 @@ const KeyValuePage = () => {
           params: dataKeyValue,
         },
         {
-          onSuccess(res) {
+          onSuccess: async (res) => {
+            await createActivityLog({
+              username: dataUser?.data.username,
+              action: "Update",
+              is_success: true,
+              os: os,
+              message: `${res?.message} (${stateTable.selected?.key} ⮕ ${dataKeyValue.key})`,
+            });
+
             notifications.show({
               title: "Updated Successfully!",
               message: res.message,
@@ -274,7 +311,17 @@ const KeyValuePage = () => {
             refetchKeyValues();
             closeFormKeyValue();
           },
-          onError() {
+          onError: async (err) => {
+            const error = err as AxiosError<ApiResponse<null>>;
+            const res = error.response;
+            await createActivityLog({
+              username: dataUser?.data.username,
+              action: "Update",
+              is_success: false,
+              os: os,
+              message: `${res?.data.message} (${stateTable.selected?.key} ⮕ ${dataKeyValue.key})`,
+            });
+
             notifications.show({
               title: "Updated Failed!",
               message:
@@ -290,7 +337,15 @@ const KeyValuePage = () => {
 
     if (stateForm.action === "delete") {
       mutateDeleteKeyValue(stateTable.selected?.id!, {
-        onSuccess(res) {
+        onSuccess: async (res) => {
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Delete",
+            is_success: true,
+            os: os,
+            message: `${res?.message} (${stateTable.selected?.key})`,
+          });
+
           notifications.show({
             title: "Deleted Successfully!",
             message: res.message,
@@ -301,7 +356,17 @@ const KeyValuePage = () => {
           refetchKeyValues();
           closeFormDelete();
         },
-        onError() {
+        onError: async (err) => {
+          const error = err as AxiosError<ApiResponse<null>>;
+          const res = error.response;
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Delete",
+            is_success: false,
+            os: os,
+            message: `${res?.data.message} (${stateTable.selected?.key}) `,
+          });
+
           notifications.show({
             title: "Deleted Failed!",
             message:
@@ -336,17 +401,29 @@ const KeyValuePage = () => {
       >
         <Button.Group>
           {[
-            { icon: IconPlus, label: "Add", onClick: () => handleAddData() },
-            { icon: IconEdit, label: "Edit", onClick: () => handleEditData() },
+            {
+              icon: IconPlus,
+              label: "Add",
+              onClick: () => handleAddData(),
+              access: dataRolePermission?.data.is_create,
+            },
+            {
+              icon: IconEdit,
+              label: "Edit",
+              onClick: () => handleEditData(),
+              access: dataRolePermission?.data.is_update,
+            },
             {
               icon: IconTrash,
               label: "Delete",
               onClick: () => handleDeleteData(),
+              access: dataRolePermission?.data.is_delete,
             },
             {
               icon: IconBinoculars,
               label: "View",
               onClick: () => handleViewData(),
+              access: true,
             },
           ].map((btn, idx) => (
             <Button
@@ -356,6 +433,7 @@ const KeyValuePage = () => {
               fullWidth={fullWidth}
               size={sizeButton}
               onClick={btn.onClick}
+              style={{ display: btn.access ? "block" : "none" }}
             >
               {btn.label}
             </Button>

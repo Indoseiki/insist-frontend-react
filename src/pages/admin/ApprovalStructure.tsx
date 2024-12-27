@@ -50,7 +50,7 @@ import {
 import TableScrollable from "../../components/table/TableScrollable";
 import TableFooter from "../../components/table/TableFooter";
 import NoDataFound from "../../components/table/NoDataFound";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useOs } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { StateTable } from "../../types/table";
@@ -58,6 +58,11 @@ import { StateForm } from "../../types/form";
 import { Menu } from "../../types/menu";
 import { ApprovalRequest } from "../../types/approval";
 import { useUsersInfinityQuery } from "../../hooks/user";
+import { useUserInfoQuery } from "../../hooks/auth";
+import { useRolePermissionQuery } from "../../hooks/rolePermission";
+import { createActivityLog } from "../../api/activityLog";
+import { AxiosError } from "axios";
+import { ApiResponse } from "../../types/response";
 
 interface StateFilter {
   search: string;
@@ -180,6 +185,12 @@ const ApprovalStructurePage = () => {
     mutate: mutateUpdateApprovalUsers,
     isPending: isPendingMutateUpdateApprovalUsers,
   } = useUpdateApprovalUsers();
+
+  const os = useOs();
+  const { data: dataUser } = useUserInfoQuery();
+  const { data: dataRolePermission } = useRolePermissionQuery(
+    location.pathname
+  );
 
   const rows = useMemo(() => {
     if (
@@ -391,7 +402,15 @@ const ApprovalStructurePage = () => {
 
     if (!stateTable.selected?.menu_approvals) {
       mutateCreateApproval(approvals, {
-        onSuccess(res) {
+        onSuccess: async (res) => {
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Create",
+            is_success: true,
+            os: os,
+            message: `${res?.message} (${stateTable.selected?.path})`,
+          });
+
           notifications.show({
             title: "Created Successfully!",
             message: res.message,
@@ -402,7 +421,17 @@ const ApprovalStructurePage = () => {
           refetchApprovalStructures();
           closeFormApprovalStructure();
         },
-        onError() {
+        onError: async (err) => {
+          const error = err as AxiosError<ApiResponse<null>>;
+          const res = error.response;
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Create",
+            is_success: false,
+            os: os,
+            message: `${res?.data.message} (${stateTable.selected?.path})`,
+          });
+
           notifications.show({
             title: "Created Failed!",
             message:
@@ -415,7 +444,15 @@ const ApprovalStructurePage = () => {
       });
     } else {
       mutateUpdateApproval(approvals, {
-        onSuccess(res) {
+        onSuccess: async (res) => {
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Update",
+            is_success: true,
+            os: os,
+            message: `${res?.message} (${stateTable.selected?.path})`,
+          });
+
           notifications.show({
             title: "Updated Successfully!",
             message: res.message,
@@ -426,7 +463,18 @@ const ApprovalStructurePage = () => {
           refetchApprovalStructures();
           closeFormApprovalStructure();
         },
-        onError() {
+        onError: async (err) => {
+          const error = err as AxiosError<ApiResponse<null>>;
+          const res = error.response;
+          console.log(res);
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Update",
+            is_success: false,
+            os: os,
+            message: `${res?.data.message} (${stateTable.selected?.path})`,
+          });
+
           notifications.show({
             title: "Updated Failed!",
             message:
@@ -450,7 +498,15 @@ const ApprovalStructurePage = () => {
     if (data) {
       const id = data.id;
       mutateDeleteApproval(id, {
-        onSuccess(res) {
+        onSuccess: async (res) => {
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Delete",
+            is_success: true,
+            os: os,
+            message: `${res?.message} (${data.status})`,
+          });
+
           notifications.show({
             title: "Delete Successfully!",
             message: res.message,
@@ -463,7 +519,17 @@ const ApprovalStructurePage = () => {
           }
           refetchApprovalStructures();
         },
-        onError() {
+        onError: async (err) => {
+          const error = err as AxiosError<ApiResponse<null>>;
+          const res = error.response;
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Delete",
+            is_success: false,
+            os: os,
+            message: `${res?.data.message} (${data.status})`,
+          });
+
           notifications.show({
             title: "Delete Failed!",
             message:
@@ -568,7 +634,14 @@ const ApprovalStructurePage = () => {
         },
       },
       {
-        onSuccess(res) {
+        onSuccess: async (res) => {
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Update",
+            is_success: true,
+            os: os,
+            message: `${res?.message} (${stateTable.selected?.path})`,
+          });
           notifications.show({
             title: "Updated Successfully!",
             message: res.message,
@@ -580,7 +653,17 @@ const ApprovalStructurePage = () => {
           closeFormApprovalUsers();
           closeFormApprovalStructure();
         },
-        onError() {
+        onError: async (err) => {
+          const error = err as AxiosError<ApiResponse<null>>;
+          const res = error.response;
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Update",
+            is_success: false,
+            os: os,
+            message: `${res?.data.message} (${stateTable.selected?.path})`,
+          });
+
           notifications.show({
             title: "Updated Failed!",
             message:
@@ -697,11 +780,13 @@ const ApprovalStructurePage = () => {
               icon: IconEdit,
               label: "Setup Approvals",
               onClick: () => handleSetupApproval(),
+              access: dataRolePermission?.data.is_update,
             },
             {
               icon: IconBinoculars,
               label: "View",
               onClick: () => handleViewData(),
+              access: true,
             },
           ].map((btn, idx) => (
             <Button
@@ -711,6 +796,7 @@ const ApprovalStructurePage = () => {
               fullWidth={fullWidth}
               size={sizeButton}
               onClick={btn.onClick}
+              style={{ display: btn.access ? "block" : "none" }}
             >
               {btn.label}
             </Button>

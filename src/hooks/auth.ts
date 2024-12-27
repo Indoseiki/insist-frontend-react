@@ -57,9 +57,11 @@ const useChangePassword = () => {
 };
 
 const useUserInfoQuery = () => {
+  const accessToken = localStorage.getItem("accessToken");
   return useQuery<ApiResponse<User>, Error>({
     queryKey: ["user-info"],
     queryFn: () => userInfo(),
+    enabled: accessToken !== null,
   });
 };
 

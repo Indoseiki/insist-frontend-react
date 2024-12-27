@@ -32,9 +32,14 @@ import TableFooter from "../../../components/table/TableFooter";
 import NoDataFound from "../../../components/table/NoDataFound";
 import { notifications } from "@mantine/notifications";
 import { useForm } from "@mantine/form";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useOs } from "@mantine/hooks";
 import { DatePickerInput } from "@mantine/dates";
 import dayjs, { Dayjs } from "dayjs";
+import { useUserInfoQuery } from "../../../hooks/auth";
+import { useRolePermissionQuery } from "../../../hooks/rolePermission";
+import { createActivityLog } from "../../../api/activityLog";
+import { AxiosError } from "axios";
+import { ApiResponse } from "../../../types/response";
 
 interface StateFilter {
   search: string;
@@ -102,6 +107,12 @@ const EmployeePage = () => {
 
   const { mutate: mutateSyncEmployees } = useSyncEmployees();
 
+  const os = useOs();
+  const { data: dataUser } = useUserInfoQuery();
+  const { data: dataRolePermission } = useRolePermissionQuery(
+    location.pathname
+  );
+
   const rows = useMemo(() => {
     if (!isSuccessEmployees || !dataEmployees?.data?.pagination.total_rows)
       return null;
@@ -166,7 +177,15 @@ const EmployeePage = () => {
     mutateSyncEmployees(
       {},
       {
-        onSuccess() {
+        onSuccess: async (res) => {
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Update",
+            is_success: true,
+            os: os,
+            message: res?.message,
+          });
+
           notifications.update({
             id,
             title: "Data Synchronization Successfully!",
@@ -178,7 +197,17 @@ const EmployeePage = () => {
 
           refetchEmployees();
         },
-        onError() {
+        onError: async (err) => {
+          const error = err as AxiosError<ApiResponse<null>>;
+          const res = error.response;
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Update",
+            is_success: false,
+            os: os,
+            message: res?.data.message,
+          });
+
           notifications.update({
             id,
             title: "Data Synchronization Failed!",
@@ -233,11 +262,13 @@ const EmployeePage = () => {
               icon: IconRefresh,
               label: "Sync",
               onClick: () => handleSyncData(),
+              access: dataRolePermission?.data.is_update,
             },
             {
               icon: IconBinoculars,
               label: "View",
               onClick: () => handleViewData(),
+              access: true,
             },
           ].map((btn, idx) => (
             <Button
@@ -247,6 +278,7 @@ const EmployeePage = () => {
               fullWidth={fullWidth}
               size={sizeButton}
               onClick={btn.onClick}
+              style={{ display: btn.access ? "block" : "none" }}
             >
               {btn.label}
             </Button>

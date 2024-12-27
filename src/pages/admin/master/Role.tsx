@@ -36,11 +36,16 @@ import { formatDateTime } from "../../../utils/formatTime";
 import TableScrollable from "../../../components/table/TableScrollable";
 import TableFooter from "../../../components/table/TableFooter";
 import NoDataFound from "../../../components/table/NoDataFound";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useOs } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { StateTable } from "../../../types/table";
 import { StateForm } from "../../../types/form";
+import { useUserInfoQuery } from "../../../hooks/auth";
+import { useRolePermissionQuery } from "../../../hooks/rolePermission";
+import { AxiosError } from "axios";
+import { ApiResponse } from "../../../types/response";
+import { createActivityLog } from "../../../api/activityLog";
 
 interface StateFilter {
   search: string;
@@ -109,6 +114,12 @@ const RolePage = () => {
 
   const { mutate: mutateDeleteRole, isPending: isPendingMutateDeleteRole } =
     useDeleteRole();
+
+  const os = useOs();
+  const { data: dataUser } = useUserInfoQuery();
+  const { data: dataRolePermission } = useRolePermissionQuery(
+    location.pathname
+  );
 
   const rows = useMemo(() => {
     if (!isSuccessRoles || !dataRoles?.data?.pagination.total_rows) return null;
@@ -211,7 +222,15 @@ const RolePage = () => {
 
     if (stateForm.action === "add") {
       mutateCreateRole(dataRole, {
-        onSuccess(res) {
+        onSuccess: async (res) => {
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Create",
+            is_success: true,
+            os: os,
+            message: `${res?.message} (${dataRole.name})`,
+          });
+
           notifications.show({
             title: "Created Successfully!",
             message: res.message,
@@ -221,7 +240,17 @@ const RolePage = () => {
           refetchRoles();
           closeFormRole();
         },
-        onError() {
+        onError: async (err) => {
+          const error = err as AxiosError<ApiResponse<null>>;
+          const res = error.response;
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Create",
+            is_success: false,
+            os: os,
+            message: `${res?.data.message} (${dataRole.name})`,
+          });
+
           notifications.show({
             title: "Created Failed!",
             message:
@@ -241,7 +270,15 @@ const RolePage = () => {
           params: dataRole,
         },
         {
-          onSuccess(res) {
+          onSuccess: async (res) => {
+            await createActivityLog({
+              username: dataUser?.data.username,
+              action: "Update",
+              is_success: true,
+              os: os,
+              message: `${res?.message} (${stateTable.selected?.name} ⮕ ${dataRole.name})`,
+            });
+
             notifications.show({
               title: "Updated Successfully!",
               message: res.message,
@@ -252,7 +289,17 @@ const RolePage = () => {
             refetchRoles();
             closeFormRole();
           },
-          onError() {
+          onError: async (err) => {
+            const error = err as AxiosError<ApiResponse<null>>;
+            const res = error.response;
+            await createActivityLog({
+              username: dataUser?.data.username,
+              action: "Update",
+              is_success: false,
+              os: os,
+              message: `${res?.data.message} (${stateTable.selected?.name} ⮕ ${dataRole.name})`,
+            });
+
             notifications.show({
               title: "Updated Failed!",
               message:
@@ -268,7 +315,15 @@ const RolePage = () => {
 
     if (stateForm.action === "delete") {
       mutateDeleteRole(stateTable.selected?.id!, {
-        onSuccess(res) {
+        onSuccess: async (res) => {
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Delete",
+            is_success: true,
+            os: os,
+            message: `${res?.message} (${stateTable.selected?.name})`,
+          });
+
           notifications.show({
             title: "Deleted Successfully!",
             message: res.message,
@@ -279,7 +334,17 @@ const RolePage = () => {
           refetchRoles();
           closeFormDelete();
         },
-        onError() {
+        onError: async (err) => {
+          const error = err as AxiosError<ApiResponse<null>>;
+          const res = error.response;
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Delete",
+            is_success: false,
+            os: os,
+            message: `${res?.data.message} (${stateTable.selected?.name}) `,
+          });
+
           notifications.show({
             title: "Deleted Failed!",
             message:
@@ -314,17 +379,29 @@ const RolePage = () => {
       >
         <Button.Group>
           {[
-            { icon: IconPlus, label: "Add", onClick: () => handleAddData() },
-            { icon: IconEdit, label: "Edit", onClick: () => handleEditData() },
+            {
+              icon: IconPlus,
+              label: "Add",
+              onClick: () => handleAddData(),
+              access: dataRolePermission?.data.is_create,
+            },
+            {
+              icon: IconEdit,
+              label: "Edit",
+              onClick: () => handleEditData(),
+              access: dataRolePermission?.data.is_update,
+            },
             {
               icon: IconTrash,
               label: "Delete",
               onClick: () => handleDeleteData(),
+              access: dataRolePermission?.data.is_delete,
             },
             {
               icon: IconBinoculars,
               label: "View",
               onClick: () => handleViewData(),
+              access: true,
             },
           ].map((btn, idx) => (
             <Button
@@ -334,6 +411,7 @@ const RolePage = () => {
               fullWidth={fullWidth}
               size={sizeButton}
               onClick={btn.onClick}
+              style={{ display: btn.access ? "block" : "none" }}
             >
               {btn.label}
             </Button>

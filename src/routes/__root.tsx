@@ -7,13 +7,14 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { AppShell } from "@mantine/core";
-import { useDisclosure, useIdle } from "@mantine/hooks";
+import { useDisclosure, useIdle, useOs } from "@mantine/hooks";
 import Header from "../components/layouts/Header";
 import Navbar from "../components/layouts/Navbar";
 import NotFound from "../components/layouts/NotFound";
 import { memo } from "react";
-import { useLogout } from "../hooks/auth";
+import { useLogout, useUserInfoQuery } from "../hooks/auth";
 import { notifications } from "@mantine/notifications";
+import { createActivityLog } from "../api/activityLog";
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -35,12 +36,25 @@ function RootComponent() {
   const location = useLocation();
   const path = location.pathname;
 
+  const os = useOs();
+  const { data: dataUser, isSuccess: isSuccessUser } = useUserInfoQuery();
+
   useEffect(() => {
     if (idle && path !== "/login" && !path.includes("/reset-password")) {
       mutateLogout(
         {},
         {
-          onSuccess() {
+          onSuccess: async () => {
+            if (isSuccessUser) {
+              await createActivityLog({
+                username: dataUser?.data.username,
+                action: "Logout",
+                is_success: true,
+                os: os,
+                message: "Auto-logout due to inactivity.",
+              });
+            }
+
             localStorage.removeItem("accessToken");
             setTimeout(() => {
               notifications.show({
@@ -52,7 +66,17 @@ function RootComponent() {
               navigate({ to: "/login", replace: true });
             }, 500);
           },
-          onError() {
+          onError: async () => {
+            if (isSuccessUser) {
+              await createActivityLog({
+                username: dataUser?.data.username,
+                action: "Logout",
+                is_success: false,
+                os: os,
+                message: "Failed to logout automatically.",
+              });
+            }
+
             notifications.show({
               title: "Logged Out Failed",
               message:

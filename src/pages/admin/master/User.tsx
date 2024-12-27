@@ -51,14 +51,22 @@ import { User } from "../../../types/user";
 import { formatDateTime } from "../../../utils/formatTime";
 import NoDataFound from "../../../components/table/NoDataFound";
 import { useSizes } from "../../../contexts/useGlobalSizes";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useOs } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { useDepartmentsInfinityQuery } from "../../../hooks/department";
 import { notifications } from "@mantine/notifications";
-import { useSendResetPassword, useSetTwoFactorAuth } from "../../../hooks/auth";
+import {
+  useSendResetPassword,
+  useSetTwoFactorAuth,
+  useUserInfoQuery,
+} from "../../../hooks/auth";
 import PageHeader from "../../../components/layouts/PageHeader";
 import { StateTable } from "../../../types/table";
 import { StateForm } from "../../../types/form";
+import { useRolePermissionQuery } from "../../../hooks/rolePermission";
+import { createActivityLog } from "../../../api/activityLog";
+import { AxiosError } from "axios";
+import { ApiResponse } from "../../../types/response";
 
 interface StateFilter {
   open: boolean;
@@ -214,6 +222,12 @@ const UserPage = () => {
 
   const { mutate: mutateChangePassword, isPending: isPendingChangePassword } =
     useChangePassword();
+
+  const os = useOs();
+  const { data: dataUser } = useUserInfoQuery();
+  const { data: dataRolePermission } = useRolePermissionQuery(
+    location.pathname
+  );
 
   const rows = useMemo(() => {
     if (!isSuccessUsers || !dataUsers?.data?.pagination.total_rows) return null;
@@ -384,7 +398,15 @@ const UserPage = () => {
 
     if (stateForm.action === "add") {
       mutateCreateUser(mapUsers, {
-        onSuccess(res) {
+        onSuccess: async (res) => {
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Create",
+            is_success: true,
+            os: os,
+            message: `${res?.message} (${mapUsers.name})`,
+          });
+
           notifications.show({
             title: "Created Successfully!",
             message: res.message,
@@ -394,11 +416,21 @@ const UserPage = () => {
           refetchUsers();
           closeFormUser();
         },
-        onError() {
+        onError: async (err) => {
+          const error = err as AxiosError<ApiResponse<null>>;
+          const res = error.response;
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Create",
+            is_success: false,
+            os: os,
+            message: `${res?.data.message} (${mapUsers.name})`,
+          });
+
           notifications.show({
             title: "Created Failed!",
             message:
-              "Please check again and make sure your username and email have never been used",
+              "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
             color: "red",
           });
 
@@ -417,7 +449,15 @@ const UserPage = () => {
           params: mapUsers,
         },
         {
-          onSuccess(res) {
+          onSuccess: async (res) => {
+            await createActivityLog({
+              username: dataUser?.data.username,
+              action: "Update",
+              is_success: true,
+              os: os,
+              message: `${res?.message} (${stateTable.selected?.name} ⮕ ${mapUsers.name})`,
+            });
+
             notifications.show({
               title: "Updated Successfully!",
               message: res.message,
@@ -428,11 +468,21 @@ const UserPage = () => {
             refetchUsers();
             closeFormUser();
           },
-          onError() {
+          onError: async (err) => {
+            const error = err as AxiosError<ApiResponse<null>>;
+            const res = error.response;
+            await createActivityLog({
+              username: dataUser?.data.username,
+              action: "Update",
+              is_success: false,
+              os: os,
+              message: `${res?.data.message} (${stateTable.selected?.name} ⮕ ${mapUsers.name})`,
+            });
+
             notifications.show({
               title: "Updated Failed!",
               message:
-                "Please check again and make sure your username and email have never been used",
+                "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
               color: "red",
             });
 
@@ -444,7 +494,15 @@ const UserPage = () => {
 
     if (stateForm.action === "delete") {
       mutateDeleteUser(stateTable.selected?.id!, {
-        onSuccess(res) {
+        onSuccess: async (res) => {
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Delete",
+            is_success: true,
+            os: os,
+            message: `${res?.message} (${stateTable.selected?.name})`,
+          });
+
           notifications.show({
             title: "Deleted Successfully!",
             message: res.message,
@@ -455,7 +513,17 @@ const UserPage = () => {
           refetchUsers();
           closeFormDelete();
         },
-        onError() {
+        onError: async (err) => {
+          const error = err as AxiosError<ApiResponse<null>>;
+          const res = error.response;
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Delete",
+            is_success: false,
+            os: os,
+            message: `${res?.data.message} (${stateTable.selected?.name}) `,
+          });
+
           notifications.show({
             title: "Deleted Failed!",
             message:
@@ -768,17 +836,29 @@ const UserPage = () => {
       >
         <Button.Group>
           {[
-            { icon: IconPlus, label: "Add", onClick: () => handleAddData() },
-            { icon: IconEdit, label: "Edit", onClick: () => handleEditData() },
+            {
+              icon: IconPlus,
+              label: "Add",
+              onClick: () => handleAddData(),
+              access: dataRolePermission?.data.is_create,
+            },
+            {
+              icon: IconEdit,
+              label: "Edit",
+              onClick: () => handleEditData(),
+              access: dataRolePermission?.data.is_update,
+            },
             {
               icon: IconTrash,
               label: "Delete",
               onClick: () => handleDeleteData(),
+              access: dataRolePermission?.data.is_delete,
             },
             {
               icon: IconBinoculars,
               label: "View",
               onClick: () => handleViewData(),
+              access: true,
             },
           ].map((btn, idx) => (
             <Button
@@ -788,79 +868,82 @@ const UserPage = () => {
               fullWidth={fullWidth}
               size={sizeButton}
               onClick={btn.onClick}
+              style={{ display: btn.access ? "block" : "none" }}
             >
               {btn.label}
             </Button>
           ))}
-          <Menu
-            transitionProps={{ transition: "pop" }}
-            position="bottom-end"
-            withinPortal
-          >
-            <Menu.Target>
-              <Button justify="center" variant="default" size={sizeButton}>
-                <IconDotsVertical size={sizeActionButton} />
-              </Button>
-            </Menu.Target>
-            <Menu.Dropdown>
-              {[
-                {
-                  icon: IconUserCheck,
-                  label: "Activate User",
-                  onClick: () => handleActiveUser(),
-                },
-                {
-                  icon: IconUserX,
-                  label: "Inactivate User",
-                  onClick: () => handleInactiveUser(),
-                },
-                {
-                  icon: IconShieldCheck,
-                  label: "Activate 2FA",
-                  onClick: () => handleActiveTwoFA(),
-                },
-                {
-                  icon: IconShieldX,
-                  label: "Inactivate 2FA",
-                  onClick: () => handleInactiveTwoFA(),
-                },
-                {
-                  icon: IconPasswordUser,
-                  label: "Reset Password",
-                  onClick: () => handleResetPassword(),
-                },
-                {
-                  icon: IconKey,
-                  label: "Change Password",
-                  onClick: () => {
-                    if (!stateTable.selected) {
-                      notifications.show({
-                        title: "Select Data First!",
-                        message:
-                          "Please select the data you want to process before proceeding",
-                      });
-                      return;
-                    }
-
-                    openFormChangePassword();
+          {dataRolePermission?.data.is_update && (
+            <Menu
+              transitionProps={{ transition: "pop" }}
+              position="bottom-end"
+              withinPortal
+            >
+              <Menu.Target>
+                <Button justify="center" variant="default" size={sizeButton}>
+                  <IconDotsVertical size={sizeActionButton} />
+                </Button>
+              </Menu.Target>
+              <Menu.Dropdown>
+                {[
+                  {
+                    icon: IconUserCheck,
+                    label: "Activate User",
+                    onClick: () => handleActiveUser(),
                   },
-                },
-              ].map((item, idx) => (
-                <Menu.Item
-                  key={idx}
-                  leftSection={
-                    <item.icon
-                      style={{ width: rem(16), height: rem(16) }}
-                      stroke={1.5}
-                    />
-                  }
-                  onClick={item.onClick}
-                >
-                  <Text size={size}>{item.label}</Text>
-                </Menu.Item>
-              ))}
-            </Menu.Dropdown>
-          </Menu>
+                  {
+                    icon: IconUserX,
+                    label: "Inactivate User",
+                    onClick: () => handleInactiveUser(),
+                  },
+                  {
+                    icon: IconShieldCheck,
+                    label: "Activate 2FA",
+                    onClick: () => handleActiveTwoFA(),
+                  },
+                  {
+                    icon: IconShieldX,
+                    label: "Inactivate 2FA",
+                    onClick: () => handleInactiveTwoFA(),
+                  },
+                  {
+                    icon: IconPasswordUser,
+                    label: "Reset Password",
+                    onClick: () => handleResetPassword(),
+                  },
+                  {
+                    icon: IconKey,
+                    label: "Change Password",
+                    onClick: () => {
+                      if (!stateTable.selected) {
+                        notifications.show({
+                          title: "Select Data First!",
+                          message:
+                            "Please select the data you want to process before proceeding",
+                        });
+                        return;
+                      }
+
+                      openFormChangePassword();
+                    },
+                  },
+                ].map((item, idx) => (
+                  <Menu.Item
+                    key={idx}
+                    leftSection={
+                      <item.icon
+                        style={{ width: rem(16), height: rem(16) }}
+                        stroke={1.5}
+                      />
+                    }
+                    onClick={item.onClick}
+                  >
+                    <Text size={size}>{item.label}</Text>
+                  </Menu.Item>
+                ))}
+              </Menu.Dropdown>
+            </Menu>
+          )}
         </Button.Group>
         <Flex gap={5}>
           <Input

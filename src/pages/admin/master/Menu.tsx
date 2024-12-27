@@ -21,7 +21,7 @@ import {
 } from "@mantine/core";
 import PageHeader from "../../../components/layouts/PageHeader";
 import { useSizes } from "../../../contexts/useGlobalSizes";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useOs } from "@mantine/hooks";
 import { useMemo, useState } from "react";
 import { StateTable } from "../../../types/table";
 import { Menu } from "../../../types/menu";
@@ -48,6 +48,11 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { StateForm } from "../../../types/form";
+import { useUserInfoQuery } from "../../../hooks/auth";
+import { useRolePermissionQuery } from "../../../hooks/rolePermission";
+import { createActivityLog } from "../../../api/activityLog";
+import { AxiosError } from "axios";
+import { ApiResponse } from "../../../types/response";
 
 interface StateFilter {
   search: string;
@@ -140,6 +145,12 @@ const MenuPage = () => {
 
   const { mutate: mutateDeleteMenu, isPending: isPendingMutateDeleteMenu } =
     useDeleteMenu();
+
+  const os = useOs();
+  const { data: dataUser } = useUserInfoQuery();
+  const { data: dataRolePermission } = useRolePermissionQuery(
+    location.pathname
+  );
 
   const rows = useMemo(() => {
     if (!isSuccessMenus || !dataMenus?.data?.pagination.total_rows) return null;
@@ -269,7 +280,15 @@ const MenuPage = () => {
 
     if (stateForm.action === "add") {
       mutateCreateMenu(mapMenu, {
-        onSuccess(res) {
+        onSuccess: async (res) => {
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Create",
+            is_success: true,
+            os: os,
+            message: `${res?.message} (${mapMenu.path})`,
+          });
+
           notifications.show({
             title: "Created Successfully!",
             message: res.message,
@@ -279,7 +298,17 @@ const MenuPage = () => {
           refetchMenus();
           closeFormMenu();
         },
-        onError() {
+        onError: async (err) => {
+          const error = err as AxiosError<ApiResponse<null>>;
+          const res = error.response;
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Create",
+            is_success: false,
+            os: os,
+            message: `${res?.data.message} (${mapMenu.path})`,
+          });
+
           notifications.show({
             title: "Created Failed!",
             message:
@@ -299,7 +328,15 @@ const MenuPage = () => {
           params: mapMenu,
         },
         {
-          onSuccess(res) {
+          onSuccess: async (res) => {
+            await createActivityLog({
+              username: dataUser?.data.username,
+              action: "Update",
+              is_success: true,
+              os: os,
+              message: `${res?.message} (${stateTable.selected?.path} ⮕ ${mapMenu.path})`,
+            });
+
             notifications.show({
               title: "Updated Successfully!",
               message: res.message,
@@ -310,7 +347,17 @@ const MenuPage = () => {
             refetchMenus();
             closeFormMenu();
           },
-          onError() {
+          onError: async (err) => {
+            const error = err as AxiosError<ApiResponse<null>>;
+            const res = error.response;
+            await createActivityLog({
+              username: dataUser?.data.username,
+              action: "Update",
+              is_success: false,
+              os: os,
+              message: `${res?.data.message} (${stateTable.selected?.path} ⮕ ${mapMenu.path})`,
+            });
+
             notifications.show({
               title: "Updated Failed!",
               message:
@@ -326,7 +373,15 @@ const MenuPage = () => {
 
     if (stateForm.action === "delete") {
       mutateDeleteMenu(stateTable.selected?.id!, {
-        onSuccess(res) {
+        onSuccess: async (res) => {
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Delete",
+            is_success: true,
+            os: os,
+            message: `${res?.message} (${stateTable.selected?.path})`,
+          });
+
           notifications.show({
             title: "Deleted Successfully!",
             message: res.message,
@@ -337,7 +392,17 @@ const MenuPage = () => {
           refetchMenus();
           closeFormDelete();
         },
-        onError() {
+        onError: async (err) => {
+          const error = err as AxiosError<ApiResponse<null>>;
+          const res = error.response;
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Delete",
+            is_success: false,
+            os: os,
+            message: `${res?.data.message} (${stateTable.selected?.path}) `,
+          });
+
           notifications.show({
             title: "Deleted Failed!",
             message:
@@ -461,17 +526,29 @@ const MenuPage = () => {
       >
         <Button.Group>
           {[
-            { icon: IconPlus, label: "Add", onClick: () => handleAddData() },
-            { icon: IconEdit, label: "Edit", onClick: () => handleEditData() },
+            {
+              icon: IconPlus,
+              label: "Add",
+              onClick: () => handleAddData(),
+              access: dataRolePermission?.data.is_create,
+            },
+            {
+              icon: IconEdit,
+              label: "Edit",
+              onClick: () => handleEditData(),
+              access: dataRolePermission?.data.is_update,
+            },
             {
               icon: IconTrash,
               label: "Delete",
               onClick: () => handleDeleteData(),
+              access: dataRolePermission?.data.is_delete,
             },
             {
               icon: IconBinoculars,
               label: "View",
               onClick: () => handleViewData(),
+              access: true,
             },
           ].map((btn, idx) => (
             <Button
@@ -481,6 +558,7 @@ const MenuPage = () => {
               fullWidth={fullWidth}
               size={sizeButton}
               onClick={btn.onClick}
+              style={{ display: btn.access ? "block" : "none" }}
             >
               {btn.label}
             </Button>
@@ -655,9 +733,7 @@ const MenuPage = () => {
         centered
         closeOnClickOutside={false}
       >
-        <Text size={size}>
-          Are you sure you want to delete this department?
-        </Text>
+        <Text size={size}>Are you sure you want to delete this Menu?</Text>
         <Group justify="end" gap={5} mt="md">
           <Button
             leftSection={<IconX size={16} />}
