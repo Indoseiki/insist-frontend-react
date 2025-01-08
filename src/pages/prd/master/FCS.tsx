@@ -11,7 +11,6 @@ import {
   Loader,
   Modal,
   ScrollArea,
-  Select,
   Stack,
   Table,
   Text,
