@@ -16,15 +16,22 @@ const useBuildingsQuery = (params: BuildingParams) => {
   });
 };
 
-const useBuildingsInfinityQuery = ({ search }: { search: string }) => {
+const useBuildingsInfinityQuery = ({
+  search,
+  id_fcs,
+}: {
+  search: string;
+  id_fcs: number;
+}) => {
   return useInfiniteQuery<ApiResponse<Result<Building[]>>, Error>({
-    queryKey: ["InfinityBuildings", search],
+    queryKey: ["InfinityBuildings", search, id_fcs],
     queryFn: ({ pageParam }: { pageParam?: unknown }) => {
       const page = pageParam as number;
       return getBuildings({
         page,
         rows: "10",
         search,
+        idFCS: id_fcs,
       });
     },
     getNextPageParam: (lastPage) => {

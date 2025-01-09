@@ -145,6 +145,7 @@ const FCSPage = () => {
     isFetchingNextPage: isFetchingNextPageSelectBuildings,
   } = useBuildingsInfinityQuery({
     search: stateForm.searchBuilding,
+    id_fcs: 0,
   });
 
   const flatDataSelectBuildings =

@@ -1,10 +1,13 @@
+import { Building } from "./building";
+import { Section } from "./section";
 import { User } from "./user";
 
-export interface Building {
+export interface SubSection {
   id: number;
+  id_section: number;
+  id_building: number;
   code?: string;
   description?: string;
-  plant?: string;
   remarks?: string;
   id_createdby?: number;
   id_updatedby?: number;
@@ -13,20 +16,23 @@ export interface Building {
 
   created_by?: User;
   updated_by?: User;
+
+  section?: Section;
+  building?: Building;
 }
 
-export interface BuildingParams {
+export interface SubSectionParams {
   page: number;
   rows: string;
-  idFCS?: number;
   search?: string;
   sortBy?: string | null;
   sortDirection?: boolean;
 }
 
-export interface BuildingRequest {
+export interface SubSectionRequest {
+  id_section: number;
+  id_building: number;
   code?: string;
   description?: string;
-  plant?: string;
   remarks?: string;
 }

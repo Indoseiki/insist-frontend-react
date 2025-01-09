@@ -610,7 +610,7 @@ const SectionPage = () => {
         centered
         closeOnClickOutside={false}
       >
-        <Text size={size}>Are you sure you want to delete this building?</Text>
+        <Text size={size}>Are you sure you want to delete this section?</Text>
         <Group justify="end" gap={5} mt="md">
           <Button
             leftSection={<IconX size={16} />}
