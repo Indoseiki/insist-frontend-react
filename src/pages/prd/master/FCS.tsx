@@ -1,4 +1,5 @@
 import {
+  Accordion,
   Button,
   Center,
   CheckIcon,
@@ -7,9 +8,13 @@ import {
   Flex,
   Group,
   Input,
-  InputBase,
+  List,
   Loader,
+  Menu,
   Modal,
+  Pill,
+  PillsInput,
+  rem,
   ScrollArea,
   Stack,
   Table,
@@ -23,6 +28,7 @@ import PageHeader from "../../../components/layouts/PageHeader";
 import {
   IconBinoculars,
   IconDeviceFloppy,
+  IconDotsVertical,
   IconEdit,
   IconPlus,
   IconSearch,
@@ -32,12 +38,7 @@ import {
 import { useSizes } from "../../../contexts/useGlobalSizes";
 import { useMemo, useState } from "react";
 import { FCS } from "../../../types/fcs";
-import {
-  useCreateFCS,
-  useDeleteFCS,
-  useFCSsQuery,
-  useUpdateFCS,
-} from "../../../hooks/fcs";
+import { useCreateFCS, useDeleteFCS, useUpdateFCS } from "../../../hooks/fcs";
 import { formatDateTime } from "../../../utils/formatTime";
 import TableScrollable from "../../../components/table/TableScrollable";
 import TableFooter from "../../../components/table/TableFooter";
@@ -53,24 +54,34 @@ import { AxiosError } from "axios";
 import { ApiResponse } from "../../../types/response";
 import { createActivityLog } from "../../../api/activityLog";
 import { useBuildingsInfinityQuery } from "../../../hooks/building";
+import {
+  useFCSBuildingsQuery,
+  useUpdateFCSBuilding,
+} from "../../../hooks/fcsBuilding";
 
 interface StateFilter {
   search: string;
 }
 
 interface FormValues {
-  id_building: string;
   code: string;
   description: string;
   remarks: string;
 }
 
-interface StateFormBuilding extends StateForm {
-  building: string;
+interface FormValuesBuilding {
+  fcs: string;
+  id_building: string[];
+}
+
+interface StateFormFCSBuilding extends StateForm {
+  building: string[];
+  searchBuilding: string;
 }
 
 const FCSPage = () => {
-  const { size, sizeButton, fullWidth, heightDropdown } = useSizes();
+  const { size, sizeButton, fullWidth, heightDropdown, sizeActionButton } =
+    useSizes();
 
   const { colorScheme } = useMantineColorScheme();
 
@@ -78,6 +89,10 @@ const FCSPage = () => {
     useDisclosure(false);
   const [openedFormDelete, { open: openFormDelete, close: closeFormDelete }] =
     useDisclosure(false);
+  const [
+    openedFormSetupBuilding,
+    { open: openFormSetupBuilding, close: closeFormSetupBuilding },
+  ] = useDisclosure(false);
 
   const [stateTable, setStateTable] = useState<StateTable<FCS>>({
     activePage: 1,
@@ -91,10 +106,11 @@ const FCSPage = () => {
     search: "",
   });
 
-  const [stateForm, setStateForm] = useState<StateFormBuilding>({
+  const [stateForm, setStateForm] = useState<StateFormFCSBuilding>({
     title: "",
     action: "",
-    building: "",
+    building: [],
+    searchBuilding: "",
   });
 
   const updateStateTable = (newState: Partial<StateTable<FCS>>) =>
@@ -103,7 +119,7 @@ const FCSPage = () => {
   const updateStateFilter = (newState: Partial<StateFilter>) =>
     setStateFilter((prev) => ({ ...prev, ...newState }));
 
-  const updateStateForm = (newState: Partial<StateFormBuilding>) =>
+  const updateStateForm = (newState: Partial<StateFormFCSBuilding>) =>
     setStateForm((prev) => ({ ...prev, ...newState }));
 
   const handleClickRow = (row: FCS) => updateStateTable({ selected: row });
@@ -113,7 +129,7 @@ const FCSPage = () => {
     isSuccess: isSuccessFCSs,
     isLoading: isLoadingFCSs,
     refetch: refetchFCSs,
-  } = useFCSsQuery({
+  } = useFCSBuildingsQuery({
     page: stateTable.activePage,
     rows: stateTable.rowsPerPage,
     search: stateFilter.search,
@@ -128,7 +144,7 @@ const FCSPage = () => {
     hasNextPage: hasNextPageSelectBuildings,
     isFetchingNextPage: isFetchingNextPageSelectBuildings,
   } = useBuildingsInfinityQuery({
-    search: stateForm.building,
+    search: stateForm.searchBuilding,
   });
 
   const flatDataSelectBuildings =
@@ -147,6 +163,11 @@ const FCSPage = () => {
   const { mutate: mutateDeleteFCS, isPending: isPendingMutateDeleteFCS } =
     useDeleteFCS();
 
+  const {
+    mutate: mutateUpdateFCSBuilding,
+    isPending: isPendingMutateUpdateFCSBuilding,
+  } = useUpdateFCSBuilding();
+
   const os = useOs();
   const { data: dataUser } = useUserInfoQuery();
   const { data: dataFCSPermission } = useRolePermissionQuery(location.pathname);
@@ -162,6 +183,32 @@ const FCSPage = () => {
           : "#2e2e2e"
         : undefined;
 
+      const buildings = (
+        <List>
+          {row.buildings?.map((item, index) => (
+            <List.Item key={index}>
+              <Group gap={5}>
+                <Text fz={size} fw="bold">
+                  {item.building?.code}
+                </Text>
+                <Text fz={size}>-</Text>
+                <Text fz={size}>{item.building?.description}</Text>
+                <Text fz={size}>({item.building?.plant})</Text>
+              </Group>
+            </List.Item>
+          ))}
+        </List>
+      );
+
+      const items = (
+        <Accordion.Item value={row.id.toString()}>
+          <Accordion.Control>
+            <Text size={size}>List Building</Text>
+          </Accordion.Control>
+          <Accordion.Panel>{buildings}</Accordion.Panel>
+        </Accordion.Item>
+      );
+
       return (
         <Table.Tr
           key={row.id}
@@ -171,9 +218,14 @@ const FCSPage = () => {
         >
           <Table.Td>{row.code}</Table.Td>
           <Table.Td>{row.description}</Table.Td>
-          <Table.Td>{row.building?.description}</Table.Td>
-          <Table.Td>{row.building?.plant}</Table.Td>
           <Table.Td>{row.remarks}</Table.Td>
+          <Table.Td w={400}>
+            {row.buildings && (
+              <Accordion variant="separated" chevronPosition="left">
+                {items}
+              </Accordion>
+            )}
+          </Table.Td>
           <Table.Td w="150px">{row.updated_by?.name}</Table.Td>
           <Table.Td w="150px">{formatDateTime(row.updated_at)}</Table.Td>
         </Table.Tr>
@@ -184,15 +236,12 @@ const FCSPage = () => {
   const formFCS = useForm<FormValues>({
     mode: "uncontrolled",
     initialValues: {
-      id_building: "",
       code: "",
       description: "",
       remarks: "",
     },
 
     validate: {
-      id_building: (value) =>
-        value.length === 0 ? "Building is required" : null,
       code: (value) => (value.length === 0 ? "Code is required" : null),
     },
   });
@@ -200,7 +249,7 @@ const FCSPage = () => {
   const handleAddData = () => {
     formFCS.clearErrors();
     formFCS.reset();
-    updateStateForm({ title: "Add Data", action: "add", building: "" });
+    updateStateForm({ title: "Add Data", action: "add" });
     openFormFCS();
   };
 
@@ -218,11 +267,9 @@ const FCSPage = () => {
     updateStateForm({
       title: "Edit Data",
       action: "edit",
-      building: stateTable.selected.building?.code,
     });
 
     formFCS.setValues({
-      id_building: stateTable.selected.id_building?.toString(),
       code: stateTable.selected.code,
       description: stateTable.selected.description,
       remarks: stateTable.selected.remarks,
@@ -251,11 +298,9 @@ const FCSPage = () => {
     updateStateForm({
       title: "View Data",
       action: "view",
-      building: stateTable.selected.building?.code,
     });
 
     formFCS.setValues({
-      id_building: stateTable.selected.id_building?.toString(),
       code: stateTable.selected.code,
       description: stateTable.selected.description,
       remarks: stateTable.selected.remarks,
@@ -267,13 +312,8 @@ const FCSPage = () => {
   const handleSubmitForm = () => {
     const dataFCS = formFCS.getValues();
 
-    let mapFCS = {
-      ...dataFCS,
-      id_building: parseInt(dataFCS.id_building),
-    };
-
     if (stateForm.action === "add") {
-      mutateCreateFCS(mapFCS, {
+      mutateCreateFCS(dataFCS, {
         onSuccess: async (res) => {
           await createActivityLog({
             username: dataUser?.data.username,
@@ -319,7 +359,7 @@ const FCSPage = () => {
       mutateUpdateFCS(
         {
           id: stateTable.selected?.id!,
-          params: mapFCS,
+          params: dataFCS,
         },
         {
           onSuccess: async (res) => {
@@ -408,6 +448,60 @@ const FCSPage = () => {
         },
       });
     }
+
+    if (stateForm.action === "setup") {
+      const dataFCSBuilding = formFCSBuilding.getValues();
+
+      mutateUpdateFCSBuilding(
+        {
+          id: stateTable.selected?.id!,
+          params: {
+            id_building: dataFCSBuilding.id_building.map((id) => parseInt(id)),
+          },
+        },
+        {
+          onSuccess: async (res) => {
+            await createActivityLog({
+              username: dataUser?.data.username,
+              action: "Update",
+              is_success: true,
+              os: os,
+              message: `${res?.message} (${stateTable.selected?.code})`,
+            });
+
+            notifications.show({
+              title: "Created Successfully!",
+              message: res.message,
+              color: "green",
+            });
+
+            updateStateTable({ selected: null });
+            refetchFCSs();
+            closeFormSetupBuilding();
+          },
+          onError: async (err) => {
+            const error = err as AxiosError<ApiResponse<null>>;
+            const res = error.response;
+            await createActivityLog({
+              username: dataUser?.data.username,
+              action: "Update",
+              is_success: false,
+              os: os,
+              message: `${res?.data.message} (${stateTable.selected?.code}) `,
+            });
+
+            notifications.show({
+              title: "Created Failed!",
+              message:
+                "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
+              color: "red",
+            });
+
+            closeFormSetupBuilding();
+          },
+        }
+      );
+    }
   };
 
   const handleCloseFormFCS = () => {
@@ -420,94 +514,163 @@ const FCSPage = () => {
     formFCS.reset();
   };
 
-  const comboboxBuilding = useCombobox({
-    onDropdownClose: () => comboboxBuilding.resetSelectedOption(),
-    onDropdownOpen: (eventSource) => {
-      if (eventSource === "keyboard") {
-        comboboxBuilding.selectActiveOption();
-      } else {
-        comboboxBuilding.updateSelectedOptionIndex("active");
-      }
+  const formFCSBuilding = useForm<FormValuesBuilding>({
+    mode: "uncontrolled",
+    initialValues: {
+      fcs: "",
+      id_building: [],
+    },
+
+    validate: {
+      id_building: (value) => {
+        return value.length == 0 ? "Building is required" : null;
+      },
     },
   });
 
-  const optionsBuilding = flatDataSelectBuildings.map((item) => {
-    return (
-      <Combobox.Option
-        value={item.id.toString()}
-        key={item.id}
-        active={item.id.toString() === formFCS.getValues().id_building}
-        onClick={() => {
-          formFCS.setFieldValue("id_building", item.id.toString());
-          updateStateForm({ building: item.code });
-          comboboxBuilding.resetSelectedOption();
-        }}
-      >
-        <Group gap="xs">
-          {item.id.toString() === formFCS.getValues().id_building && (
-            <CheckIcon size={12} />
-          )}
-          <Stack gap={5}>
-            <table style={{ width: "100%", border: "none" }}>
-              <tbody>
-                <tr>
-                  <td>
-                    <Text fz={size} fw="bold">
-                      Code
-                    </Text>
-                  </td>
-                  <td
-                    style={{
-                      padding: "4px",
-                    }}
-                  >
-                    :
-                  </td>
-                  <td>
-                    <Text fz={size}>{item.code}</Text>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <Text fz={size} fw="bold">
-                      Description
-                    </Text>
-                  </td>
-                  <td
-                    style={{
-                      padding: "4px",
-                    }}
-                  >
-                    :
-                  </td>
-                  <td>
-                    <Text fz={size}>{item.description}</Text>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <Text fz={size} fw="bold">
-                      Plant
-                    </Text>
-                  </td>
-                  <td
-                    style={{
-                      padding: "4px",
-                    }}
-                  >
-                    :
-                  </td>
-                  <td>
-                    <Text fz={size}>{item.plant}</Text>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </Stack>
-        </Group>
-      </Combobox.Option>
-    );
+  const handleSetupBuilding = () => {
+    formFCSBuilding.clearErrors();
+    formFCSBuilding.reset();
+
+    if (!stateTable.selected) {
+      notifications.show({
+        title: "Select Data First!",
+        message: "Please select the data you want to process before proceeding",
+      });
+      return;
+    }
+
+    const buildings = stateTable.selected.buildings
+      ?.map((item) => item.building?.description)
+      .filter((building): building is string => building !== undefined);
+
+    updateStateForm({
+      title: "Setup Building",
+      action: "setup",
+      building: buildings,
+    });
+
+    formFCSBuilding.setValues({
+      fcs: stateTable.selected.code,
+      id_building:
+        stateTable.selected.buildings
+          ?.map((item) => item.id_building?.toString())
+          .filter((id): id is string => id !== undefined) || [],
+    });
+
+    openFormSetupBuilding();
+  };
+
+  const handleCloseFormSetupBuilding = () => {
+    closeFormSetupBuilding();
+    formFCSBuilding.clearErrors();
+    formFCSBuilding.reset();
+  };
+
+  const comboboxBuilding = useCombobox({
+    onDropdownClose: () => comboboxBuilding.resetSelectedOption(),
+    onDropdownOpen: () => comboboxBuilding.updateSelectedOptionIndex("active"),
   });
+
+  const handleValueSelect = (val: string) => {
+    setStateForm((prev: StateFormFCSBuilding) => {
+      const currentBuildings = prev.building || [];
+      const updatedBuildings = currentBuildings.includes(val)
+        ? currentBuildings.filter((v) => v !== val)
+        : [...currentBuildings, val];
+
+      return { ...prev, building: updatedBuildings };
+    });
+  };
+
+  const Buildings =
+    Array.isArray(stateForm.building) &&
+    stateForm.building.map((item) => <Pill key={item}>{item}</Pill>);
+
+  const optionsBuilding = flatDataSelectBuildings.map((item) => (
+    <Combobox.Option
+      value={item.description!}
+      key={item.id}
+      active={
+        Array.isArray(formFCSBuilding.getValues().id_building) &&
+        formFCSBuilding.getValues().id_building.includes(item.id.toString())
+      }
+      onClick={() => {
+        formFCSBuilding.setFieldValue("id_building", (prev) => {
+          const currentBuildings = prev || [];
+          if (currentBuildings.includes(item.id.toString())) {
+            return currentBuildings.filter((v) => v !== item.id.toString());
+          } else {
+            return [...currentBuildings, item.id.toString()];
+          }
+        });
+      }}
+    >
+      <Group gap="sm">
+        {Array.isArray(formFCSBuilding.getValues().id_building) &&
+        formFCSBuilding.getValues().id_building.includes(item.id.toString()) ? (
+          <CheckIcon size={12} />
+        ) : null}
+        <Stack gap={5}>
+          <table style={{ width: "100%", border: "none" }}>
+            <tbody>
+              <tr>
+                <td>
+                  <Text fz={size} fw="bold">
+                    Code
+                  </Text>
+                </td>
+                <td
+                  style={{
+                    padding: "4px",
+                  }}
+                >
+                  :
+                </td>
+                <td>
+                  <Text fz={size}>{item.code}</Text>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <Text fz={size} fw="bold">
+                    Description
+                  </Text>
+                </td>
+                <td
+                  style={{
+                    padding: "4px",
+                  }}
+                >
+                  :
+                </td>
+                <td>
+                  <Text fz={size}>{item.description}</Text>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <Text fz={size} fw="bold">
+                    Plant
+                  </Text>
+                </td>
+                <td
+                  style={{
+                    padding: "4px",
+                  }}
+                >
+                  :
+                </td>
+                <td>
+                  <Text fz={size}>{item.plant}</Text>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </Stack>
+      </Group>
+    </Combobox.Option>
+  ));
 
   return (
     <Stack h="100%">
@@ -557,6 +720,39 @@ const FCSPage = () => {
               {btn.label}
             </Button>
           ))}
+          <Menu
+            transitionProps={{ transition: "pop" }}
+            position="bottom-end"
+            withinPortal
+          >
+            <Menu.Target>
+              <Button justify="center" variant="default" size={sizeButton}>
+                <IconDotsVertical size={sizeActionButton} />
+              </Button>
+            </Menu.Target>
+            <Menu.Dropdown>
+              {[
+                {
+                  icon: IconEdit,
+                  label: "Setup Building",
+                  onClick: () => handleSetupBuilding(),
+                },
+              ].map((item, idx) => (
+                <Menu.Item
+                  key={idx}
+                  leftSection={
+                    <item.icon
+                      style={{ width: rem(16), height: rem(16) }}
+                      stroke={1.5}
+                    />
+                  }
+                  onClick={item.onClick}
+                >
+                  <Text size={size}>{item.label}</Text>
+                </Menu.Item>
+              ))}
+            </Menu.Dropdown>
+          </Menu>
         </Button.Group>
         <Flex gap={5}>
           <Input
@@ -589,82 +785,6 @@ const FCSPage = () => {
       >
         <form onSubmit={formFCS.onSubmit(handleSubmitForm)}>
           <Stack gap={5}>
-            <Combobox
-              store={comboboxBuilding}
-              resetSelectionOnOptionHover
-              onOptionSubmit={() => {
-                comboboxBuilding.closeDropdown();
-                comboboxBuilding.updateSelectedOptionIndex("active");
-              }}
-            >
-              <Combobox.Target targetType="button">
-                <InputBase
-                  label="Building"
-                  component="button"
-                  type="button"
-                  pointer
-                  rightSection={
-                    stateForm.building ? (
-                      <CloseButton
-                        size={16}
-                        onClick={() => {
-                          formFCS.setFieldValue("id_building", "");
-                          updateStateForm({ building: "" });
-                        }}
-                        disabled={stateForm.action === "view"}
-                      />
-                    ) : (
-                      <Combobox.Chevron />
-                    )
-                  }
-                  rightSectionPointerEvents="all"
-                  onClick={() => comboboxBuilding.toggleDropdown()}
-                  key={formFCS.key("id_building")}
-                  size={size}
-                  disabled={stateForm.action === "view"}
-                  {...formFCS.getInputProps("id_building")}
-                >
-                  {stateForm.building || (
-                    <Input.Placeholder>Building</Input.Placeholder>
-                  )}
-                </InputBase>
-              </Combobox.Target>
-              <Combobox.Dropdown>
-                <Combobox.Search
-                  value={stateForm.building}
-                  onChange={(event) =>
-                    updateStateForm({ building: event.currentTarget.value })
-                  }
-                  placeholder="Search Building"
-                />
-                <Combobox.Options>
-                  <ScrollArea.Autosize
-                    type="scroll"
-                    mah={heightDropdown}
-                    onScrollPositionChange={(position) => {
-                      let maxY = 790;
-                      const dataCount = optionsBuilding.length;
-                      const multipleOf10 = Math.floor(dataCount / 10) * 10;
-                      if (position.y >= maxY) {
-                        maxY += Math.floor(multipleOf10 / 10) * 790;
-                        if (
-                          hasNextPageSelectBuildings &&
-                          !isFetchingNextPageSelectBuildings
-                        ) {
-                          fetchNextPageSelectBuildings();
-                        }
-                      }
-                    }}
-                  >
-                    {optionsBuilding.length > 0 ? (
-                      optionsBuilding
-                    ) : (
-                      <Combobox.Empty>Nothing found</Combobox.Empty>
-                    )}
-                  </ScrollArea.Autosize>
-                </Combobox.Options>
-              </Combobox.Dropdown>
-            </Combobox>
             <TextInput
               label="Code"
               placeholder="Code"
@@ -744,6 +864,129 @@ const FCSPage = () => {
           </Button>
         </Group>
       </Modal>
+      <Modal
+        opened={openedFormSetupBuilding}
+        onClose={closeFormSetupBuilding}
+        title={stateForm.title}
+        closeOnClickOutside={false}
+      >
+        <form onSubmit={formFCSBuilding.onSubmit(handleSubmitForm)}>
+          <Stack gap={5}>
+            <TextInput
+              label="FCS"
+              placeholder="FCS"
+              key={formFCSBuilding.key("fcs")}
+              size={size}
+              disabled={true}
+              {...formFCSBuilding.getInputProps("fcs")}
+            />
+            <Combobox
+              store={comboboxBuilding}
+              onOptionSubmit={handleValueSelect}
+            >
+              <Combobox.DropdownTarget>
+                <PillsInput
+                  label="Building"
+                  key={formFCSBuilding.key("id_building")}
+                  size={size}
+                  disabled={stateForm.action === "view"}
+                  {...formFCSBuilding.getInputProps("id_building")}
+                  rightSection={
+                    stateForm.building ? (
+                      <CloseButton
+                        size={16}
+                        onClick={() => {
+                          formFCSBuilding.setFieldValue("id_building", []);
+                          updateStateForm({ building: [] });
+                        }}
+                        disabled={stateForm.action === "view"}
+                      />
+                    ) : (
+                      <Combobox.Chevron />
+                    )
+                  }
+                  rightSectionPointerEvents="all"
+                >
+                  <Pill.Group>
+                    {stateForm.building && stateForm.building.length > 0 ? (
+                      Buildings
+                    ) : (
+                      <Input.Placeholder>Building</Input.Placeholder>
+                    )}
+                    <Combobox.EventsTarget>
+                      <PillsInput.Field
+                        component="button"
+                        pointer
+                        onClick={() => comboboxBuilding.toggleDropdown()}
+                        onChange={() => {
+                          comboboxBuilding.updateSelectedOptionIndex();
+                        }}
+                      />
+                    </Combobox.EventsTarget>
+                  </Pill.Group>
+                </PillsInput>
+              </Combobox.DropdownTarget>
+              <Combobox.Dropdown>
+                <Combobox.Search
+                  value={stateForm.searchBuilding}
+                  onChange={(event) =>
+                    updateStateForm({
+                      searchBuilding: event.currentTarget.value,
+                    })
+                  }
+                  placeholder="Search Building"
+                />
+                <Combobox.Options>
+                  <ScrollArea.Autosize
+                    type="scroll"
+                    mah={heightDropdown}
+                    onScrollPositionChange={(position) => {
+                      let maxY = 37;
+                      const dataCount = optionsBuilding.length;
+                      const multipleOf10 = Math.floor(dataCount / 10) * 10;
+                      if (position.y >= maxY) {
+                        maxY += Math.floor(multipleOf10 / 10) * 37;
+                        if (
+                          hasNextPageSelectBuildings &&
+                          !isFetchingNextPageSelectBuildings
+                        ) {
+                          fetchNextPageSelectBuildings();
+                        }
+                      }
+                    }}
+                  >
+                    {optionsBuilding.length > 0 ? (
+                      optionsBuilding
+                    ) : (
+                      <Combobox.Empty>Nothing found</Combobox.Empty>
+                    )}
+                  </ScrollArea.Autosize>
+                </Combobox.Options>
+              </Combobox.Dropdown>
+            </Combobox>
+          </Stack>
+          <Group justify="end" gap={5} mt="md">
+            <Button
+              leftSection={<IconX size={16} />}
+              variant="default"
+              size={sizeButton}
+              onClick={handleCloseFormSetupBuilding}
+            >
+              Close
+            </Button>
+            {stateForm.action !== "view" && (
+              <Button
+                leftSection={<IconDeviceFloppy size={16} />}
+                type="submit"
+                size={sizeButton}
+                loading={isPendingMutateUpdateFCSBuilding}
+              >
+                Save
+              </Button>
+            )}
+          </Group>
+        </form>
+      </Modal>
       {isLoadingFCSs && (
         <Center flex={1}>
           <Loader size={100} />
@@ -761,13 +1004,10 @@ const FCSPage = () => {
                   name: "Description",
                 },
                 {
-                  name: "Building",
-                },
-                {
-                  name: "Plant",
-                },
-                {
                   name: "Remarks",
+                },
+                {
+                  name: "Building",
                 },
                 {
                   name: "Updated By",

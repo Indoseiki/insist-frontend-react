@@ -133,8 +133,8 @@ const UserRolePage = () => {
   }, [flatDataSelectRoles]);
 
   const {
-    mutate: mutateCreateUserRole,
-    isPending: isPendingMutateCreateUserRole,
+    mutate: mutateUpdateUserRole,
+    isPending: isPendingMutateUpdateUserRole,
   } = useUpdateUserRole();
 
   const rows = useMemo(() => {
@@ -247,7 +247,7 @@ const UserRolePage = () => {
   const handleSubmitForm = () => {
     const dataUserRole = formUserRole.getValues();
 
-    mutateCreateUserRole(
+    mutateUpdateUserRole(
       {
         id: stateTable.selected?.id!,
         params: {
@@ -502,7 +502,7 @@ const UserRolePage = () => {
                 leftSection={<IconDeviceFloppy size={16} />}
                 type="submit"
                 size={sizeButton}
-                loading={isPendingMutateCreateUserRole}
+                loading={isPendingMutateUpdateUserRole}
               >
                 Save
               </Button>

@@ -1,9 +1,8 @@
-import { Building } from "./building";
+import { FCSBuilding } from "./fcsBuilding";
 import { User } from "./user";
 
 export interface FCS {
   id: number;
-  id_building?: number;
   code?: string;
   description?: string;
   remarks?: string;
@@ -15,7 +14,7 @@ export interface FCS {
   created_by?: User;
   updated_by?: User;
 
-  building?: Building;
+  buildings?: FCSBuilding[];
 }
 
 export interface FCSParams {
@@ -27,7 +26,6 @@ export interface FCSParams {
 }
 
 export interface FCSRequest {
-  id_building?: number;
   code?: string;
   description?: string;
   remarks?: string;
