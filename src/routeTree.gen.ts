@@ -20,6 +20,7 @@ import { Route as AuthenticatedAdminRolePermissionImport } from './routes/_authe
 import { Route as AuthenticatedAdminRoleMenuImport } from './routes/_authenticated/admin/role-menu'
 import { Route as AuthenticatedAdminApprovalStructureImport } from './routes/_authenticated/admin/approval-structure'
 import { Route as AuthenticatedAdminActivityLogImport } from './routes/_authenticated/admin/activity-log'
+import { Route as AuthenticatedPrdMasterSectionImport } from './routes/_authenticated/prd/master/section'
 import { Route as AuthenticatedPrdMasterFcsImport } from './routes/_authenticated/prd/master/fcs'
 import { Route as AuthenticatedPrdMasterBuildingImport } from './routes/_authenticated/prd/master/building'
 import { Route as AuthenticatedAdminMasterUserImport } from './routes/_authenticated/admin/master/user'
@@ -89,6 +90,13 @@ const AuthenticatedAdminActivityLogRoute =
   AuthenticatedAdminActivityLogImport.update({
     id: '/admin/activity-log',
     path: '/admin/activity-log',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+
+const AuthenticatedPrdMasterSectionRoute =
+  AuthenticatedPrdMasterSectionImport.update({
+    id: '/prd/master/section',
+    path: '/prd/master/section',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
@@ -284,6 +292,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPrdMasterFcsImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/_authenticated/prd/master/section': {
+      id: '/_authenticated/prd/master/section'
+      path: '/prd/master/section'
+      fullPath: '/prd/master/section'
+      preLoaderRoute: typeof AuthenticatedPrdMasterSectionImport
+      parentRoute: typeof AuthenticatedImport
+    }
   }
 }
 
@@ -305,6 +320,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminMasterUserRoute: typeof AuthenticatedAdminMasterUserRoute
   AuthenticatedPrdMasterBuildingRoute: typeof AuthenticatedPrdMasterBuildingRoute
   AuthenticatedPrdMasterFcsRoute: typeof AuthenticatedPrdMasterFcsRoute
+  AuthenticatedPrdMasterSectionRoute: typeof AuthenticatedPrdMasterSectionRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -325,6 +341,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminMasterUserRoute: AuthenticatedAdminMasterUserRoute,
   AuthenticatedPrdMasterBuildingRoute: AuthenticatedPrdMasterBuildingRoute,
   AuthenticatedPrdMasterFcsRoute: AuthenticatedPrdMasterFcsRoute,
+  AuthenticatedPrdMasterSectionRoute: AuthenticatedPrdMasterSectionRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -350,6 +367,7 @@ export interface FileRoutesByFullPath {
   '/admin/master/user': typeof AuthenticatedAdminMasterUserRoute
   '/prd/master/building': typeof AuthenticatedPrdMasterBuildingRoute
   '/prd/master/fcs': typeof AuthenticatedPrdMasterFcsRoute
+  '/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
 }
 
 export interface FileRoutesByTo {
@@ -370,6 +388,7 @@ export interface FileRoutesByTo {
   '/admin/master/user': typeof AuthenticatedAdminMasterUserRoute
   '/prd/master/building': typeof AuthenticatedPrdMasterBuildingRoute
   '/prd/master/fcs': typeof AuthenticatedPrdMasterFcsRoute
+  '/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
 }
 
 export interface FileRoutesById {
@@ -392,6 +411,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/master/user': typeof AuthenticatedAdminMasterUserRoute
   '/_authenticated/prd/master/building': typeof AuthenticatedPrdMasterBuildingRoute
   '/_authenticated/prd/master/fcs': typeof AuthenticatedPrdMasterFcsRoute
+  '/_authenticated/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
 }
 
 export interface FileRouteTypes {
@@ -415,6 +435,7 @@ export interface FileRouteTypes {
     | '/admin/master/user'
     | '/prd/master/building'
     | '/prd/master/fcs'
+    | '/prd/master/section'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -434,6 +455,7 @@ export interface FileRouteTypes {
     | '/admin/master/user'
     | '/prd/master/building'
     | '/prd/master/fcs'
+    | '/prd/master/section'
   id:
     | '__root__'
     | '/_authenticated'
@@ -454,6 +476,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/master/user'
     | '/_authenticated/prd/master/building'
     | '/_authenticated/prd/master/fcs'
+    | '/_authenticated/prd/master/section'
   fileRoutesById: FileRoutesById
 }
 
@@ -501,7 +524,8 @@ export const routeTree = rootRoute
         "/_authenticated/admin/master/role",
         "/_authenticated/admin/master/user",
         "/_authenticated/prd/master/building",
-        "/_authenticated/prd/master/fcs"
+        "/_authenticated/prd/master/fcs",
+        "/_authenticated/prd/master/section"
       ]
     },
     "/login": {
@@ -568,6 +592,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/prd/master/fcs": {
       "filePath": "_authenticated/prd/master/fcs.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/prd/master/section": {
+      "filePath": "_authenticated/prd/master/section.tsx",
       "parent": "/_authenticated"
     }
   }
