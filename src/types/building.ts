@@ -19,6 +19,7 @@ export interface BuildingParams {
   page: number;
   rows: string;
   idFCS?: number;
+  plant?: string;
   search?: string;
   sortBy?: string | null;
   sortDirection?: boolean;

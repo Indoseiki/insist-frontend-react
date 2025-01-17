@@ -1,4 +1,5 @@
 import {
+  ActionIcon,
   Button,
   Center,
   CloseButton,
@@ -6,7 +7,9 @@ import {
   Group,
   Input,
   Loader,
+  Menu,
   Modal,
+  rem,
   Select,
   Stack,
   Table,
@@ -20,6 +23,7 @@ import {
   IconBinoculars,
   IconDeviceFloppy,
   IconEdit,
+  IconFilter,
   IconPlus,
   IconSearch,
   IconTrash,
@@ -50,7 +54,9 @@ import { ApiResponse } from "../../../types/response";
 import { createActivityLog } from "../../../api/activityLog";
 
 interface StateFilter {
+  open: boolean;
   search: string;
+  plant: string;
 }
 
 interface FormValues {
@@ -81,7 +87,9 @@ const BuildingPage = () => {
   });
 
   const [stateFilter, setStateFilter] = useState<StateFilter>({
+    open: false,
     search: "",
+    plant: "",
   });
 
   const [stateForm, setStateForm] = useState<StateForm>({
@@ -109,6 +117,7 @@ const BuildingPage = () => {
     page: stateTable.activePage,
     rows: stateTable.rowsPerPage,
     search: stateFilter.search,
+    plant: stateFilter.plant,
     sortBy: stateTable.sortBy,
     sortDirection: stateTable.sortDirection,
   });
@@ -475,6 +484,51 @@ const BuildingPage = () => {
               />
             }
           />
+          <Menu
+            shadow="md"
+            closeOnClickOutside={false}
+            opened={stateFilter.open}
+            onChange={(isOpen) => updateStateFilter({ open: isOpen })}
+          >
+            <Menu.Target>
+              <ActionIcon variant="filled">
+                <IconFilter
+                  style={{ width: rem(16), height: rem(16) }}
+                  stroke={1.5}
+                  onClick={() => updateStateFilter({ open: !stateFilter.open })}
+                />
+              </ActionIcon>
+            </Menu.Target>
+            <Menu.Dropdown p={15} w="fit-content">
+              <Text mb={5}>Filter</Text>
+              <Select
+                label="Plant"
+                placeholder="Plant"
+                data={["PLANT 1", "PLANT 2"]}
+                size={size}
+                value={stateFilter.plant ? stateFilter.plant : ""}
+                onChange={(value, _option) =>
+                  updateStateFilter({ plant: value || "" })
+                }
+                clearable
+                clearButtonProps={{
+                  onClick: () => {
+                    updateStateFilter({ plant: "" });
+                  },
+                }}
+              />
+              <Flex justify="end" pt={10}>
+                <Button
+                  leftSection={<IconX size={14} />}
+                  variant="default"
+                  size={sizeButton}
+                  onClick={() => updateStateFilter({ open: false })}
+                >
+                  Close
+                </Button>
+              </Flex>
+            </Menu.Dropdown>
+          </Menu>
         </Flex>
       </Flex>
       <Modal
