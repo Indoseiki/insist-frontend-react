@@ -209,6 +209,14 @@ const KeyValuePage = () => {
   };
 
   const handleDeleteData = () => {
+    if (!stateTable.selected) {
+      notifications.show({
+        title: "Select Data First!",
+        message: "Please select the data you want to process before proceeding",
+      });
+      return;
+    }
+
     updateStateForm({ title: "Delete Data", action: "delete" });
     openFormDelete();
   };
