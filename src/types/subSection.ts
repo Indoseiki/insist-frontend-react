@@ -24,6 +24,7 @@ export interface SubSection {
 export interface SubSectionParams {
   page: number;
   rows: string;
+  id_section?: string | null;
   search?: string;
   sortBy?: string | null;
   sortDirection?: boolean;

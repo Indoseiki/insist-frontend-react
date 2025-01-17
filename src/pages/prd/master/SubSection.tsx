@@ -1,4 +1,5 @@
 import {
+  ActionIcon,
   Button,
   Center,
   CheckIcon,
@@ -9,8 +10,11 @@ import {
   Input,
   InputBase,
   Loader,
+  Menu,
   Modal,
+  rem,
   ScrollArea,
+  Select,
   Stack,
   Table,
   Text,
@@ -24,6 +28,7 @@ import {
   IconBinoculars,
   IconDeviceFloppy,
   IconEdit,
+  IconFilter,
   IconPlus,
   IconSearch,
   IconTrash,
@@ -56,7 +61,10 @@ import { useSectionsInfinityQuery } from "../../../hooks/section";
 import { useBuildingsInfinityQuery } from "../../../hooks/building";
 
 interface StateFilter {
+  open: boolean;
   search: string;
+  idSection: string;
+  section: string;
 }
 
 interface FormValues {
@@ -94,7 +102,10 @@ const SubSubSectionPage = () => {
   });
 
   const [stateFilter, setStateFilter] = useState<StateFilter>({
+    open: false,
     search: "",
+    idSection: "",
+    section: "",
   });
 
   const [stateForm, setStateForm] = useState<StateFormSubSection>({
@@ -125,10 +136,35 @@ const SubSubSectionPage = () => {
   } = useSubSectionsQuery({
     page: stateTable.activePage,
     rows: stateTable.rowsPerPage,
+    id_section: stateFilter.idSection,
     search: stateFilter.search,
     sortBy: stateTable.sortBy,
     sortDirection: stateTable.sortDirection,
   });
+
+  const {
+    data: dataFilterSections,
+    isSuccess: isSuccessFilterSections,
+    fetchNextPage: fetchNextPageFilterSections,
+    hasNextPage: hasNextPageFilterSections,
+    isFetchingNextPage: isFetchingNextPageFilterSections,
+  } = useSectionsInfinityQuery({
+    search: stateFilter.section,
+  });
+
+  const flatDataFilterSections =
+    (isSuccessFilterSections &&
+      dataFilterSections?.pages.flatMap((page) =>
+        page.status === 200 ? page.data?.items : []
+      )) ||
+    [];
+
+  const mappedDataFilterSections = useMemo(() => {
+    return flatDataFilterSections.map((section) => ({
+      value: section.id.toString(),
+      label: section.code ? section.code : "",
+    }));
+  }, [flatDataFilterSections]);
 
   const {
     mutate: mutateCreateSubSection,
@@ -710,6 +746,73 @@ const SubSubSectionPage = () => {
               />
             }
           />
+          <Menu
+            shadow="md"
+            closeOnClickOutside={false}
+            opened={stateFilter.open}
+            onChange={(isOpen) => updateStateFilter({ open: isOpen })}
+          >
+            <Menu.Target>
+              <ActionIcon variant="filled">
+                <IconFilter
+                  style={{ width: rem(16), height: rem(16) }}
+                  stroke={1.5}
+                  onClick={() => updateStateFilter({ open: !stateFilter.open })}
+                />
+              </ActionIcon>
+            </Menu.Target>
+            <Menu.Dropdown p={15} w="fit-content">
+              <Text mb={5}>Filter</Text>
+              <Select
+                placeholder="Section"
+                data={mappedDataFilterSections}
+                size={size}
+                searchable
+                searchValue={stateFilter.section || ""}
+                onSearchChange={(value) =>
+                  updateStateFilter({ section: value || "" })
+                }
+                value={stateFilter.idSection ? stateFilter.idSection : ""}
+                onChange={(value, _option) =>
+                  updateStateFilter({ idSection: value || "" })
+                }
+                maxDropdownHeight={heightDropdown}
+                nothingFoundMessage="Nothing found..."
+                clearable
+                clearButtonProps={{
+                  onClick: () => {
+                    updateStateFilter({ section: "" });
+                  },
+                }}
+                scrollAreaProps={{
+                  onScrollPositionChange: (position) => {
+                    let maxY = 37;
+                    const dataCount = mappedDataFilterSections.length;
+                    const multipleOf10 = Math.floor(dataCount / 10) * 10;
+                    if (position.y >= maxY) {
+                      maxY += Math.floor(multipleOf10 / 10) * 37;
+                      if (
+                        hasNextPageFilterSections &&
+                        !isFetchingNextPageFilterSections
+                      ) {
+                        fetchNextPageFilterSections();
+                      }
+                    }
+                  },
+                }}
+              />
+              <Flex justify="end" pt={10}>
+                <Button
+                  leftSection={<IconX size={14} />}
+                  variant="default"
+                  size={sizeButton}
+                  onClick={() => updateStateFilter({ open: false })}
+                >
+                  Close
+                </Button>
+              </Flex>
+            </Menu.Dropdown>
+          </Menu>
         </Flex>
       </Flex>
       <Modal
