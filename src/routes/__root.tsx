@@ -30,7 +30,10 @@ function RootComponent() {
 
   const { mutate: mutateLogout } = useLogout();
 
-  const idle = useIdle(15 * 60 * 1000, { initialState: false });
+  const idle = useIdle(15 * 60 * 1000, {
+    initialState: false,
+    events: ["mousemove", "keydown", "scroll", "click"],
+  });
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -87,7 +90,7 @@ function RootComponent() {
         }
       );
     }
-  }, [idle, mutateLogout, path]);
+  }, [idle, mutateLogout, path, isSuccessUser, dataUser, os, navigate]);
 
   if (path === "/login" || path.includes("/reset-password")) {
     return (

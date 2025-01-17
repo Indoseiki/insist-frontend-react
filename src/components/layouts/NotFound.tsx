@@ -1,5 +1,7 @@
+import { Center } from "@mantine/core";
+
 const NotFound = () => {
-  return <div>Not Found</div>;
+  return <Center h="100%">Not Found</Center>;
 };
 
 export default NotFound;

@@ -24,6 +24,10 @@ import { Route as AuthenticatedPrdMasterSubSectionImport } from './routes/_authe
 import { Route as AuthenticatedPrdMasterSectionImport } from './routes/_authenticated/prd/master/section'
 import { Route as AuthenticatedPrdMasterFcsImport } from './routes/_authenticated/prd/master/fcs'
 import { Route as AuthenticatedPrdMasterBuildingImport } from './routes/_authenticated/prd/master/building'
+import { Route as AuthenticatedPidMasterWarehouseImport } from './routes/_authenticated/pid/master/warehouse'
+import { Route as AuthenticatedPidMasterLocationImport } from './routes/_authenticated/pid/master/location'
+import { Route as AuthenticatedEgdMasterUomImport } from './routes/_authenticated/egd/master/uom'
+import { Route as AuthenticatedEgdMasterProcessImport } from './routes/_authenticated/egd/master/process'
 import { Route as AuthenticatedAdminMasterUserImport } from './routes/_authenticated/admin/master/user'
 import { Route as AuthenticatedAdminMasterRoleImport } from './routes/_authenticated/admin/master/role'
 import { Route as AuthenticatedAdminMasterReasonImport } from './routes/_authenticated/admin/master/reason'
@@ -118,6 +122,33 @@ const AuthenticatedPrdMasterBuildingRoute =
   AuthenticatedPrdMasterBuildingImport.update({
     id: '/prd/master/building',
     path: '/prd/master/building',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+
+const AuthenticatedPidMasterWarehouseRoute =
+  AuthenticatedPidMasterWarehouseImport.update({
+    id: '/pid/master/warehouse',
+    path: '/pid/master/warehouse',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+
+const AuthenticatedPidMasterLocationRoute =
+  AuthenticatedPidMasterLocationImport.update({
+    id: '/pid/master/location',
+    path: '/pid/master/location',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+
+const AuthenticatedEgdMasterUomRoute = AuthenticatedEgdMasterUomImport.update({
+  id: '/egd/master/uom',
+  path: '/egd/master/uom',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+
+const AuthenticatedEgdMasterProcessRoute =
+  AuthenticatedEgdMasterProcessImport.update({
+    id: '/egd/master/process',
+    path: '/egd/master/process',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
@@ -286,6 +317,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminMasterUserImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/_authenticated/egd/master/process': {
+      id: '/_authenticated/egd/master/process'
+      path: '/egd/master/process'
+      fullPath: '/egd/master/process'
+      preLoaderRoute: typeof AuthenticatedEgdMasterProcessImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/egd/master/uom': {
+      id: '/_authenticated/egd/master/uom'
+      path: '/egd/master/uom'
+      fullPath: '/egd/master/uom'
+      preLoaderRoute: typeof AuthenticatedEgdMasterUomImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/pid/master/location': {
+      id: '/_authenticated/pid/master/location'
+      path: '/pid/master/location'
+      fullPath: '/pid/master/location'
+      preLoaderRoute: typeof AuthenticatedPidMasterLocationImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/pid/master/warehouse': {
+      id: '/_authenticated/pid/master/warehouse'
+      path: '/pid/master/warehouse'
+      fullPath: '/pid/master/warehouse'
+      preLoaderRoute: typeof AuthenticatedPidMasterWarehouseImport
+      parentRoute: typeof AuthenticatedImport
+    }
     '/_authenticated/prd/master/building': {
       id: '/_authenticated/prd/master/building'
       path: '/prd/master/building'
@@ -333,6 +392,10 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminMasterReasonRoute: typeof AuthenticatedAdminMasterReasonRoute
   AuthenticatedAdminMasterRoleRoute: typeof AuthenticatedAdminMasterRoleRoute
   AuthenticatedAdminMasterUserRoute: typeof AuthenticatedAdminMasterUserRoute
+  AuthenticatedEgdMasterProcessRoute: typeof AuthenticatedEgdMasterProcessRoute
+  AuthenticatedEgdMasterUomRoute: typeof AuthenticatedEgdMasterUomRoute
+  AuthenticatedPidMasterLocationRoute: typeof AuthenticatedPidMasterLocationRoute
+  AuthenticatedPidMasterWarehouseRoute: typeof AuthenticatedPidMasterWarehouseRoute
   AuthenticatedPrdMasterBuildingRoute: typeof AuthenticatedPrdMasterBuildingRoute
   AuthenticatedPrdMasterFcsRoute: typeof AuthenticatedPrdMasterFcsRoute
   AuthenticatedPrdMasterSectionRoute: typeof AuthenticatedPrdMasterSectionRoute
@@ -355,6 +418,10 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminMasterReasonRoute: AuthenticatedAdminMasterReasonRoute,
   AuthenticatedAdminMasterRoleRoute: AuthenticatedAdminMasterRoleRoute,
   AuthenticatedAdminMasterUserRoute: AuthenticatedAdminMasterUserRoute,
+  AuthenticatedEgdMasterProcessRoute: AuthenticatedEgdMasterProcessRoute,
+  AuthenticatedEgdMasterUomRoute: AuthenticatedEgdMasterUomRoute,
+  AuthenticatedPidMasterLocationRoute: AuthenticatedPidMasterLocationRoute,
+  AuthenticatedPidMasterWarehouseRoute: AuthenticatedPidMasterWarehouseRoute,
   AuthenticatedPrdMasterBuildingRoute: AuthenticatedPrdMasterBuildingRoute,
   AuthenticatedPrdMasterFcsRoute: AuthenticatedPrdMasterFcsRoute,
   AuthenticatedPrdMasterSectionRoute: AuthenticatedPrdMasterSectionRoute,
@@ -382,6 +449,10 @@ export interface FileRoutesByFullPath {
   '/admin/master/reason': typeof AuthenticatedAdminMasterReasonRoute
   '/admin/master/role': typeof AuthenticatedAdminMasterRoleRoute
   '/admin/master/user': typeof AuthenticatedAdminMasterUserRoute
+  '/egd/master/process': typeof AuthenticatedEgdMasterProcessRoute
+  '/egd/master/uom': typeof AuthenticatedEgdMasterUomRoute
+  '/pid/master/location': typeof AuthenticatedPidMasterLocationRoute
+  '/pid/master/warehouse': typeof AuthenticatedPidMasterWarehouseRoute
   '/prd/master/building': typeof AuthenticatedPrdMasterBuildingRoute
   '/prd/master/fcs': typeof AuthenticatedPrdMasterFcsRoute
   '/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
@@ -404,6 +475,10 @@ export interface FileRoutesByTo {
   '/admin/master/reason': typeof AuthenticatedAdminMasterReasonRoute
   '/admin/master/role': typeof AuthenticatedAdminMasterRoleRoute
   '/admin/master/user': typeof AuthenticatedAdminMasterUserRoute
+  '/egd/master/process': typeof AuthenticatedEgdMasterProcessRoute
+  '/egd/master/uom': typeof AuthenticatedEgdMasterUomRoute
+  '/pid/master/location': typeof AuthenticatedPidMasterLocationRoute
+  '/pid/master/warehouse': typeof AuthenticatedPidMasterWarehouseRoute
   '/prd/master/building': typeof AuthenticatedPrdMasterBuildingRoute
   '/prd/master/fcs': typeof AuthenticatedPrdMasterFcsRoute
   '/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
@@ -428,6 +503,10 @@ export interface FileRoutesById {
   '/_authenticated/admin/master/reason': typeof AuthenticatedAdminMasterReasonRoute
   '/_authenticated/admin/master/role': typeof AuthenticatedAdminMasterRoleRoute
   '/_authenticated/admin/master/user': typeof AuthenticatedAdminMasterUserRoute
+  '/_authenticated/egd/master/process': typeof AuthenticatedEgdMasterProcessRoute
+  '/_authenticated/egd/master/uom': typeof AuthenticatedEgdMasterUomRoute
+  '/_authenticated/pid/master/location': typeof AuthenticatedPidMasterLocationRoute
+  '/_authenticated/pid/master/warehouse': typeof AuthenticatedPidMasterWarehouseRoute
   '/_authenticated/prd/master/building': typeof AuthenticatedPrdMasterBuildingRoute
   '/_authenticated/prd/master/fcs': typeof AuthenticatedPrdMasterFcsRoute
   '/_authenticated/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
@@ -453,6 +532,10 @@ export interface FileRouteTypes {
     | '/admin/master/reason'
     | '/admin/master/role'
     | '/admin/master/user'
+    | '/egd/master/process'
+    | '/egd/master/uom'
+    | '/pid/master/location'
+    | '/pid/master/warehouse'
     | '/prd/master/building'
     | '/prd/master/fcs'
     | '/prd/master/section'
@@ -474,6 +557,10 @@ export interface FileRouteTypes {
     | '/admin/master/reason'
     | '/admin/master/role'
     | '/admin/master/user'
+    | '/egd/master/process'
+    | '/egd/master/uom'
+    | '/pid/master/location'
+    | '/pid/master/warehouse'
     | '/prd/master/building'
     | '/prd/master/fcs'
     | '/prd/master/section'
@@ -496,6 +583,10 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/master/reason'
     | '/_authenticated/admin/master/role'
     | '/_authenticated/admin/master/user'
+    | '/_authenticated/egd/master/process'
+    | '/_authenticated/egd/master/uom'
+    | '/_authenticated/pid/master/location'
+    | '/_authenticated/pid/master/warehouse'
     | '/_authenticated/prd/master/building'
     | '/_authenticated/prd/master/fcs'
     | '/_authenticated/prd/master/section'
@@ -546,6 +637,10 @@ export const routeTree = rootRoute
         "/_authenticated/admin/master/reason",
         "/_authenticated/admin/master/role",
         "/_authenticated/admin/master/user",
+        "/_authenticated/egd/master/process",
+        "/_authenticated/egd/master/uom",
+        "/_authenticated/pid/master/location",
+        "/_authenticated/pid/master/warehouse",
         "/_authenticated/prd/master/building",
         "/_authenticated/prd/master/fcs",
         "/_authenticated/prd/master/section",
@@ -608,6 +703,22 @@ export const routeTree = rootRoute
     },
     "/_authenticated/admin/master/user": {
       "filePath": "_authenticated/admin/master/user.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/egd/master/process": {
+      "filePath": "_authenticated/egd/master/process.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/egd/master/uom": {
+      "filePath": "_authenticated/egd/master/uom.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/pid/master/location": {
+      "filePath": "_authenticated/pid/master/location.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/pid/master/warehouse": {
+      "filePath": "_authenticated/pid/master/warehouse.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/prd/master/building": {
