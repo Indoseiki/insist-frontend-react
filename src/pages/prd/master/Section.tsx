@@ -214,7 +214,7 @@ const SectionPage = () => {
   const handleAddData = () => {
     formSection.clearErrors();
     formSection.reset();
-    updateStateForm({ title: "Add Data", action: "add" });
+    updateStateForm({ title: "Add Data", action: "add", fcs: "" });
     openFormSection();
   };
 

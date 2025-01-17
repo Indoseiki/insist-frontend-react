@@ -242,7 +242,13 @@ const SubSubSectionPage = () => {
   const handleAddData = () => {
     formSubSection.clearErrors();
     formSubSection.reset();
-    updateStateForm({ title: "Add Data", action: "add" });
+    updateStateForm({
+      title: "Add Data",
+      action: "add",
+      section: "",
+      building: "",
+      id_fcs: 0,
+    });
     openFormSubSection();
   };
 
