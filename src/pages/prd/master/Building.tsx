@@ -502,7 +502,6 @@ const BuildingPage = () => {
             <Menu.Dropdown p={15} w="fit-content">
               <Text mb={5}>Filter</Text>
               <Select
-                label="Plant"
                 placeholder="Plant"
                 data={["PLANT 1", "PLANT 2"]}
                 size={size}

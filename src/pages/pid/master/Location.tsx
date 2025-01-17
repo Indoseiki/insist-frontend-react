@@ -264,9 +264,11 @@ const LocationPage = () => {
     updateStateForm({
       title: "Edit Data",
       action: "edit",
+      warehouse: stateTable.selected.warehouse?.description,
     });
 
     formLocation.setValues({
+      id_warehouse: stateTable.selected.warehouse?.id.toString(),
       location: stateTable.selected.location,
       remarks: stateTable.selected.remarks,
     });
@@ -304,9 +306,11 @@ const LocationPage = () => {
     updateStateForm({
       title: "View Data",
       action: "view",
+      warehouse: stateTable.selected.warehouse?.description,
     });
 
     formLocation.setValues({
+      id_warehouse: stateTable.selected.warehouse?.id.toString(),
       location: stateTable.selected.location,
       remarks: stateTable.selected.remarks,
     });
