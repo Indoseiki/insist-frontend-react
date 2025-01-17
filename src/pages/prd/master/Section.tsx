@@ -1,4 +1,5 @@
 import {
+  ActionIcon,
   Button,
   Center,
   CloseButton,
@@ -6,7 +7,9 @@ import {
   Group,
   Input,
   Loader,
+  Menu,
   Modal,
+  rem,
   Select,
   Stack,
   Table,
@@ -20,6 +23,7 @@ import {
   IconBinoculars,
   IconDeviceFloppy,
   IconEdit,
+  IconFilter,
   IconPlus,
   IconSearch,
   IconTrash,
@@ -51,7 +55,10 @@ import { createActivityLog } from "../../../api/activityLog";
 import { useFCSsInfinityQuery } from "../../../hooks/fcs";
 
 interface StateFilter {
+  open: boolean;
   search: string;
+  idFCS: string;
+  fcs: string;
 }
 
 interface FormValues {
@@ -86,7 +93,10 @@ const SectionPage = () => {
   });
 
   const [stateFilter, setStateFilter] = useState<StateFilter>({
+    open: false,
     search: "",
+    idFCS: "",
+    fcs: "",
   });
 
   const [stateForm, setStateForm] = useState<StateFormSection>({
@@ -114,6 +124,7 @@ const SectionPage = () => {
   } = useSectionsQuery({
     page: stateTable.activePage,
     rows: stateTable.rowsPerPage,
+    id_fcs: stateFilter.idFCS,
     search: stateFilter.search,
     sortBy: stateTable.sortBy,
     sortDirection: stateTable.sortDirection,
@@ -152,11 +163,35 @@ const SectionPage = () => {
     [];
 
   const mappedDataSelectFCSs = useMemo(() => {
-    return flatDataSelectFCSs.map((dept) => ({
-      value: dept.id.toString(),
-      label: dept.code ? dept.code : "",
+    return flatDataSelectFCSs.map((fcs) => ({
+      value: fcs.id.toString(),
+      label: fcs.code ? fcs.code : "",
     }));
   }, [flatDataSelectFCSs]);
+
+  const {
+    data: dataFilterFCSs,
+    isSuccess: isSuccessFilterFCSs,
+    fetchNextPage: fetchNextPageFilterFCSs,
+    hasNextPage: hasNextPageFilterFCSs,
+    isFetchingNextPage: isFetchingNextPageFilterFCSs,
+  } = useFCSsInfinityQuery({
+    search: stateFilter.fcs,
+  });
+
+  const flatDataFilterFCSs =
+    (isSuccessFilterFCSs &&
+      dataFilterFCSs?.pages.flatMap((page) =>
+        page.status === 200 ? page.data?.items : []
+      )) ||
+    [];
+
+  const mappedDataFilterFCSs = useMemo(() => {
+    return flatDataFilterFCSs.map((fcs) => ({
+      value: fcs.id.toString(),
+      label: fcs.code ? fcs.code : "",
+    }));
+  }, [flatDataFilterFCSs]);
 
   const os = useOs();
   const { data: dataUser } = useUserInfoQuery();
@@ -512,6 +547,73 @@ const SectionPage = () => {
               />
             }
           />
+          <Menu
+            shadow="md"
+            closeOnClickOutside={false}
+            opened={stateFilter.open}
+            onChange={(isOpen) => updateStateFilter({ open: isOpen })}
+          >
+            <Menu.Target>
+              <ActionIcon variant="filled">
+                <IconFilter
+                  style={{ width: rem(16), height: rem(16) }}
+                  stroke={1.5}
+                  onClick={() => updateStateFilter({ open: !stateFilter.open })}
+                />
+              </ActionIcon>
+            </Menu.Target>
+            <Menu.Dropdown p={15} w="fit-content">
+              <Text mb={5}>Filter</Text>
+              <Select
+                placeholder="FCS"
+                data={mappedDataFilterFCSs}
+                size={size}
+                searchable
+                searchValue={stateFilter.fcs || ""}
+                onSearchChange={(value) =>
+                  updateStateFilter({ fcs: value || "" })
+                }
+                value={stateFilter.idFCS ? stateFilter.idFCS : ""}
+                onChange={(value, _option) =>
+                  updateStateFilter({ idFCS: value || "" })
+                }
+                maxDropdownHeight={heightDropdown}
+                nothingFoundMessage="Nothing found..."
+                clearable
+                clearButtonProps={{
+                  onClick: () => {
+                    updateStateFilter({ fcs: "" });
+                  },
+                }}
+                scrollAreaProps={{
+                  onScrollPositionChange: (position) => {
+                    let maxY = 37;
+                    const dataCount = mappedDataFilterFCSs.length;
+                    const multipleOf10 = Math.floor(dataCount / 10) * 10;
+                    if (position.y >= maxY) {
+                      maxY += Math.floor(multipleOf10 / 10) * 37;
+                      if (
+                        hasNextPageFilterFCSs &&
+                        !isFetchingNextPageFilterFCSs
+                      ) {
+                        fetchNextPageFilterFCSs();
+                      }
+                    }
+                  },
+                }}
+              />
+              <Flex justify="end" pt={10}>
+                <Button
+                  leftSection={<IconX size={14} />}
+                  variant="default"
+                  size={sizeButton}
+                  onClick={() => updateStateFilter({ open: false })}
+                >
+                  Close
+                </Button>
+              </Flex>
+            </Menu.Dropdown>
+          </Menu>
         </Flex>
       </Flex>
       <Modal

@@ -21,6 +21,7 @@ export interface Section {
 export interface SectionParams {
   page: number;
   rows: string;
+  id_fcs?: string | null;
   search?: string;
   sortBy?: string | null;
   sortDirection?: boolean;
