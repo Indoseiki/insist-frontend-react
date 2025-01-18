@@ -6,12 +6,14 @@ import { ApprovalStructureParams } from "../types/approvalStructure";
 import {
   createApproval,
   deleteApproval,
+  getApprovalByMenu,
   getApprovalStructures,
+  getApprovalUsersByApproval,
   updateApproval,
   updateApprovalUsers,
 } from "../api/approvalStructure";
-import { ApprovalRequest } from "../types/approval";
-import { ApprovalUserRequest } from "../types/approvalUser";
+import { Approval, ApprovalRequest } from "../types/approval";
+import { ApprovalUser, ApprovalUserRequest } from "../types/approvalUser";
 
 const useApprovalStructuresQuery = (params: ApprovalStructureParams) => {
   return useQuery<ApiResponse<Result<Menu[]>>, Error>({
@@ -20,21 +22,41 @@ const useApprovalStructuresQuery = (params: ApprovalStructureParams) => {
   });
 };
 
+const useApprovalByMenuQuery = (idMenu: number) => {
+  return useQuery<ApiResponse<Approval[]>, Error>({
+    queryKey: ["ApprovalByMenu", idMenu],
+    queryFn: () => getApprovalByMenu(idMenu),
+    enabled: !!idMenu,
+  });
+};
+
 const useCreateApproval = () => {
-  return useMutation<ApiResponse<null>, Error, ApprovalRequest[]>({
+  return useMutation<ApiResponse<null>, Error, ApprovalRequest>({
     mutationFn: createApproval,
   });
 };
 
 const useUpdateApproval = () => {
-  return useMutation<ApiResponse<null>, Error, ApprovalRequest[]>({
-    mutationFn: updateApproval,
+  return useMutation<
+    ApiResponse<null>,
+    Error,
+    { id: number; params: ApprovalRequest }
+  >({
+    mutationFn: ({ id, params }) => updateApproval(id, params),
   });
 };
 
 const useDeleteApproval = () => {
   return useMutation<ApiResponse<null>, Error, number>({
     mutationFn: (id) => deleteApproval(id),
+  });
+};
+
+const useApprovalUsersByApprovalQuery = (idApproval: number) => {
+  return useQuery<ApiResponse<ApprovalUser[]>, Error>({
+    queryKey: ["ApprovalusersByApproval", idApproval],
+    queryFn: () => getApprovalUsersByApproval(idApproval),
+    enabled: !!idApproval,
   });
 };
 
@@ -50,8 +72,10 @@ const useUpdateApprovalUsers = () => {
 
 export {
   useApprovalStructuresQuery,
+  useApprovalByMenuQuery,
   useCreateApproval,
   useUpdateApproval,
   useDeleteApproval,
+  useApprovalUsersByApprovalQuery,
   useUpdateApprovalUsers,
 };

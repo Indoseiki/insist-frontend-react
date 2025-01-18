@@ -29,8 +29,10 @@ import {
 import PageHeader from "../../components/layouts/PageHeader";
 import {
   IconBinoculars,
+  IconCheck,
   IconDeviceFloppy,
   IconEdit,
+  IconForbid,
   IconPlus,
   IconSearch,
   IconTrash,
@@ -38,14 +40,15 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useSizes } from "../../contexts/useGlobalSizes";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
+  useApprovalByMenuQuery,
   useApprovalStructuresQuery,
+  useApprovalUsersByApprovalQuery,
   useCreateApproval,
   useDeleteApproval,
   useUpdateApproval,
   useUpdateApprovalUsers,
-  //   useUpdateApproval,
 } from "../../hooks/approvalStructure";
 import TableScrollable from "../../components/table/TableScrollable";
 import TableFooter from "../../components/table/TableFooter";
@@ -56,7 +59,7 @@ import { notifications } from "@mantine/notifications";
 import { StateTable } from "../../types/table";
 import { StateForm } from "../../types/form";
 import { Menu } from "../../types/menu";
-import { ApprovalRequest } from "../../types/approval";
+import { Approval, ApprovalRequest } from "../../types/approval";
 import { useUsersInfinityQuery } from "../../hooks/user";
 import { useUserInfoQuery } from "../../hooks/auth";
 import { useRolePermissionQuery } from "../../hooks/rolePermission";
@@ -82,6 +85,8 @@ interface FormValuesApprovalUsers {
 interface StateFormApprovalStructure extends StateForm {
   user: string[];
   searchUser: string;
+  idApproval: number;
+  actionApprovalUser: string;
 }
 
 const ApprovalStructurePage = () => {
@@ -92,6 +97,11 @@ const ApprovalStructurePage = () => {
   const [
     openedFormApprovalStructure,
     { open: openFormApprovalStructure, close: closeFormApprovalStructure },
+  ] = useDisclosure(false);
+
+  const [
+    openedFormApproval,
+    { open: openFormApproval, close: closeFormApproval },
   ] = useDisclosure(false);
 
   const [
@@ -116,6 +126,8 @@ const ApprovalStructurePage = () => {
     action: "",
     user: [],
     searchUser: "",
+    idApproval: 0,
+    actionApprovalUser: "",
   });
 
   const updateStateTable = (newState: Partial<StateTable<Menu>>) =>
@@ -141,6 +153,18 @@ const ApprovalStructurePage = () => {
     sortBy: stateTable.sortBy,
     sortDirection: stateTable.sortDirection,
   });
+
+  const {
+    data: dataApprovalByMenu,
+    isSuccess: isSuccessApprovalByMenu,
+    refetch: refetchApprovalByMenu,
+  } = useApprovalByMenuQuery(stateTable.selected?.id || 0);
+
+  const {
+    data: dataApprovalUsersByApproval,
+    isSuccess: isSuccessApprovalUsersByApproval,
+    refetch: refetchApprovalUsersByApproval,
+  } = useApprovalUsersByApprovalQuery(stateForm.idApproval || 0);
 
   const {
     data: dataSelectUsers,
@@ -298,6 +322,33 @@ const ApprovalStructurePage = () => {
     },
   });
 
+  const formApproval = useForm<ApprovalRequest>({
+    mode: "uncontrolled",
+    initialValues: {
+      id: 0,
+      status: "",
+      action: "",
+      level: 0,
+      count: 0,
+      id_menu: 0,
+    },
+
+    validate: {
+      status: (value) => {
+        return value?.length == 0 ? "Status is required" : null;
+      },
+      action: (value) => {
+        return value?.length == 0 ? "Action is required" : null;
+      },
+      level: (value) => {
+        return value == 0 ? "Level is required" : null;
+      },
+      count: (value) => {
+        return value == 0 ? "Count is required" : null;
+      },
+    },
+  });
+
   const formApprovalUsers = useForm<FormValuesApprovalUsers>({
     mode: "uncontrolled",
     initialValues: {
@@ -313,9 +364,6 @@ const ApprovalStructurePage = () => {
   });
 
   const handleSetupApproval = () => {
-    formApprovalStructure.clearErrors();
-    formApprovalStructure.reset();
-
     if (!stateTable.selected) {
       notifications.show({
         title: "Select Data First!",
@@ -329,40 +377,32 @@ const ApprovalStructurePage = () => {
       action: "setup",
     });
 
-    const approvals = stateTable.selected.menu_approvals
-      ? stateTable.selected.menu_approvals?.map((approval) => {
-          return {
-            id: approval.id,
-            id_menu: approval.id_menu,
-            status: approval.status,
-            action: approval.action,
-            level: approval.level,
-            count: approval.count,
-          };
-        })
-      : [
-          {
-            id_menu: stateTable.selected.id,
-            status: "",
-            action: "",
-            level: 0,
-            count: 0,
-          },
-        ];
-
-    formApprovalStructure.setValues({
-      menu: stateTable.selected.label,
-      path: stateTable.selected.path,
-      approvals,
-    });
-
     openFormApprovalStructure();
   };
 
-  const handleViewData = () => {
-    formApprovalStructure.clearErrors();
-    formApprovalStructure.reset();
+  useEffect(() => {
+    if (stateTable.selected && isSuccessApprovalByMenu) {
+      let approvals;
 
+      if (isSuccessApprovalByMenu && dataApprovalByMenu?.data?.length > 0) {
+        approvals = dataApprovalByMenu.data.map((approval: Approval) => ({
+          id: approval.id ?? 0,
+          id_menu: approval.id_menu ?? 0,
+          status: approval.status ?? "",
+          action: approval.action ?? "",
+          level: approval.level ?? 0,
+          count: approval.count ?? 0,
+        }));
+      }
+
+      formApprovalStructure.setValues({
+        path: stateTable.selected.path,
+        approvals,
+      });
+    }
+  }, [dataApprovalByMenu]);
+
+  const handleViewData = () => {
     if (!stateTable.selected) {
       notifications.show({
         title: "Select Data First!",
@@ -376,32 +416,24 @@ const ApprovalStructurePage = () => {
       action: "view",
     });
 
-    const approvals = stateTable.selected.menu_approvals?.map((approval) => {
-      return {
-        id: approval.id,
-        id_menu: approval.id_menu,
-        status: approval.status,
-        action: approval.action,
-        level: approval.level,
-        count: approval.count,
-      };
-    });
-
-    formApprovalStructure.setValues({
-      menu: stateTable.selected.label,
-      path: stateTable.selected.path,
-      approvals,
-    });
-
     openFormApprovalStructure();
   };
 
-  const handleSubmitFormApprovalStructure = () => {
-    const dataApproval = formApprovalStructure.getValues();
-    const approvals = dataApproval.approvals;
+  const handleAddApproval = () => {
+    formApproval.clearErrors();
+    formApproval.reset();
+    openFormApproval();
 
-    if (!stateTable.selected?.menu_approvals) {
-      mutateCreateApproval(approvals, {
+    updateStateForm({
+      action: "add",
+    });
+  };
+
+  const handleSubmitFormApproval = () => {
+    if (stateForm.action === "add") {
+      formApproval.setFieldValue("id_menu", stateTable.selected?.id);
+      const dataApproval = formApproval.getValues();
+      mutateCreateApproval(dataApproval, {
         onSuccess: async (res) => {
           await createActivityLog({
             username: dataUser?.data.username,
@@ -417,9 +449,9 @@ const ApprovalStructurePage = () => {
             color: "green",
           });
 
-          updateStateTable({ selected: null });
+          refetchApprovalByMenu();
           refetchApprovalStructures();
-          closeFormApprovalStructure();
+          closeFormApproval();
         },
         onError: async (err) => {
           const error = err as AxiosError<ApiResponse<null>>;
@@ -439,64 +471,84 @@ const ApprovalStructurePage = () => {
             color: "red",
           });
 
-          closeFormApprovalStructure();
-        },
-      });
-    } else {
-      mutateUpdateApproval(approvals, {
-        onSuccess: async (res) => {
-          await createActivityLog({
-            username: dataUser?.data.username,
-            action: "Update",
-            is_success: true,
-            os: os,
-            message: `${res?.message} (${stateTable.selected?.path})`,
-          });
-
-          notifications.show({
-            title: "Updated Successfully!",
-            message: res.message,
-            color: "green",
-          });
-
-          updateStateTable({ selected: null });
-          refetchApprovalStructures();
-          closeFormApprovalStructure();
-        },
-        onError: async (err) => {
-          const error = err as AxiosError<ApiResponse<null>>;
-          const res = error.response;
-          console.log(res);
-          await createActivityLog({
-            username: dataUser?.data.username,
-            action: "Update",
-            is_success: false,
-            os: os,
-            message: `${res?.data.message} (${stateTable.selected?.path})`,
-          });
-
-          notifications.show({
-            title: "Updated Failed!",
-            message:
-              "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
-            color: "red",
-          });
-
-          closeFormApprovalStructure();
+          closeFormApproval();
         },
       });
     }
+
+    if (stateForm.action === "edit") {
+      const dataApprovalStructure = formApprovalStructure.getValues();
+      const dataApproval = dataApprovalStructure.approvals.find(
+        (item) => item.id === stateForm.idApproval
+      );
+      mutateUpdateApproval(
+        {
+          id: stateForm.idApproval,
+          params: dataApproval || {},
+        },
+        {
+          onSuccess: async (res) => {
+            await createActivityLog({
+              username: dataUser?.data.username,
+              action: "Update",
+              is_success: true,
+              os: os,
+              message: `${res?.message} (${stateTable.selected?.path})`,
+            });
+
+            notifications.show({
+              title: "Updated Successfully!",
+              message: res.message,
+              color: "green",
+            });
+
+            updateStateForm({ idApproval: 0 });
+            refetchApprovalByMenu();
+            refetchApprovalStructures();
+            closeFormApproval();
+          },
+          onError: async (err) => {
+            const error = err as AxiosError<ApiResponse<null>>;
+            const res = error.response;
+            await createActivityLog({
+              username: dataUser?.data.username,
+              action: "Update",
+              is_success: false,
+              os: os,
+              message: `${res?.data.message} (${stateTable.selected?.path})`,
+            });
+
+            notifications.show({
+              title: "Updated Failed!",
+              message:
+                "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
+              color: "red",
+            });
+
+            closeFormApproval();
+          },
+        }
+      );
+    }
   };
 
-  const handleDeleteApproval = (index: number) => {
-    formApprovalStructure.removeListItem("approvals", index);
+  const handleEditApproval = (id: number) => {
+    formApproval.clearErrors();
+    formApproval.reset();
 
-    const data =
-      stateTable.selected?.menu_approvals &&
-      stateTable.selected?.menu_approvals[index];
+    updateStateForm({
+      idApproval: id,
+      action: "edit",
+      actionApprovalUser: "",
+    });
+  };
 
-    if (data) {
-      const id = data.id;
+  const handleDeleteApproval = (id: number) => {
+    const dataApprovalStructure = formApprovalStructure.getValues();
+    const dataApproval = dataApprovalStructure.approvals.find(
+      (item) => item.id === stateForm.idApproval
+    );
+    if (id) {
       mutateDeleteApproval(id, {
         onSuccess: async (res) => {
           await createActivityLog({
@@ -504,7 +556,7 @@ const ApprovalStructurePage = () => {
             action: "Delete",
             is_success: true,
             os: os,
-            message: `${res?.message} (${data.status})`,
+            message: `${res?.message} (${dataApproval?.status})`,
           });
 
           notifications.show({
@@ -513,10 +565,7 @@ const ApprovalStructurePage = () => {
             color: "green",
           });
 
-          if (index == 0) {
-            closeFormApprovalStructure();
-            updateStateTable({ selected: null });
-          }
+          refetchApprovalByMenu();
           refetchApprovalStructures();
         },
         onError: async (err) => {
@@ -527,7 +576,7 @@ const ApprovalStructurePage = () => {
             action: "Delete",
             is_success: false,
             os: os,
-            message: `${res?.data.message} (${data.status})`,
+            message: `${res?.data.message} (${dataApproval?.status})`,
           });
 
           notifications.show({
@@ -541,11 +590,11 @@ const ApprovalStructurePage = () => {
     }
   };
 
-  const handleCloseFormApprovalStructure = () => {
-    updateStateTable({ selected: null });
-    closeFormApprovalStructure();
-    formApprovalStructure.clearErrors();
-    formApprovalStructure.reset();
+  const handleCloseFormApproval = () => {
+    formApproval.clearErrors();
+    formApproval.reset();
+    refetchApprovalByMenu();
+    closeFormApproval();
   };
 
   const comboboxUser = useCombobox({
@@ -597,22 +646,28 @@ const ApprovalStructurePage = () => {
     </Combobox.Option>
   ));
 
-  const handleOpenApprovalUsers = (index: number) => {
+  const handleOpenApprovalUsers = (id: number) => {
+    updateStateForm({
+      idApproval: id,
+      actionApprovalUser: "setup_approval_users",
+    });
+
     openFormApprovalUsers();
+  };
 
-    const data =
-      stateTable.selected?.menu_approvals &&
-      stateTable.selected?.menu_approvals[index];
-
-    if (data) {
-      const approvalUsers = data.approval_users
+  useEffect(() => {
+    if (
+      isSuccessApprovalUsersByApproval &&
+      dataApprovalUsersByApproval?.data?.length > 0
+    ) {
+      const approvalUsers = dataApprovalUsersByApproval.data
         ?.map((item) => item.user?.name)
         .filter((name): name is string => name !== undefined);
 
       formApprovalUsers.setValues({
-        id_approval: data.id,
+        id_approval: stateForm.idApproval,
         id_user:
-          data.approval_users
+          dataApprovalUsersByApproval.data
             ?.map((item) => item.id_user?.toString())
             .filter((id): id is string => id !== undefined) || [],
       });
@@ -620,8 +675,17 @@ const ApprovalStructurePage = () => {
       updateStateForm({
         user: approvalUsers,
       });
+    } else {
+      formApprovalUsers.setValues({
+        id_approval: stateForm.idApproval,
+        id_user: [],
+      });
+
+      updateStateForm({
+        user: [],
+      });
     }
-  };
+  }, [dataApprovalUsersByApproval]);
 
   const handleSubmitFormApprovalUsers = () => {
     const approvalUsers = formApprovalUsers.getValues();
@@ -648,10 +712,10 @@ const ApprovalStructurePage = () => {
             color: "green",
           });
 
-          updateStateTable({ selected: null });
           refetchApprovalStructures();
+          refetchApprovalByMenu();
+          refetchApprovalUsersByApproval();
           closeFormApprovalUsers();
-          closeFormApprovalStructure();
         },
         onError: async (err) => {
           const error = err as AxiosError<ApiResponse<null>>;
@@ -672,7 +736,6 @@ const ApprovalStructurePage = () => {
           });
 
           closeFormApprovalUsers();
-          closeFormApprovalStructure();
         },
       }
     );
@@ -694,7 +757,11 @@ const ApprovalStructurePage = () => {
                 `approvals.${index}.status`
               )}
               w="100%"
-              disabled={stateForm.action === "view"}
+              disabled={
+                stateForm.action === "view" ||
+                stateForm.idApproval !== item.id ||
+                stateForm.actionApprovalUser === "setup_approval_users"
+              }
             />
             <TextInput
               label="Action"
@@ -705,7 +772,11 @@ const ApprovalStructurePage = () => {
                 `approvals.${index}.action`
               )}
               w="100%"
-              disabled={stateForm.action === "view"}
+              disabled={
+                stateForm.action === "view" ||
+                stateForm.idApproval !== item.id ||
+                stateForm.actionApprovalUser === "setup_approval_users"
+              }
             />
             <NumberInput
               label="Level"
@@ -716,7 +787,11 @@ const ApprovalStructurePage = () => {
                 `approvals.${index}.level`
               )}
               w="100%"
-              disabled={stateForm.action === "view"}
+              disabled={
+                stateForm.action === "view" ||
+                stateForm.idApproval !== item.id ||
+                stateForm.actionApprovalUser === "setup_approval_users"
+              }
             />
             <NumberInput
               label="Count"
@@ -727,16 +802,19 @@ const ApprovalStructurePage = () => {
                 `approvals.${index}.count`
               )}
               w="100%"
-              disabled={stateForm.action === "view"}
+              disabled={
+                stateForm.action === "view" ||
+                stateForm.idApproval !== item.id ||
+                stateForm.actionApprovalUser === "setup_approval_users"
+              }
             />
             <Flex justify="end" w="100%" mt={10} gap={5}>
               {item.id && (
                 <ActionIcon
-                  color="blue"
+                  color="teal"
                   variant="filled"
-                  aria-label="Settings"
                   size={size}
-                  onClick={() => handleOpenApprovalUsers(index)}
+                  onClick={() => handleOpenApprovalUsers(item.id || 0)}
                 >
                   <IconUsers
                     style={{ width: "70%", height: "70%" }}
@@ -745,19 +823,59 @@ const ApprovalStructurePage = () => {
                 </ActionIcon>
               )}
               {stateForm.action !== "view" && (
-                <ActionIcon
-                  color="red"
-                  variant="filled"
-                  aria-label="Settings"
-                  size={size}
-                  onClick={() => handleDeleteApproval(index)}
-                  loading={isPendingMutateDeleteApproval}
-                >
-                  <IconTrash
-                    style={{ width: "70%", height: "70%" }}
-                    stroke={1.5}
-                  />
-                </ActionIcon>
+                <>
+                  {stateForm.actionApprovalUser !== "setup_approval_users" ? (
+                    stateForm.idApproval !== item.id ? (
+                      <ActionIcon
+                        color="blue"
+                        variant="filled"
+                        size={size}
+                        onClick={() => handleEditApproval(item.id || 0)}
+                      >
+                        <IconEdit
+                          style={{ width: "70%", height: "70%" }}
+                          stroke={1.5}
+                        />
+                      </ActionIcon>
+                    ) : (
+                      <ActionIcon
+                        color="blue"
+                        variant="filled"
+                        size={size}
+                        onClick={() => handleSubmitFormApproval()}
+                      >
+                        <IconCheck
+                          style={{ width: "70%", height: "70%" }}
+                          stroke={1.5}
+                        />
+                      </ActionIcon>
+                    )
+                  ) : (
+                    <ActionIcon
+                      color="blue"
+                      variant="filled"
+                      size={size}
+                      onClick={() => handleEditApproval(item.id || 0)}
+                    >
+                      <IconEdit
+                        style={{ width: "70%", height: "70%" }}
+                        stroke={1.5}
+                      />
+                    </ActionIcon>
+                  )}
+                  <ActionIcon
+                    color="red"
+                    variant="filled"
+                    size={size}
+                    onClick={() => handleDeleteApproval(item.id || 0)}
+                    loading={isPendingMutateDeleteApproval}
+                  >
+                    <IconTrash
+                      style={{ width: "70%", height: "70%" }}
+                      stroke={1.5}
+                    />
+                  </ActionIcon>
+                </>
               )}
             </Flex>
           </Group>
@@ -832,11 +950,7 @@ const ApprovalStructurePage = () => {
         size="xl"
         closeOnClickOutside={false}
       >
-        <form
-          onSubmit={formApprovalStructure.onSubmit(
-            handleSubmitFormApprovalStructure
-          )}
-        >
+        <form>
           <Stack gap={5}>
             <TextInput
               label="Menu"
@@ -854,54 +968,115 @@ const ApprovalStructurePage = () => {
               disabled={true}
               {...formApprovalStructure.getInputProps("path")}
             />
-            <Box>
+            <Group justify="space-between">
               <Text fz={size} fw="bold" py={10}>
                 Approval
               </Text>
-              <Grid>{fieldsApproval}</Grid>
               {stateForm.action !== "view" && (
-                <Center>
-                  <Button
-                    leftSection={<IconPlus size={16} />}
-                    size={sizeButton}
-                    onClick={() =>
-                      formApprovalStructure.insertListItem("approvals", {
-                        id_menu: stateTable.selected?.id,
-                        status: "",
-                        action: "",
-                        level: 0,
-                        count: 0,
-                      })
-                    }
-                    mt={20}
-                  >
-                    Add Approval
-                  </Button>
+                <ActionIcon
+                  color="blue"
+                  variant="filled"
+                  size={size}
+                  onClick={handleAddApproval}
+                >
+                  <IconPlus
+                    style={{ width: "70%", height: "70%" }}
+                    stroke={1.5}
+                  />
+                </ActionIcon>
+              )}
+            </Group>
+            <ScrollArea h={400} type="scroll">
+              <Grid>{fieldsApproval}</Grid>
+              {!fieldsApproval && (
+                <Center h={400}>
+                  <Stack justify="center" align="center" gap={1}>
+                    <IconForbid size="100px" color="gray" />
+                    <Text size="xl" my={20}>
+                      Approval not found
+                    </Text>
+                  </Stack>
                 </Center>
               )}
-            </Box>
+            </ScrollArea>
           </Stack>
           <Group justify="end" gap={5} mt="md">
             <Button
               leftSection={<IconX size={16} />}
               variant="default"
               size={sizeButton}
-              onClick={handleCloseFormApprovalStructure}
+              onClick={() => closeFormApprovalStructure()}
             >
               Close
             </Button>
-            {stateForm.action !== "view" && (
-              <Button
-                leftSection={<IconDeviceFloppy size={16} />}
-                type="submit"
-                size={sizeButton}
-                loading={
-                  isPendingMutateCreateApproval || isPendingMutateUpdateApproval
-                }
-              >
-                Save
-              </Button>
-            )}
+          </Group>
+        </form>
+      </Modal>
+      <Modal
+        opened={openedFormApproval}
+        onClose={closeFormApproval}
+        title="Add Approval"
+        size="sm"
+        closeOnClickOutside={false}
+      >
+        <form onSubmit={formApproval.onSubmit(handleSubmitFormApproval)}>
+          <Stack gap={5}>
+            <TextInput
+              label="Status"
+              placeholder="Status"
+              size={size}
+              key={formApproval.key("status")}
+              {...formApproval.getInputProps("status")}
+              w="100%"
+              disabled={stateForm.action === "view"}
+            />
+            <TextInput
+              label="Action"
+              placeholder="Action"
+              size={size}
+              key={formApproval.key("action")}
+              {...formApproval.getInputProps("action")}
+              w="100%"
+              disabled={stateForm.action === "view"}
+            />
+            <NumberInput
+              label="Level"
+              placeholder="Level"
+              size={size}
+              key={formApproval.key("level")}
+              {...formApproval.getInputProps("level")}
+              w="100%"
+              disabled={stateForm.action === "view"}
+            />
+            <NumberInput
+              label="Count"
+              placeholder="Count"
+              size={size}
+              key={formApproval.key("count")}
+              {...formApproval.getInputProps("count")}
+              w="100%"
+              disabled={stateForm.action === "view"}
+            />
+          </Stack>
+          <Group justify="end" gap={5} mt="md">
+            <Button
+              leftSection={<IconX size={16} />}
+              variant="default"
+              size={sizeButton}
+              onClick={handleCloseFormApproval}
+            >
+              Close
+            </Button>
+            <Button
+              leftSection={<IconDeviceFloppy size={16} />}
+              type="submit"
+              size={sizeButton}
+              loading={
+                isPendingMutateCreateApproval || isPendingMutateUpdateApproval
+              }
+            >
+              Save
+            </Button>
           </Group>
         </form>
       </Modal>
