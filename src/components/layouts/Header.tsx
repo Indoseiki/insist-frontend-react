@@ -74,9 +74,9 @@ const Header = ({
             onClick={toogleColorScheme}
           >
             {computedColorScheme === "light" ? (
-              <IconSun style={{ width: rem(20), height: rem(20) }} />
-            ) : (
               <IconMoon style={{ width: rem(20), height: rem(20) }} />
+            ) : (
+              <IconSun style={{ width: rem(20), height: rem(20) }} />
             )}
           </ActionIcon>
           <Profile />
