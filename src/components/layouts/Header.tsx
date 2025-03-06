@@ -14,6 +14,7 @@ import LogoLight from "../../assets/images/logo_light.gif";
 import LogoDark from "../../assets/images/logo_dark.gif";
 import Notification from "./Notification";
 import SearchMenu from "./SearchMenu";
+import { useNavigate } from "@tanstack/react-router";
 
 interface HeaderProps {
   mobileOpened: boolean;
@@ -28,6 +29,8 @@ const Header = ({
   desktopOpened,
   toggleDesktop,
 }: HeaderProps) => {
+  const navigate = useNavigate();
+
   const { setColorScheme, colorScheme } = useMantineColorScheme({
     keepTransitions: true,
   });
@@ -57,11 +60,13 @@ const Header = ({
             src={colorScheme === "dark" ? LogoDark : LogoLight}
             h={38}
             hiddenFrom="sm"
+            onClick={() => navigate({ to: "/" })}
           />
           <Image
             src={colorScheme === "dark" ? LogoDark : LogoLight}
             h={45}
             visibleFrom="sm"
+            onClick={() => navigate({ to: "/" })}
           />
         </Group>
         <Group gap={10}>
