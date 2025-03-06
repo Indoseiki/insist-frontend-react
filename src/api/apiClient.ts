@@ -34,6 +34,16 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
+        const token = getToken();
+
+        if (!token) {
+          removeToken();
+          throw redirect({
+            to: "/login",
+            replace: true,
+          });
+        }
+
         const response = await axios.get(`${baseURL}/auth/token`, {
           withCredentials: true,
         });
