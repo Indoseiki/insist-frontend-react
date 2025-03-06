@@ -1,20 +1,11 @@
-import { useEffect } from "react";
-import {
-  Outlet,
-  createRootRoute,
-  useLocation,
-  useNavigate,
-} from "@tanstack/react-router";
+import { Outlet, createRootRoute, useLocation } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { AppShell } from "@mantine/core";
-import { useDisclosure, useIdle, useOs } from "@mantine/hooks";
+import { useDisclosure } from "@mantine/hooks";
 import Header from "../components/layouts/Header";
 import Navbar from "../components/layouts/Navbar";
 import NotFound from "../components/layouts/NotFound";
 import { memo } from "react";
-import { useLogout, useUserInfoQuery } from "../hooks/auth";
-import { notifications } from "@mantine/notifications";
-import { createActivityLog } from "../api/activityLog";
 
 export const Route = createRootRoute({
   component: RootComponent,

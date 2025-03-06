@@ -1,7 +1,6 @@
 import {
   Accordion,
   ActionIcon,
-  Box,
   Button,
   Center,
   CheckIcon,
