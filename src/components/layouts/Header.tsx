@@ -60,12 +60,14 @@ const Header = ({
             src={colorScheme === "dark" ? LogoDark : LogoLight}
             h={38}
             hiddenFrom="sm"
+            style={{ cursor: "pointer" }}
             onClick={() => navigate({ to: "/" })}
           />
           <Image
             src={colorScheme === "dark" ? LogoDark : LogoLight}
             h={45}
             visibleFrom="sm"
+            style={{ cursor: "pointer" }}
             onClick={() => navigate({ to: "/" })}
           />
         </Group>
