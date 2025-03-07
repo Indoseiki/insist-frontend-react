@@ -10,414 +10,412 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as LoginImport } from './routes/login'
-import { Route as AuthenticatedImport } from './routes/_authenticated'
-import { Route as AuthenticatedIndexImport } from './routes/_authenticated/index'
-import { Route as ResetPasswordTokenImport } from './routes/reset-password.$token'
-import { Route as AuthenticatedAdminUserRoleImport } from './routes/_authenticated/admin/user-role'
-import { Route as AuthenticatedAdminRolePermissionImport } from './routes/_authenticated/admin/role-permission'
-import { Route as AuthenticatedAdminRoleMenuImport } from './routes/_authenticated/admin/role-menu'
-import { Route as AuthenticatedAdminApprovalStructureImport } from './routes/_authenticated/admin/approval-structure'
-import { Route as AuthenticatedAdminActivityLogImport } from './routes/_authenticated/admin/activity-log'
-import { Route as AuthenticatedPrdMasterSubSectionImport } from './routes/_authenticated/prd/master/sub-section'
-import { Route as AuthenticatedPrdMasterSectionImport } from './routes/_authenticated/prd/master/section'
-import { Route as AuthenticatedPrdMasterFcsImport } from './routes/_authenticated/prd/master/fcs'
-import { Route as AuthenticatedPrdMasterBuildingImport } from './routes/_authenticated/prd/master/building'
-import { Route as AuthenticatedPidMasterWarehouseImport } from './routes/_authenticated/pid/master/warehouse'
-import { Route as AuthenticatedPidMasterLocationImport } from './routes/_authenticated/pid/master/location'
-import { Route as AuthenticatedEgdMasterUomImport } from './routes/_authenticated/egd/master/uom'
-import { Route as AuthenticatedEgdMasterProcessImport } from './routes/_authenticated/egd/master/process'
-import { Route as AuthenticatedAdminMasterUserImport } from './routes/_authenticated/admin/master/user'
-import { Route as AuthenticatedAdminMasterRoleImport } from './routes/_authenticated/admin/master/role'
-import { Route as AuthenticatedAdminMasterReasonImport } from './routes/_authenticated/admin/master/reason'
-import { Route as AuthenticatedAdminMasterMenuImport } from './routes/_authenticated/admin/master/menu'
-import { Route as AuthenticatedAdminMasterKeyValueImport } from './routes/_authenticated/admin/master/key-value'
-import { Route as AuthenticatedAdminMasterEmployeeImport } from './routes/_authenticated/admin/master/employee'
-import { Route as AuthenticatedAdminMasterDepartmentImport } from './routes/_authenticated/admin/master/department'
+import { Route as rootRoute } from "./routes/__root";
+import { Route as LoginImport } from "./routes/login";
+import { Route as AuthenticatedImport } from "./routes/_authenticated";
+import { Route as AuthenticatedIndexImport } from "./routes/_authenticated/index";
+import { Route as ResetPasswordTokenImport } from "./routes/reset-password.$token";
+import { Route as AuthenticatedAdmUserRoleImport } from "./routes/_authenticated/adm/user-role";
+import { Route as AuthenticatedAdmRolePermissionImport } from "./routes/_authenticated/adm/role-permission";
+import { Route as AuthenticatedAdmRoleMenuImport } from "./routes/_authenticated/adm/role-menu";
+import { Route as AuthenticatedAdmApprovalStructureImport } from "./routes/_authenticated/adm/approval-structure";
+import { Route as AuthenticatedAdmActivityLogImport } from "././routes/_authenticated/adm/activity-log";
+import { Route as AuthenticatedPrdMasterSubSectionImport } from "./routes/_authenticated/prd/master/sub-section";
+import { Route as AuthenticatedPrdMasterSectionImport } from "./routes/_authenticated/prd/master/section";
+import { Route as AuthenticatedPrdMasterFcsImport } from "./routes/_authenticated/prd/master/fcs";
+import { Route as AuthenticatedPrdMasterBuildingImport } from "./routes/_authenticated/prd/master/building";
+import { Route as AuthenticatedPidMasterWarehouseImport } from "./routes/_authenticated/pid/master/warehouse";
+import { Route as AuthenticatedPidMasterLocationImport } from "./routes/_authenticated/pid/master/location";
+import { Route as AuthenticatedEgdMasterUomImport } from "./routes/_authenticated/egd/master/uom";
+import { Route as AuthenticatedEgdMasterProcessImport } from "./routes/_authenticated/egd/master/process";
+import { Route as AuthenticatedAdmMasterUserImport } from "./routes/_authenticated/adm/master/user";
+import { Route as AuthenticatedAdmMasterRoleImport } from "./routes/_authenticated/adm/master/role";
+import { Route as AuthenticatedAdmMasterReasonImport } from "./routes/_authenticated/adm/master/reason";
+import { Route as AuthenticatedAdmMasterMenuImport } from "./routes/_authenticated/adm/master/menu";
+import { Route as AuthenticatedAdmMasterKeyValueImport } from "./routes/_authenticated/adm/master/key-value";
+import { Route as AuthenticatedAdmMasterEmployeeImport } from "./routes/_authenticated/adm/master/employee";
+import { Route as AuthenticatedAdmMasterDepartmentImport } from "./routes/_authenticated/adm/master/department";
 
 // Create/Update Routes
 
 const LoginRoute = LoginImport.update({
-  id: '/login',
-  path: '/login',
+  id: "/login",
+  path: "/login",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const AuthenticatedRoute = AuthenticatedImport.update({
-  id: '/_authenticated',
+  id: "/_authenticated",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const AuthenticatedIndexRoute = AuthenticatedIndexImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => AuthenticatedRoute,
-} as any)
+} as any);
 
 const ResetPasswordTokenRoute = ResetPasswordTokenImport.update({
-  id: '/reset-password/$token',
-  path: '/reset-password/$token',
+  id: "/reset-password/$token",
+  path: "/reset-password/$token",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
-const AuthenticatedAdminUserRoleRoute = AuthenticatedAdminUserRoleImport.update(
-  {
-    id: '/admin/user-role',
-    path: '/admin/user-role',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any,
-)
+const AuthenticatedAdmUserRoleRoute = AuthenticatedAdmUserRoleImport.update({
+  id: "/adm/user-role",
+  path: "/adm/user-role",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
 
-const AuthenticatedAdminRolePermissionRoute =
-  AuthenticatedAdminRolePermissionImport.update({
-    id: '/admin/role-permission',
-    path: '/admin/role-permission',
+const AuthenticatedAdmRolePermissionRoute =
+  AuthenticatedAdmRolePermissionImport.update({
+    id: "/adm/role-permission",
+    path: "/adm/role-permission",
     getParentRoute: () => AuthenticatedRoute,
-  } as any)
+  } as any);
 
-const AuthenticatedAdminRoleMenuRoute = AuthenticatedAdminRoleMenuImport.update(
-  {
-    id: '/admin/role-menu',
-    path: '/admin/role-menu',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any,
-)
+const AuthenticatedAdmRoleMenuRoute = AuthenticatedAdmRoleMenuImport.update({
+  id: "/adm/role-menu",
+  path: "/adm/role-menu",
+  getParentRoute: () => AuthenticatedRoute,
+} as any);
 
-const AuthenticatedAdminApprovalStructureRoute =
-  AuthenticatedAdminApprovalStructureImport.update({
-    id: '/admin/approval-structure',
-    path: '/admin/approval-structure',
+const AuthenticatedAdmApprovalStructureRoute =
+  AuthenticatedAdmApprovalStructureImport.update({
+    id: "/adm/approval-structure",
+    path: "/adm/approval-structure",
     getParentRoute: () => AuthenticatedRoute,
-  } as any)
+  } as any);
 
-const AuthenticatedAdminActivityLogRoute =
-  AuthenticatedAdminActivityLogImport.update({
-    id: '/admin/activity-log',
-    path: '/admin/activity-log',
+const AuthenticatedAdmActivityLogRoute =
+  AuthenticatedAdmActivityLogImport.update({
+    id: "/adm/activity-log",
+    path: "/adm/activity-log",
     getParentRoute: () => AuthenticatedRoute,
-  } as any)
+  } as any);
 
 const AuthenticatedPrdMasterSubSectionRoute =
   AuthenticatedPrdMasterSubSectionImport.update({
-    id: '/prd/master/sub-section',
-    path: '/prd/master/sub-section',
+    id: "/prd/master/sub-section",
+    path: "/prd/master/sub-section",
     getParentRoute: () => AuthenticatedRoute,
-  } as any)
+  } as any);
 
 const AuthenticatedPrdMasterSectionRoute =
   AuthenticatedPrdMasterSectionImport.update({
-    id: '/prd/master/section',
-    path: '/prd/master/section',
+    id: "/prd/master/section",
+    path: "/prd/master/section",
     getParentRoute: () => AuthenticatedRoute,
-  } as any)
+  } as any);
 
 const AuthenticatedPrdMasterFcsRoute = AuthenticatedPrdMasterFcsImport.update({
-  id: '/prd/master/fcs',
-  path: '/prd/master/fcs',
+  id: "/prd/master/fcs",
+  path: "/prd/master/fcs",
   getParentRoute: () => AuthenticatedRoute,
-} as any)
+} as any);
 
 const AuthenticatedPrdMasterBuildingRoute =
   AuthenticatedPrdMasterBuildingImport.update({
-    id: '/prd/master/building',
-    path: '/prd/master/building',
+    id: "/prd/master/building",
+    path: "/prd/master/building",
     getParentRoute: () => AuthenticatedRoute,
-  } as any)
+  } as any);
 
 const AuthenticatedPidMasterWarehouseRoute =
   AuthenticatedPidMasterWarehouseImport.update({
-    id: '/pid/master/warehouse',
-    path: '/pid/master/warehouse',
+    id: "/pid/master/warehouse",
+    path: "/pid/master/warehouse",
     getParentRoute: () => AuthenticatedRoute,
-  } as any)
+  } as any);
 
 const AuthenticatedPidMasterLocationRoute =
   AuthenticatedPidMasterLocationImport.update({
-    id: '/pid/master/location',
-    path: '/pid/master/location',
+    id: "/pid/master/location",
+    path: "/pid/master/location",
     getParentRoute: () => AuthenticatedRoute,
-  } as any)
+  } as any);
 
 const AuthenticatedEgdMasterUomRoute = AuthenticatedEgdMasterUomImport.update({
-  id: '/egd/master/uom',
-  path: '/egd/master/uom',
+  id: "/egd/master/uom",
+  path: "/egd/master/uom",
   getParentRoute: () => AuthenticatedRoute,
-} as any)
+} as any);
 
 const AuthenticatedEgdMasterProcessRoute =
   AuthenticatedEgdMasterProcessImport.update({
-    id: '/egd/master/process',
-    path: '/egd/master/process',
+    id: "/egd/master/process",
+    path: "/egd/master/process",
     getParentRoute: () => AuthenticatedRoute,
-  } as any)
+  } as any);
 
-const AuthenticatedAdminMasterUserRoute =
-  AuthenticatedAdminMasterUserImport.update({
-    id: '/admin/master/user',
-    path: '/admin/master/user',
+const AuthenticatedAdmMasterUserRoute = AuthenticatedAdmMasterUserImport.update(
+  {
+    id: "/adm/master/user",
+    path: "/adm/master/user",
     getParentRoute: () => AuthenticatedRoute,
-  } as any)
+  } as any
+);
 
-const AuthenticatedAdminMasterRoleRoute =
-  AuthenticatedAdminMasterRoleImport.update({
-    id: '/admin/master/role',
-    path: '/admin/master/role',
+const AuthenticatedAdmMasterRoleRoute = AuthenticatedAdmMasterRoleImport.update(
+  {
+    id: "/adm/master/role",
+    path: "/adm/master/role",
     getParentRoute: () => AuthenticatedRoute,
-  } as any)
+  } as any
+);
 
-const AuthenticatedAdminMasterReasonRoute =
-  AuthenticatedAdminMasterReasonImport.update({
-    id: '/admin/master/reason',
-    path: '/admin/master/reason',
+const AuthenticatedAdmMasterReasonRoute =
+  AuthenticatedAdmMasterReasonImport.update({
+    id: "/adm/master/reason",
+    path: "/adm/master/reason",
     getParentRoute: () => AuthenticatedRoute,
-  } as any)
+  } as any);
 
-const AuthenticatedAdminMasterMenuRoute =
-  AuthenticatedAdminMasterMenuImport.update({
-    id: '/admin/master/menu',
-    path: '/admin/master/menu',
+const AuthenticatedAdmMasterMenuRoute = AuthenticatedAdmMasterMenuImport.update(
+  {
+    id: "/adm/master/menu",
+    path: "/adm/master/menu",
     getParentRoute: () => AuthenticatedRoute,
-  } as any)
+  } as any
+);
 
-const AuthenticatedAdminMasterKeyValueRoute =
-  AuthenticatedAdminMasterKeyValueImport.update({
-    id: '/admin/master/key-value',
-    path: '/admin/master/key-value',
+const AuthenticatedAdmMasterKeyValueRoute =
+  AuthenticatedAdmMasterKeyValueImport.update({
+    id: "/adm/master/key-value",
+    path: "/adm/master/key-value",
     getParentRoute: () => AuthenticatedRoute,
-  } as any)
+  } as any);
 
-const AuthenticatedAdminMasterEmployeeRoute =
-  AuthenticatedAdminMasterEmployeeImport.update({
-    id: '/admin/master/employee',
-    path: '/admin/master/employee',
+const AuthenticatedAdmMasterEmployeeRoute =
+  AuthenticatedAdmMasterEmployeeImport.update({
+    id: "/adm/master/employee",
+    path: "/adm/master/employee",
     getParentRoute: () => AuthenticatedRoute,
-  } as any)
+  } as any);
 
-const AuthenticatedAdminMasterDepartmentRoute =
-  AuthenticatedAdminMasterDepartmentImport.update({
-    id: '/admin/master/department',
-    path: '/admin/master/department',
+const AuthenticatedAdmMasterDepartmentRoute =
+  AuthenticatedAdmMasterDepartmentImport.update({
+    id: "/adm/master/department",
+    path: "/adm/master/department",
     getParentRoute: () => AuthenticatedRoute,
-  } as any)
+  } as any);
 
 // Populate the FileRoutesByPath interface
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AuthenticatedImport
-      parentRoute: typeof rootRoute
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginImport
-      parentRoute: typeof rootRoute
-    }
-    '/reset-password/$token': {
-      id: '/reset-password/$token'
-      path: '/reset-password/$token'
-      fullPath: '/reset-password/$token'
-      preLoaderRoute: typeof ResetPasswordTokenImport
-      parentRoute: typeof rootRoute
-    }
-    '/_authenticated/': {
-      id: '/_authenticated/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedIndexImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/admin/activity-log': {
-      id: '/_authenticated/admin/activity-log'
-      path: '/admin/activity-log'
-      fullPath: '/admin/activity-log'
-      preLoaderRoute: typeof AuthenticatedAdminActivityLogImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/admin/approval-structure': {
-      id: '/_authenticated/admin/approval-structure'
-      path: '/admin/approval-structure'
-      fullPath: '/admin/approval-structure'
-      preLoaderRoute: typeof AuthenticatedAdminApprovalStructureImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/admin/role-menu': {
-      id: '/_authenticated/admin/role-menu'
-      path: '/admin/role-menu'
-      fullPath: '/admin/role-menu'
-      preLoaderRoute: typeof AuthenticatedAdminRoleMenuImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/admin/role-permission': {
-      id: '/_authenticated/admin/role-permission'
-      path: '/admin/role-permission'
-      fullPath: '/admin/role-permission'
-      preLoaderRoute: typeof AuthenticatedAdminRolePermissionImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/admin/user-role': {
-      id: '/_authenticated/admin/user-role'
-      path: '/admin/user-role'
-      fullPath: '/admin/user-role'
-      preLoaderRoute: typeof AuthenticatedAdminUserRoleImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/admin/master/department': {
-      id: '/_authenticated/admin/master/department'
-      path: '/admin/master/department'
-      fullPath: '/admin/master/department'
-      preLoaderRoute: typeof AuthenticatedAdminMasterDepartmentImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/admin/master/employee': {
-      id: '/_authenticated/admin/master/employee'
-      path: '/admin/master/employee'
-      fullPath: '/admin/master/employee'
-      preLoaderRoute: typeof AuthenticatedAdminMasterEmployeeImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/admin/master/key-value': {
-      id: '/_authenticated/admin/master/key-value'
-      path: '/admin/master/key-value'
-      fullPath: '/admin/master/key-value'
-      preLoaderRoute: typeof AuthenticatedAdminMasterKeyValueImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/admin/master/menu': {
-      id: '/_authenticated/admin/master/menu'
-      path: '/admin/master/menu'
-      fullPath: '/admin/master/menu'
-      preLoaderRoute: typeof AuthenticatedAdminMasterMenuImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/admin/master/reason': {
-      id: '/_authenticated/admin/master/reason'
-      path: '/admin/master/reason'
-      fullPath: '/admin/master/reason'
-      preLoaderRoute: typeof AuthenticatedAdminMasterReasonImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/admin/master/role': {
-      id: '/_authenticated/admin/master/role'
-      path: '/admin/master/role'
-      fullPath: '/admin/master/role'
-      preLoaderRoute: typeof AuthenticatedAdminMasterRoleImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/admin/master/user': {
-      id: '/_authenticated/admin/master/user'
-      path: '/admin/master/user'
-      fullPath: '/admin/master/user'
-      preLoaderRoute: typeof AuthenticatedAdminMasterUserImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/egd/master/process': {
-      id: '/_authenticated/egd/master/process'
-      path: '/egd/master/process'
-      fullPath: '/egd/master/process'
-      preLoaderRoute: typeof AuthenticatedEgdMasterProcessImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/egd/master/uom': {
-      id: '/_authenticated/egd/master/uom'
-      path: '/egd/master/uom'
-      fullPath: '/egd/master/uom'
-      preLoaderRoute: typeof AuthenticatedEgdMasterUomImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/pid/master/location': {
-      id: '/_authenticated/pid/master/location'
-      path: '/pid/master/location'
-      fullPath: '/pid/master/location'
-      preLoaderRoute: typeof AuthenticatedPidMasterLocationImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/pid/master/warehouse': {
-      id: '/_authenticated/pid/master/warehouse'
-      path: '/pid/master/warehouse'
-      fullPath: '/pid/master/warehouse'
-      preLoaderRoute: typeof AuthenticatedPidMasterWarehouseImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/prd/master/building': {
-      id: '/_authenticated/prd/master/building'
-      path: '/prd/master/building'
-      fullPath: '/prd/master/building'
-      preLoaderRoute: typeof AuthenticatedPrdMasterBuildingImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/prd/master/fcs': {
-      id: '/_authenticated/prd/master/fcs'
-      path: '/prd/master/fcs'
-      fullPath: '/prd/master/fcs'
-      preLoaderRoute: typeof AuthenticatedPrdMasterFcsImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/prd/master/section': {
-      id: '/_authenticated/prd/master/section'
-      path: '/prd/master/section'
-      fullPath: '/prd/master/section'
-      preLoaderRoute: typeof AuthenticatedPrdMasterSectionImport
-      parentRoute: typeof AuthenticatedImport
-    }
-    '/_authenticated/prd/master/sub-section': {
-      id: '/_authenticated/prd/master/sub-section'
-      path: '/prd/master/sub-section'
-      fullPath: '/prd/master/sub-section'
-      preLoaderRoute: typeof AuthenticatedPrdMasterSubSectionImport
-      parentRoute: typeof AuthenticatedImport
-    }
+    "/_authenticated": {
+      id: "/_authenticated";
+      path: "";
+      fullPath: "";
+      preLoaderRoute: typeof AuthenticatedImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/login": {
+      id: "/login";
+      path: "/login";
+      fullPath: "/login";
+      preLoaderRoute: typeof LoginImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/reset-password/$token": {
+      id: "/reset-password/$token";
+      path: "/reset-password/$token";
+      fullPath: "/reset-password/$token";
+      preLoaderRoute: typeof ResetPasswordTokenImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/_authenticated/": {
+      id: "/_authenticated/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof AuthenticatedIndexImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/adm/activity-log": {
+      id: "/_authenticated/adm/activity-log";
+      path: "/adm/activity-log";
+      fullPath: "/adm/activity-log";
+      preLoaderRoute: typeof AuthenticatedAdmActivityLogImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/adm/approval-structure": {
+      id: "/_authenticated/adm/approval-structure";
+      path: "/adm/approval-structure";
+      fullPath: "/adm/approval-structure";
+      preLoaderRoute: typeof AuthenticatedAdmApprovalStructureImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/adm/role-menu": {
+      id: "/_authenticated/adm/role-menu";
+      path: "/adm/role-menu";
+      fullPath: "/adm/role-menu";
+      preLoaderRoute: typeof AuthenticatedAdmRoleMenuImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/adm/role-permission": {
+      id: "/_authenticated/adm/role-permission";
+      path: "/adm/role-permission";
+      fullPath: "/adm/role-permission";
+      preLoaderRoute: typeof AuthenticatedAdmRolePermissionImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/adm/user-role": {
+      id: "/_authenticated/adm/user-role";
+      path: "/adm/user-role";
+      fullPath: "/adm/user-role";
+      preLoaderRoute: typeof AuthenticatedAdmUserRoleImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/adm/master/department": {
+      id: "/_authenticated/adm/master/department";
+      path: "/adm/master/department";
+      fullPath: "/adm/master/department";
+      preLoaderRoute: typeof AuthenticatedAdmMasterDepartmentImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/adm/master/employee": {
+      id: "/_authenticated/adm/master/employee";
+      path: "/adm/master/employee";
+      fullPath: "/adm/master/employee";
+      preLoaderRoute: typeof AuthenticatedAdmMasterEmployeeImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/adm/master/key-value": {
+      id: "/_authenticated/adm/master/key-value";
+      path: "/adm/master/key-value";
+      fullPath: "/adm/master/key-value";
+      preLoaderRoute: typeof AuthenticatedAdmMasterKeyValueImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/adm/master/menu": {
+      id: "/_authenticated/adm/master/menu";
+      path: "/adm/master/menu";
+      fullPath: "/adm/master/menu";
+      preLoaderRoute: typeof AuthenticatedAdmMasterMenuImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/adm/master/reason": {
+      id: "/_authenticated/adm/master/reason";
+      path: "/adm/master/reason";
+      fullPath: "/adm/master/reason";
+      preLoaderRoute: typeof AuthenticatedAdmMasterReasonImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/adm/master/role": {
+      id: "/_authenticated/adm/master/role";
+      path: "/adm/master/role";
+      fullPath: "/adm/master/role";
+      preLoaderRoute: typeof AuthenticatedAdmMasterRoleImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/adm/master/user": {
+      id: "/_authenticated/adm/master/user";
+      path: "/adm/master/user";
+      fullPath: "/adm/master/user";
+      preLoaderRoute: typeof AuthenticatedAdmMasterUserImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/egd/master/process": {
+      id: "/_authenticated/egd/master/process";
+      path: "/egd/master/process";
+      fullPath: "/egd/master/process";
+      preLoaderRoute: typeof AuthenticatedEgdMasterProcessImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/egd/master/uom": {
+      id: "/_authenticated/egd/master/uom";
+      path: "/egd/master/uom";
+      fullPath: "/egd/master/uom";
+      preLoaderRoute: typeof AuthenticatedEgdMasterUomImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/pid/master/location": {
+      id: "/_authenticated/pid/master/location";
+      path: "/pid/master/location";
+      fullPath: "/pid/master/location";
+      preLoaderRoute: typeof AuthenticatedPidMasterLocationImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/pid/master/warehouse": {
+      id: "/_authenticated/pid/master/warehouse";
+      path: "/pid/master/warehouse";
+      fullPath: "/pid/master/warehouse";
+      preLoaderRoute: typeof AuthenticatedPidMasterWarehouseImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/prd/master/building": {
+      id: "/_authenticated/prd/master/building";
+      path: "/prd/master/building";
+      fullPath: "/prd/master/building";
+      preLoaderRoute: typeof AuthenticatedPrdMasterBuildingImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/prd/master/fcs": {
+      id: "/_authenticated/prd/master/fcs";
+      path: "/prd/master/fcs";
+      fullPath: "/prd/master/fcs";
+      preLoaderRoute: typeof AuthenticatedPrdMasterFcsImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/prd/master/section": {
+      id: "/_authenticated/prd/master/section";
+      path: "/prd/master/section";
+      fullPath: "/prd/master/section";
+      preLoaderRoute: typeof AuthenticatedPrdMasterSectionImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
+    "/_authenticated/prd/master/sub-section": {
+      id: "/_authenticated/prd/master/sub-section";
+      path: "/prd/master/sub-section";
+      fullPath: "/prd/master/sub-section";
+      preLoaderRoute: typeof AuthenticatedPrdMasterSubSectionImport;
+      parentRoute: typeof AuthenticatedImport;
+    };
   }
 }
 
 // Create and export the route tree
 
 interface AuthenticatedRouteChildren {
-  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
-  AuthenticatedAdminActivityLogRoute: typeof AuthenticatedAdminActivityLogRoute
-  AuthenticatedAdminApprovalStructureRoute: typeof AuthenticatedAdminApprovalStructureRoute
-  AuthenticatedAdminRoleMenuRoute: typeof AuthenticatedAdminRoleMenuRoute
-  AuthenticatedAdminRolePermissionRoute: typeof AuthenticatedAdminRolePermissionRoute
-  AuthenticatedAdminUserRoleRoute: typeof AuthenticatedAdminUserRoleRoute
-  AuthenticatedAdminMasterDepartmentRoute: typeof AuthenticatedAdminMasterDepartmentRoute
-  AuthenticatedAdminMasterEmployeeRoute: typeof AuthenticatedAdminMasterEmployeeRoute
-  AuthenticatedAdminMasterKeyValueRoute: typeof AuthenticatedAdminMasterKeyValueRoute
-  AuthenticatedAdminMasterMenuRoute: typeof AuthenticatedAdminMasterMenuRoute
-  AuthenticatedAdminMasterReasonRoute: typeof AuthenticatedAdminMasterReasonRoute
-  AuthenticatedAdminMasterRoleRoute: typeof AuthenticatedAdminMasterRoleRoute
-  AuthenticatedAdminMasterUserRoute: typeof AuthenticatedAdminMasterUserRoute
-  AuthenticatedEgdMasterProcessRoute: typeof AuthenticatedEgdMasterProcessRoute
-  AuthenticatedEgdMasterUomRoute: typeof AuthenticatedEgdMasterUomRoute
-  AuthenticatedPidMasterLocationRoute: typeof AuthenticatedPidMasterLocationRoute
-  AuthenticatedPidMasterWarehouseRoute: typeof AuthenticatedPidMasterWarehouseRoute
-  AuthenticatedPrdMasterBuildingRoute: typeof AuthenticatedPrdMasterBuildingRoute
-  AuthenticatedPrdMasterFcsRoute: typeof AuthenticatedPrdMasterFcsRoute
-  AuthenticatedPrdMasterSectionRoute: typeof AuthenticatedPrdMasterSectionRoute
-  AuthenticatedPrdMasterSubSectionRoute: typeof AuthenticatedPrdMasterSubSectionRoute
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute;
+  AuthenticatedAdmActivityLogRoute: typeof AuthenticatedAdmActivityLogRoute;
+  AuthenticatedAdmApprovalStructureRoute: typeof AuthenticatedAdmApprovalStructureRoute;
+  AuthenticatedAdmRoleMenuRoute: typeof AuthenticatedAdmRoleMenuRoute;
+  AuthenticatedAdmRolePermissionRoute: typeof AuthenticatedAdmRolePermissionRoute;
+  AuthenticatedAdmUserRoleRoute: typeof AuthenticatedAdmUserRoleRoute;
+  AuthenticatedAdmMasterDepartmentRoute: typeof AuthenticatedAdmMasterDepartmentRoute;
+  AuthenticatedAdmMasterEmployeeRoute: typeof AuthenticatedAdmMasterEmployeeRoute;
+  AuthenticatedAdmMasterKeyValueRoute: typeof AuthenticatedAdmMasterKeyValueRoute;
+  AuthenticatedAdmMasterMenuRoute: typeof AuthenticatedAdmMasterMenuRoute;
+  AuthenticatedAdmMasterReasonRoute: typeof AuthenticatedAdmMasterReasonRoute;
+  AuthenticatedAdmMasterRoleRoute: typeof AuthenticatedAdmMasterRoleRoute;
+  AuthenticatedAdmMasterUserRoute: typeof AuthenticatedAdmMasterUserRoute;
+  AuthenticatedEgdMasterProcessRoute: typeof AuthenticatedEgdMasterProcessRoute;
+  AuthenticatedEgdMasterUomRoute: typeof AuthenticatedEgdMasterUomRoute;
+  AuthenticatedPidMasterLocationRoute: typeof AuthenticatedPidMasterLocationRoute;
+  AuthenticatedPidMasterWarehouseRoute: typeof AuthenticatedPidMasterWarehouseRoute;
+  AuthenticatedPrdMasterBuildingRoute: typeof AuthenticatedPrdMasterBuildingRoute;
+  AuthenticatedPrdMasterFcsRoute: typeof AuthenticatedPrdMasterFcsRoute;
+  AuthenticatedPrdMasterSectionRoute: typeof AuthenticatedPrdMasterSectionRoute;
+  AuthenticatedPrdMasterSubSectionRoute: typeof AuthenticatedPrdMasterSubSectionRoute;
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
-  AuthenticatedAdminActivityLogRoute: AuthenticatedAdminActivityLogRoute,
-  AuthenticatedAdminApprovalStructureRoute:
-    AuthenticatedAdminApprovalStructureRoute,
-  AuthenticatedAdminRoleMenuRoute: AuthenticatedAdminRoleMenuRoute,
-  AuthenticatedAdminRolePermissionRoute: AuthenticatedAdminRolePermissionRoute,
-  AuthenticatedAdminUserRoleRoute: AuthenticatedAdminUserRoleRoute,
-  AuthenticatedAdminMasterDepartmentRoute:
-    AuthenticatedAdminMasterDepartmentRoute,
-  AuthenticatedAdminMasterEmployeeRoute: AuthenticatedAdminMasterEmployeeRoute,
-  AuthenticatedAdminMasterKeyValueRoute: AuthenticatedAdminMasterKeyValueRoute,
-  AuthenticatedAdminMasterMenuRoute: AuthenticatedAdminMasterMenuRoute,
-  AuthenticatedAdminMasterReasonRoute: AuthenticatedAdminMasterReasonRoute,
-  AuthenticatedAdminMasterRoleRoute: AuthenticatedAdminMasterRoleRoute,
-  AuthenticatedAdminMasterUserRoute: AuthenticatedAdminMasterUserRoute,
+  AuthenticatedAdmActivityLogRoute: AuthenticatedAdmActivityLogRoute,
+  AuthenticatedAdmApprovalStructureRoute:
+    AuthenticatedAdmApprovalStructureRoute,
+  AuthenticatedAdmRoleMenuRoute: AuthenticatedAdmRoleMenuRoute,
+  AuthenticatedAdmRolePermissionRoute: AuthenticatedAdmRolePermissionRoute,
+  AuthenticatedAdmUserRoleRoute: AuthenticatedAdmUserRoleRoute,
+  AuthenticatedAdmMasterDepartmentRoute: AuthenticatedAdmMasterDepartmentRoute,
+  AuthenticatedAdmMasterEmployeeRoute: AuthenticatedAdmMasterEmployeeRoute,
+  AuthenticatedAdmMasterKeyValueRoute: AuthenticatedAdmMasterKeyValueRoute,
+  AuthenticatedAdmMasterMenuRoute: AuthenticatedAdmMasterMenuRoute,
+  AuthenticatedAdmMasterReasonRoute: AuthenticatedAdmMasterReasonRoute,
+  AuthenticatedAdmMasterRoleRoute: AuthenticatedAdmMasterRoleRoute,
+  AuthenticatedAdmMasterUserRoute: AuthenticatedAdmMasterUserRoute,
   AuthenticatedEgdMasterProcessRoute: AuthenticatedEgdMasterProcessRoute,
   AuthenticatedEgdMasterUomRoute: AuthenticatedEgdMasterUomRoute,
   AuthenticatedPidMasterLocationRoute: AuthenticatedPidMasterLocationRoute,
@@ -426,189 +424,189 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPrdMasterFcsRoute: AuthenticatedPrdMasterFcsRoute,
   AuthenticatedPrdMasterSectionRoute: AuthenticatedPrdMasterSectionRoute,
   AuthenticatedPrdMasterSubSectionRoute: AuthenticatedPrdMasterSubSectionRoute,
-}
+};
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
-  AuthenticatedRouteChildren,
-)
+  AuthenticatedRouteChildren
+);
 
 export interface FileRoutesByFullPath {
-  '': typeof AuthenticatedRouteWithChildren
-  '/login': typeof LoginRoute
-  '/reset-password/$token': typeof ResetPasswordTokenRoute
-  '/': typeof AuthenticatedIndexRoute
-  '/admin/activity-log': typeof AuthenticatedAdminActivityLogRoute
-  '/admin/approval-structure': typeof AuthenticatedAdminApprovalStructureRoute
-  '/admin/role-menu': typeof AuthenticatedAdminRoleMenuRoute
-  '/admin/role-permission': typeof AuthenticatedAdminRolePermissionRoute
-  '/admin/user-role': typeof AuthenticatedAdminUserRoleRoute
-  '/admin/master/department': typeof AuthenticatedAdminMasterDepartmentRoute
-  '/admin/master/employee': typeof AuthenticatedAdminMasterEmployeeRoute
-  '/admin/master/key-value': typeof AuthenticatedAdminMasterKeyValueRoute
-  '/admin/master/menu': typeof AuthenticatedAdminMasterMenuRoute
-  '/admin/master/reason': typeof AuthenticatedAdminMasterReasonRoute
-  '/admin/master/role': typeof AuthenticatedAdminMasterRoleRoute
-  '/admin/master/user': typeof AuthenticatedAdminMasterUserRoute
-  '/egd/master/process': typeof AuthenticatedEgdMasterProcessRoute
-  '/egd/master/uom': typeof AuthenticatedEgdMasterUomRoute
-  '/pid/master/location': typeof AuthenticatedPidMasterLocationRoute
-  '/pid/master/warehouse': typeof AuthenticatedPidMasterWarehouseRoute
-  '/prd/master/building': typeof AuthenticatedPrdMasterBuildingRoute
-  '/prd/master/fcs': typeof AuthenticatedPrdMasterFcsRoute
-  '/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
-  '/prd/master/sub-section': typeof AuthenticatedPrdMasterSubSectionRoute
+  "": typeof AuthenticatedRouteWithChildren;
+  "/login": typeof LoginRoute;
+  "/reset-password/$token": typeof ResetPasswordTokenRoute;
+  "/": typeof AuthenticatedIndexRoute;
+  "/adm/activity-log": typeof AuthenticatedAdmActivityLogRoute;
+  "/adm/approval-structure": typeof AuthenticatedAdmApprovalStructureRoute;
+  "/adm/role-menu": typeof AuthenticatedAdmRoleMenuRoute;
+  "/adm/role-permission": typeof AuthenticatedAdmRolePermissionRoute;
+  "/adm/user-role": typeof AuthenticatedAdmUserRoleRoute;
+  "/adm/master/department": typeof AuthenticatedAdmMasterDepartmentRoute;
+  "/adm/master/employee": typeof AuthenticatedAdmMasterEmployeeRoute;
+  "/adm/master/key-value": typeof AuthenticatedAdmMasterKeyValueRoute;
+  "/adm/master/menu": typeof AuthenticatedAdmMasterMenuRoute;
+  "/adm/master/reason": typeof AuthenticatedAdmMasterReasonRoute;
+  "/adm/master/role": typeof AuthenticatedAdmMasterRoleRoute;
+  "/adm/master/user": typeof AuthenticatedAdmMasterUserRoute;
+  "/egd/master/process": typeof AuthenticatedEgdMasterProcessRoute;
+  "/egd/master/uom": typeof AuthenticatedEgdMasterUomRoute;
+  "/pid/master/location": typeof AuthenticatedPidMasterLocationRoute;
+  "/pid/master/warehouse": typeof AuthenticatedPidMasterWarehouseRoute;
+  "/prd/master/building": typeof AuthenticatedPrdMasterBuildingRoute;
+  "/prd/master/fcs": typeof AuthenticatedPrdMasterFcsRoute;
+  "/prd/master/section": typeof AuthenticatedPrdMasterSectionRoute;
+  "/prd/master/sub-section": typeof AuthenticatedPrdMasterSubSectionRoute;
 }
 
 export interface FileRoutesByTo {
-  '/login': typeof LoginRoute
-  '/reset-password/$token': typeof ResetPasswordTokenRoute
-  '/': typeof AuthenticatedIndexRoute
-  '/admin/activity-log': typeof AuthenticatedAdminActivityLogRoute
-  '/admin/approval-structure': typeof AuthenticatedAdminApprovalStructureRoute
-  '/admin/role-menu': typeof AuthenticatedAdminRoleMenuRoute
-  '/admin/role-permission': typeof AuthenticatedAdminRolePermissionRoute
-  '/admin/user-role': typeof AuthenticatedAdminUserRoleRoute
-  '/admin/master/department': typeof AuthenticatedAdminMasterDepartmentRoute
-  '/admin/master/employee': typeof AuthenticatedAdminMasterEmployeeRoute
-  '/admin/master/key-value': typeof AuthenticatedAdminMasterKeyValueRoute
-  '/admin/master/menu': typeof AuthenticatedAdminMasterMenuRoute
-  '/admin/master/reason': typeof AuthenticatedAdminMasterReasonRoute
-  '/admin/master/role': typeof AuthenticatedAdminMasterRoleRoute
-  '/admin/master/user': typeof AuthenticatedAdminMasterUserRoute
-  '/egd/master/process': typeof AuthenticatedEgdMasterProcessRoute
-  '/egd/master/uom': typeof AuthenticatedEgdMasterUomRoute
-  '/pid/master/location': typeof AuthenticatedPidMasterLocationRoute
-  '/pid/master/warehouse': typeof AuthenticatedPidMasterWarehouseRoute
-  '/prd/master/building': typeof AuthenticatedPrdMasterBuildingRoute
-  '/prd/master/fcs': typeof AuthenticatedPrdMasterFcsRoute
-  '/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
-  '/prd/master/sub-section': typeof AuthenticatedPrdMasterSubSectionRoute
+  "/login": typeof LoginRoute;
+  "/reset-password/$token": typeof ResetPasswordTokenRoute;
+  "/": typeof AuthenticatedIndexRoute;
+  "/adm/activity-log": typeof AuthenticatedAdmActivityLogRoute;
+  "/adm/approval-structure": typeof AuthenticatedAdmApprovalStructureRoute;
+  "/adm/role-menu": typeof AuthenticatedAdmRoleMenuRoute;
+  "/adm/role-permission": typeof AuthenticatedAdmRolePermissionRoute;
+  "/adm/user-role": typeof AuthenticatedAdmUserRoleRoute;
+  "/adm/master/department": typeof AuthenticatedAdmMasterDepartmentRoute;
+  "/adm/master/employee": typeof AuthenticatedAdmMasterEmployeeRoute;
+  "/adm/master/key-value": typeof AuthenticatedAdmMasterKeyValueRoute;
+  "/adm/master/menu": typeof AuthenticatedAdmMasterMenuRoute;
+  "/adm/master/reason": typeof AuthenticatedAdmMasterReasonRoute;
+  "/adm/master/role": typeof AuthenticatedAdmMasterRoleRoute;
+  "/adm/master/user": typeof AuthenticatedAdmMasterUserRoute;
+  "/egd/master/process": typeof AuthenticatedEgdMasterProcessRoute;
+  "/egd/master/uom": typeof AuthenticatedEgdMasterUomRoute;
+  "/pid/master/location": typeof AuthenticatedPidMasterLocationRoute;
+  "/pid/master/warehouse": typeof AuthenticatedPidMasterWarehouseRoute;
+  "/prd/master/building": typeof AuthenticatedPrdMasterBuildingRoute;
+  "/prd/master/fcs": typeof AuthenticatedPrdMasterFcsRoute;
+  "/prd/master/section": typeof AuthenticatedPrdMasterSectionRoute;
+  "/prd/master/sub-section": typeof AuthenticatedPrdMasterSubSectionRoute;
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/_authenticated': typeof AuthenticatedRouteWithChildren
-  '/login': typeof LoginRoute
-  '/reset-password/$token': typeof ResetPasswordTokenRoute
-  '/_authenticated/': typeof AuthenticatedIndexRoute
-  '/_authenticated/admin/activity-log': typeof AuthenticatedAdminActivityLogRoute
-  '/_authenticated/admin/approval-structure': typeof AuthenticatedAdminApprovalStructureRoute
-  '/_authenticated/admin/role-menu': typeof AuthenticatedAdminRoleMenuRoute
-  '/_authenticated/admin/role-permission': typeof AuthenticatedAdminRolePermissionRoute
-  '/_authenticated/admin/user-role': typeof AuthenticatedAdminUserRoleRoute
-  '/_authenticated/admin/master/department': typeof AuthenticatedAdminMasterDepartmentRoute
-  '/_authenticated/admin/master/employee': typeof AuthenticatedAdminMasterEmployeeRoute
-  '/_authenticated/admin/master/key-value': typeof AuthenticatedAdminMasterKeyValueRoute
-  '/_authenticated/admin/master/menu': typeof AuthenticatedAdminMasterMenuRoute
-  '/_authenticated/admin/master/reason': typeof AuthenticatedAdminMasterReasonRoute
-  '/_authenticated/admin/master/role': typeof AuthenticatedAdminMasterRoleRoute
-  '/_authenticated/admin/master/user': typeof AuthenticatedAdminMasterUserRoute
-  '/_authenticated/egd/master/process': typeof AuthenticatedEgdMasterProcessRoute
-  '/_authenticated/egd/master/uom': typeof AuthenticatedEgdMasterUomRoute
-  '/_authenticated/pid/master/location': typeof AuthenticatedPidMasterLocationRoute
-  '/_authenticated/pid/master/warehouse': typeof AuthenticatedPidMasterWarehouseRoute
-  '/_authenticated/prd/master/building': typeof AuthenticatedPrdMasterBuildingRoute
-  '/_authenticated/prd/master/fcs': typeof AuthenticatedPrdMasterFcsRoute
-  '/_authenticated/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
-  '/_authenticated/prd/master/sub-section': typeof AuthenticatedPrdMasterSubSectionRoute
+  __root__: typeof rootRoute;
+  "/_authenticated": typeof AuthenticatedRouteWithChildren;
+  "/login": typeof LoginRoute;
+  "/reset-password/$token": typeof ResetPasswordTokenRoute;
+  "/_authenticated/": typeof AuthenticatedIndexRoute;
+  "/_authenticated/adm/activity-log": typeof AuthenticatedAdmActivityLogRoute;
+  "/_authenticated/adm/approval-structure": typeof AuthenticatedAdmApprovalStructureRoute;
+  "/_authenticated/adm/role-menu": typeof AuthenticatedAdmRoleMenuRoute;
+  "/_authenticated/adm/role-permission": typeof AuthenticatedAdmRolePermissionRoute;
+  "/_authenticated/adm/user-role": typeof AuthenticatedAdmUserRoleRoute;
+  "/_authenticated/adm/master/department": typeof AuthenticatedAdmMasterDepartmentRoute;
+  "/_authenticated/adm/master/employee": typeof AuthenticatedAdmMasterEmployeeRoute;
+  "/_authenticated/adm/master/key-value": typeof AuthenticatedAdmMasterKeyValueRoute;
+  "/_authenticated/adm/master/menu": typeof AuthenticatedAdmMasterMenuRoute;
+  "/_authenticated/adm/master/reason": typeof AuthenticatedAdmMasterReasonRoute;
+  "/_authenticated/adm/master/role": typeof AuthenticatedAdmMasterRoleRoute;
+  "/_authenticated/adm/master/user": typeof AuthenticatedAdmMasterUserRoute;
+  "/_authenticated/egd/master/process": typeof AuthenticatedEgdMasterProcessRoute;
+  "/_authenticated/egd/master/uom": typeof AuthenticatedEgdMasterUomRoute;
+  "/_authenticated/pid/master/location": typeof AuthenticatedPidMasterLocationRoute;
+  "/_authenticated/pid/master/warehouse": typeof AuthenticatedPidMasterWarehouseRoute;
+  "/_authenticated/prd/master/building": typeof AuthenticatedPrdMasterBuildingRoute;
+  "/_authenticated/prd/master/fcs": typeof AuthenticatedPrdMasterFcsRoute;
+  "/_authenticated/prd/master/section": typeof AuthenticatedPrdMasterSectionRoute;
+  "/_authenticated/prd/master/sub-section": typeof AuthenticatedPrdMasterSubSectionRoute;
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | ''
-    | '/login'
-    | '/reset-password/$token'
-    | '/'
-    | '/admin/activity-log'
-    | '/admin/approval-structure'
-    | '/admin/role-menu'
-    | '/admin/role-permission'
-    | '/admin/user-role'
-    | '/admin/master/department'
-    | '/admin/master/employee'
-    | '/admin/master/key-value'
-    | '/admin/master/menu'
-    | '/admin/master/reason'
-    | '/admin/master/role'
-    | '/admin/master/user'
-    | '/egd/master/process'
-    | '/egd/master/uom'
-    | '/pid/master/location'
-    | '/pid/master/warehouse'
-    | '/prd/master/building'
-    | '/prd/master/fcs'
-    | '/prd/master/section'
-    | '/prd/master/sub-section'
-  fileRoutesByTo: FileRoutesByTo
+    | ""
+    | "/login"
+    | "/reset-password/$token"
+    | "/"
+    | "/adm/activity-log"
+    | "/adm/approval-structure"
+    | "/adm/role-menu"
+    | "/adm/role-permission"
+    | "/adm/user-role"
+    | "/adm/master/department"
+    | "/adm/master/employee"
+    | "/adm/master/key-value"
+    | "/adm/master/menu"
+    | "/adm/master/reason"
+    | "/adm/master/role"
+    | "/adm/master/user"
+    | "/egd/master/process"
+    | "/egd/master/uom"
+    | "/pid/master/location"
+    | "/pid/master/warehouse"
+    | "/prd/master/building"
+    | "/prd/master/fcs"
+    | "/prd/master/section"
+    | "/prd/master/sub-section";
+  fileRoutesByTo: FileRoutesByTo;
   to:
-    | '/login'
-    | '/reset-password/$token'
-    | '/'
-    | '/admin/activity-log'
-    | '/admin/approval-structure'
-    | '/admin/role-menu'
-    | '/admin/role-permission'
-    | '/admin/user-role'
-    | '/admin/master/department'
-    | '/admin/master/employee'
-    | '/admin/master/key-value'
-    | '/admin/master/menu'
-    | '/admin/master/reason'
-    | '/admin/master/role'
-    | '/admin/master/user'
-    | '/egd/master/process'
-    | '/egd/master/uom'
-    | '/pid/master/location'
-    | '/pid/master/warehouse'
-    | '/prd/master/building'
-    | '/prd/master/fcs'
-    | '/prd/master/section'
-    | '/prd/master/sub-section'
+    | "/login"
+    | "/reset-password/$token"
+    | "/"
+    | "/adm/activity-log"
+    | "/adm/approval-structure"
+    | "/adm/role-menu"
+    | "/adm/role-permission"
+    | "/adm/user-role"
+    | "/adm/master/department"
+    | "/adm/master/employee"
+    | "/adm/master/key-value"
+    | "/adm/master/menu"
+    | "/adm/master/reason"
+    | "/adm/master/role"
+    | "/adm/master/user"
+    | "/egd/master/process"
+    | "/egd/master/uom"
+    | "/pid/master/location"
+    | "/pid/master/warehouse"
+    | "/prd/master/building"
+    | "/prd/master/fcs"
+    | "/prd/master/section"
+    | "/prd/master/sub-section";
   id:
-    | '__root__'
-    | '/_authenticated'
-    | '/login'
-    | '/reset-password/$token'
-    | '/_authenticated/'
-    | '/_authenticated/admin/activity-log'
-    | '/_authenticated/admin/approval-structure'
-    | '/_authenticated/admin/role-menu'
-    | '/_authenticated/admin/role-permission'
-    | '/_authenticated/admin/user-role'
-    | '/_authenticated/admin/master/department'
-    | '/_authenticated/admin/master/employee'
-    | '/_authenticated/admin/master/key-value'
-    | '/_authenticated/admin/master/menu'
-    | '/_authenticated/admin/master/reason'
-    | '/_authenticated/admin/master/role'
-    | '/_authenticated/admin/master/user'
-    | '/_authenticated/egd/master/process'
-    | '/_authenticated/egd/master/uom'
-    | '/_authenticated/pid/master/location'
-    | '/_authenticated/pid/master/warehouse'
-    | '/_authenticated/prd/master/building'
-    | '/_authenticated/prd/master/fcs'
-    | '/_authenticated/prd/master/section'
-    | '/_authenticated/prd/master/sub-section'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/_authenticated"
+    | "/login"
+    | "/reset-password/$token"
+    | "/_authenticated/"
+    | "/_authenticated/adm/activity-log"
+    | "/_authenticated/adm/approval-structure"
+    | "/_authenticated/adm/role-menu"
+    | "/_authenticated/adm/role-permission"
+    | "/_authenticated/adm/user-role"
+    | "/_authenticated/adm/master/department"
+    | "/_authenticated/adm/master/employee"
+    | "/_authenticated/adm/master/key-value"
+    | "/_authenticated/adm/master/menu"
+    | "/_authenticated/adm/master/reason"
+    | "/_authenticated/adm/master/role"
+    | "/_authenticated/adm/master/user"
+    | "/_authenticated/egd/master/process"
+    | "/_authenticated/egd/master/uom"
+    | "/_authenticated/pid/master/location"
+    | "/_authenticated/pid/master/warehouse"
+    | "/_authenticated/prd/master/building"
+    | "/_authenticated/prd/master/fcs"
+    | "/_authenticated/prd/master/section"
+    | "/_authenticated/prd/master/sub-section";
+  fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
-  LoginRoute: typeof LoginRoute
-  ResetPasswordTokenRoute: typeof ResetPasswordTokenRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren;
+  LoginRoute: typeof LoginRoute;
+  ResetPasswordTokenRoute: typeof ResetPasswordTokenRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
   ResetPasswordTokenRoute: ResetPasswordTokenRoute,
-}
+};
 
 export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 
 /* ROUTE_MANIFEST_START
 {
@@ -625,18 +623,18 @@ export const routeTree = rootRoute
       "filePath": "_authenticated.tsx",
       "children": [
         "/_authenticated/",
-        "/_authenticated/admin/activity-log",
-        "/_authenticated/admin/approval-structure",
-        "/_authenticated/admin/role-menu",
-        "/_authenticated/admin/role-permission",
-        "/_authenticated/admin/user-role",
-        "/_authenticated/admin/master/department",
-        "/_authenticated/admin/master/employee",
-        "/_authenticated/admin/master/key-value",
-        "/_authenticated/admin/master/menu",
-        "/_authenticated/admin/master/reason",
-        "/_authenticated/admin/master/role",
-        "/_authenticated/admin/master/user",
+        "/_authenticated/adm/activity-log",
+        "/_authenticated/adm/approval-structure",
+        "/_authenticated/adm/role-menu",
+        "/_authenticated/adm/role-permission",
+        "/_authenticated/adm/user-role",
+        "/_authenticated/adm/master/department",
+        "/_authenticated/adm/master/employee",
+        "/_authenticated/adm/master/key-value",
+        "/_authenticated/adm/master/menu",
+        "/_authenticated/adm/master/reason",
+        "/_authenticated/adm/master/role",
+        "/_authenticated/adm/master/user",
         "/_authenticated/egd/master/process",
         "/_authenticated/egd/master/uom",
         "/_authenticated/pid/master/location",
@@ -657,52 +655,52 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/index.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/admin/activity-log": {
-      "filePath": "_authenticated/admin/activity-log.tsx",
+    "/_authenticated/adm/activity-log": {
+      "filePath": "_authenticated/adm/activity-log.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/admin/approval-structure": {
-      "filePath": "_authenticated/admin/approval-structure.tsx",
+    "/_authenticated/adm/approval-structure": {
+      "filePath": "_authenticated/adm/approval-structure.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/admin/role-menu": {
-      "filePath": "_authenticated/admin/role-menu.tsx",
+    "/_authenticated/adm/role-menu": {
+      "filePath": "_authenticated/adm/role-menu.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/admin/role-permission": {
-      "filePath": "_authenticated/admin/role-permission.tsx",
+    "/_authenticated/adm/role-permission": {
+      "filePath": "_authenticated/adm/role-permission.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/admin/user-role": {
-      "filePath": "_authenticated/admin/user-role.tsx",
+    "/_authenticated/adm/user-role": {
+      "filePath": "_authenticated/adm/user-role.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/admin/master/department": {
-      "filePath": "_authenticated/admin/master/department.tsx",
+    "/_authenticated/adm/master/department": {
+      "filePath": "_authenticated/adm/master/department.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/admin/master/employee": {
-      "filePath": "_authenticated/admin/master/employee.tsx",
+    "/_authenticated/adm/master/employee": {
+      "filePath": "_authenticated/adm/master/employee.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/admin/master/key-value": {
-      "filePath": "_authenticated/admin/master/key-value.tsx",
+    "/_authenticated/adm/master/key-value": {
+      "filePath": "_authenticated/adm/master/key-value.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/admin/master/menu": {
-      "filePath": "_authenticated/admin/master/menu.tsx",
+    "/_authenticated/adm/master/menu": {
+      "filePath": "_authenticated/adm/master/menu.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/admin/master/reason": {
-      "filePath": "_authenticated/admin/master/reason.tsx",
+    "/_authenticated/adm/master/reason": {
+      "filePath": "_authenticated/adm/master/reason.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/admin/master/role": {
-      "filePath": "_authenticated/admin/master/role.tsx",
+    "/_authenticated/adm/master/role": {
+      "filePath": "_authenticated/adm/master/role.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/admin/master/user": {
-      "filePath": "_authenticated/admin/master/user.tsx",
+    "/_authenticated/adm/master/user": {
+      "filePath": "_authenticated/adm/master/user.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/egd/master/process": {

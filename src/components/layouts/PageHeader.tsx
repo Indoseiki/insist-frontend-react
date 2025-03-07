@@ -18,7 +18,7 @@ const PageHeader = ({ title }: { title: string }) => {
     () =>
       pathArray.map((item, index) => (
         <Text key={index} size={size} tt="capitalize" c="blue">
-          {item}
+          {index === 0 ? item.toUpperCase() : item}
         </Text>
       )),
     [pathArray, size]
