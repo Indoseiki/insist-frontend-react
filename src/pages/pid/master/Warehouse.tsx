@@ -313,30 +313,6 @@ const WarehousePage = () => {
     [];
 
   const {
-    data: dataFilterWarehouses,
-    isSuccess: isSuccessFilterWarehouses,
-    fetchNextPage: fetchNextPageFilterWarehouses,
-    hasNextPage: hasNextPageFilterWarehouses,
-    isFetchingNextPage: isFetchingNextPageFilterWarehouses,
-  } = useWarehouseInfinityQuery({
-    search: stateFilterLocation.warehouse,
-  });
-
-  const flatDataFilterWarehouses =
-    (isSuccessFilterWarehouses &&
-      dataFilterWarehouses?.pages.flatMap((page) =>
-        page.status === 200 ? page.data?.items : []
-      )) ||
-    [];
-
-  const mappedDataFilterWarehouses = useMemo(() => {
-    return flatDataFilterWarehouses.map((warehouse) => ({
-      value: warehouse.id.toString(),
-      label: warehouse.description ? warehouse.description : "",
-    }));
-  }, [flatDataFilterWarehouses]);
-
-  const {
     mutate: mutateCreateLocation,
     isPending: isPendingMutateCreateLocation,
   } = useCreateLocation();
@@ -1565,82 +1541,6 @@ const WarehousePage = () => {
                 />
               }
             />
-            <Menu
-              shadow="md"
-              closeOnClickOutside={false}
-              opened={stateFilterLocation.open}
-              onChange={(isOpen) => updateStateFilterLocation({ open: isOpen })}
-            >
-              <Menu.Target>
-                <ActionIcon variant="filled">
-                  <IconFilter
-                    style={{ width: rem(16), height: rem(16) }}
-                    stroke={1.5}
-                    onClick={() =>
-                      updateStateFilterLocation({
-                        open: !stateFilterLocation.open,
-                      })
-                    }
-                  />
-                </ActionIcon>
-              </Menu.Target>
-              <Menu.Dropdown p={15} w="fit-content">
-                <Text mb={5}>Filter</Text>
-                <Select
-                  placeholder="Warehouse"
-                  data={mappedDataFilterWarehouses}
-                  size={size}
-                  w={250}
-                  searchable
-                  searchValue={stateFilterLocation.warehouse || ""}
-                  onSearchChange={(value) =>
-                    updateStateFilterLocation({ warehouse: value || "" })
-                  }
-                  value={
-                    stateFilterLocation.idWarehouse
-                      ? stateFilterLocation.idWarehouse
-                      : ""
-                  }
-                  onChange={(value, _option) =>
-                    updateStateFilterLocation({ idWarehouse: value || "" })
-                  }
-                  maxDropdownHeight={heightDropdown}
-                  nothingFoundMessage="Nothing found..."
-                  clearable
-                  clearButtonProps={{
-                    onClick: () => {
-                      updateStateFilterLocation({ warehouse: "" });
-                    },
-                  }}
-                  scrollAreaProps={{
-                    onScrollPositionChange: (position) => {
-                      let maxY = 37;
-                      const dataCount = mappedDataFilterWarehouses.length;
-                      const multipleOf10 = Math.floor(dataCount / 10) * 10;
-                      if (position.y >= maxY) {
-                        maxY += Math.floor(multipleOf10 / 10) * 37;
-                        if (
-                          hasNextPageFilterWarehouses &&
-                          !isFetchingNextPageFilterWarehouses
-                        ) {
-                          fetchNextPageFilterWarehouses();
-                        }
-                      }
-                    },
-                  }}
-                />
-                <Flex justify="end" pt={10}>
-                  <Button
-                    leftSection={<IconX size={14} />}
-                    variant="default"
-                    size={sizeButton}
-                    onClick={() => updateStateFilterLocation({ open: false })}
-                  >
-                    Close
-                  </Button>
-                </Flex>
-              </Menu.Dropdown>
-            </Menu>
           </Flex>
         </Flex>
         <Modal
