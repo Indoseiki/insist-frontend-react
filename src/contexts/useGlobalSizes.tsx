@@ -5,6 +5,7 @@ type SizeContextType = {
   size: "xs" | "sm";
   sizeButton: "compact-xs" | "xs";
   sizeTitle: string;
+  sizeSubTitle: string;
   sizeActionButton: number;
   fullWidth: boolean;
   heightDropdown: number;
@@ -22,6 +23,7 @@ export const SizeProvider: React.FC<SizeProviderProps> = ({ children }) => {
   const size = isSmall ? "xs" : "sm";
   const sizeButton = isSmall ? "compact-xs" : "xs";
   const sizeTitle = isSmall ? "1rem" : "1.5rem";
+  const sizeSubTitle = isSmall ? "0.8rem" : "1rem";
   const sizeActionButton = isSmall ? 100 : 16;
   const fullWidth = isSmall ? true : false;
   const heightDropdown = isSmall ? 200 : 300;
@@ -30,6 +32,7 @@ export const SizeProvider: React.FC<SizeProviderProps> = ({ children }) => {
     size,
     sizeButton,
     sizeTitle,
+    sizeSubTitle,
     sizeActionButton,
     fullWidth,
     heightDropdown,

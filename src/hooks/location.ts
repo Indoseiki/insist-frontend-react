@@ -13,6 +13,7 @@ const useLocationsQuery = (params: LocationParams) => {
   return useQuery<ApiResponse<Result<Location[]>>, Error>({
     queryKey: ["Location", params],
     queryFn: () => getLocations(params),
+    enabled: !!params.id_warehouse,
   });
 };
 

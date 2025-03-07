@@ -1,19 +1,27 @@
 import { Center, Stack, Text } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 
-const NoDataFound = () => {
+interface TextNoFound {
+  subTitle?: string;
+  remarks?: string;
+}
+
+const NoDataFound = ({
+  subTitle = "There is no data matching this filter",
+  remarks = "Remove all filters to display the data",
+}: TextNoFound) => {
   return (
-    <Center flex={1}>
+    <Center style={{ flex: 1 }}>
       <Stack justify="center" align="center" gap={1}>
-        <IconSearch size="100px" color="gray" />
+        <IconSearch size={100} color="gray" />
         <Text size="xl" my={20}>
           No data found
         </Text>
         <Text size="md" c="dimmed">
-          There is no data matching this filter.
+          {subTitle}
         </Text>
         <Text size="md" c="dimmed">
-          Remove all filters to display the data.
+          {remarks}
         </Text>
       </Stack>
     </Center>
