@@ -27,9 +27,9 @@ import {
 import { useMemo, useState } from "react";
 import { ActivityLog } from "../../types/activityLog";
 import { formatDateTime } from "../../utils/formatTime";
-import TableScrollable from "../../components/table/TableScrollable";
-import TableFooter from "../../components/table/TableFooter";
-import NoDataFound from "../../components/table/NoDataFound";
+import TableScrollable from "../../components/Table/TableScrollable";
+import TableFooter from "../../components/Table/TableFooter";
+import NoDataFound from "../../components/Table/NoDataFound";
 import { StateTable } from "../../types/table";
 import { useActivityLogsQuery } from "../../hooks/activityLog";
 import { useSizes } from "../../contexts/useGlobalSizes";

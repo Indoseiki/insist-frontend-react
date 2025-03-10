@@ -13,7 +13,7 @@ import { NavigationProgress } from "@mantine/nprogress";
 import { Notifications } from "@mantine/notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { RingLoader } from "./components/table/RingLoader";
+import { RingLoader } from "./components/Table/RingLoader";
 import { SizeProvider } from "./contexts/useGlobalSizes";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import dayjs from "dayjs";

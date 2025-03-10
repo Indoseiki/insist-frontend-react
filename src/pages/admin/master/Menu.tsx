@@ -35,9 +35,9 @@ import {
 import { formatDateTime } from "../../../utils/formatTime";
 import { notifications } from "@mantine/notifications";
 import { useForm } from "@mantine/form";
-import NoDataFound from "../../../components/table/NoDataFound";
-import TableFooter from "../../../components/table/TableFooter";
-import TableScrollable from "../../../components/table/TableScrollable";
+import NoDataFound from "../../../components/Table/NoDataFound";
+import TableFooter from "../../../components/Table/TableFooter";
+import TableScrollable from "../../../components/Table/TableScrollable";
 import {
   IconBinoculars,
   IconDeviceFloppy,

@@ -38,8 +38,8 @@ import {
   IconUserX,
   IconX,
 } from "@tabler/icons-react";
-import TableFooter from "../../../components/table/TableFooter";
-import TableScrollable from "../../../components/table/TableScrollable";
+import TableFooter from "../../../components/Table/TableFooter";
+import TableScrollable from "../../../components/Table/TableScrollable";
 import {
   useChangePassword,
   useCreateUser,
@@ -49,7 +49,7 @@ import {
 } from "../../../hooks/user";
 import { User } from "../../../types/user";
 import { formatDateTime } from "../../../utils/formatTime";
-import NoDataFound from "../../../components/table/NoDataFound";
+import NoDataFound from "../../../components/Table/NoDataFound";
 import { useSizes } from "../../../contexts/useGlobalSizes";
 import { useDisclosure, useOs } from "@mantine/hooks";
 import { useForm } from "@mantine/form";

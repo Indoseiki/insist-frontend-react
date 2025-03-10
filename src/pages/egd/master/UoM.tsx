@@ -34,9 +34,9 @@ import {
   useUpdateUoM,
 } from "../../../hooks/uom";
 import { formatDateTime } from "../../../utils/formatTime";
-import TableScrollable from "../../../components/table/TableScrollable";
-import TableFooter from "../../../components/table/TableFooter";
-import NoDataFound from "../../../components/table/NoDataFound";
+import TableScrollable from "../../../components/Table/TableScrollable";
+import TableFooter from "../../../components/Table/TableFooter";
+import NoDataFound from "../../../components/Table/NoDataFound";
 import { useDisclosure, useOs } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";

@@ -24,9 +24,9 @@ import {
 import { useSizes } from "../../contexts/useGlobalSizes";
 import { useMemo, useState } from "react";
 import { useRolesQuery } from "../../hooks/role";
-import TableScrollable from "../../components/table/TableScrollable";
-import TableFooter from "../../components/table/TableFooter";
-import NoDataFound from "../../components/table/NoDataFound";
+import TableScrollable from "../../components/Table/TableScrollable";
+import TableFooter from "../../components/Table/TableFooter";
+import NoDataFound from "../../components/Table/NoDataFound";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
