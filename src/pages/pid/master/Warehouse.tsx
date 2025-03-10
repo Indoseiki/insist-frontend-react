@@ -2,6 +2,7 @@ import {
   ActionIcon,
   Button,
   Center,
+  Checkbox,
   CheckIcon,
   CloseButton,
   Combobox,
@@ -12,6 +13,7 @@ import {
   Loader,
   Menu,
   Modal,
+  Paper,
   rem,
   ScrollArea,
   Select,
@@ -26,10 +28,14 @@ import {
 import PageHeader from "../../../components/layouts/PageHeader";
 import {
   IconBinoculars,
+  IconCancel,
   IconDeviceFloppy,
+  IconDotsVertical,
   IconEdit,
+  IconFileDownload,
   IconFilter,
   IconPlus,
+  IconPrinter,
   IconSearch,
   IconTrash,
   IconX,
@@ -45,9 +51,9 @@ import {
   useWarehouseInfinityQuery,
 } from "../../../hooks/warehouse";
 import { formatDateTime } from "../../../utils/formatTime";
-import TableScrollable from "../../../components/table/TableScrollable";
-import TableFooter from "../../../components/table/TableFooter";
-import NoDataFound from "../../../components/table/NoDataFound";
+import TableScrollable from "../../../components/Table/TableScrollable";
+import TableFooter from "../../../components/Table/TableFooter";
+import NoDataFound from "../../../components/Table/NoDataFound";
 import { useDisclosure, useOs } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
@@ -67,6 +73,9 @@ import {
   useUpdateLocation,
 } from "../../../hooks/location";
 import { Location } from "../../../types/location";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import QRCodeLocation from "../../../components/Print/QRCodeLocation";
+import TableMultipleScrollable from "../../../components/Table/TableMultipleScrollable";
 
 interface StateFilterWarehouse {
   open: boolean;
@@ -105,8 +114,13 @@ interface StateFormLocation extends StateForm {
   warehouse: string;
 }
 
+interface StateTableLocation extends StateTable<Location> {
+  selections: Location[];
+}
+
 const WarehousePage = () => {
-  const { size, sizeButton, fullWidth, heightDropdown } = useSizes();
+  const { size, sizeActionButton, sizeButton, fullWidth, heightDropdown } =
+    useSizes();
 
   const { colorScheme } = useMantineColorScheme();
 
@@ -128,6 +142,11 @@ const WarehousePage = () => {
   const [
     openedFormDeleteLocation,
     { open: openFormDeleteLocation, close: closeFormDeleteLocation },
+  ] = useDisclosure(false);
+
+  const [
+    openedPDFQRCodeLocation,
+    { open: openPDFQRCodeLocation, close: closePDFQRCodeLocation },
   ] = useDisclosure(false);
 
   const [stateTableWarehouse, setStateTableWarehouse] = useState<
@@ -156,15 +175,15 @@ const WarehousePage = () => {
       building: "",
     });
 
-  const [stateTableLocation, setStateTableLocation] = useState<
-    StateTable<Location>
-  >({
-    activePage: 1,
-    rowsPerPage: "20",
-    selected: null,
-    sortBy: "id_warehouse",
-    sortDirection: false,
-  });
+  const [stateTableLocation, setStateTableLocation] =
+    useState<StateTableLocation>({
+      activePage: 1,
+      rowsPerPage: "20",
+      selected: null,
+      sortBy: "location",
+      sortDirection: false,
+      selections: [],
+    });
 
   const [stateFilterLocation, setStateFilterLocation] =
     useState<StateFilterLocation>({
@@ -194,10 +213,12 @@ const WarehousePage = () => {
   const updateStateFormWarehouse = (newState: Partial<StateFormWarehouse>) =>
     setStateFormWarehouse((prev) => ({ ...prev, ...newState }));
 
-  const handleClickRowWarehouse = (row: Warehouse) =>
+  const handleClickRowWarehouse = (row: Warehouse) => {
     updateStateTableWarehouse({ selected: row });
+    updateStateTableLocation({ selections: [] });
+  };
 
-  const updateStateTableLocation = (newState: Partial<StateTable<Location>>) =>
+  const updateStateTableLocation = (newState: Partial<StateTableLocation>) =>
     setStateTableLocation((prev) => ({ ...prev, ...newState }));
 
   const updateStateFilterLocation = (newState: Partial<StateFilterLocation>) =>
@@ -206,8 +227,27 @@ const WarehousePage = () => {
   const updateStateFormLocation = (newState: Partial<StateFormLocation>) =>
     setStateFormLocation((prev) => ({ ...prev, ...newState }));
 
-  const handleClickRowLocation = (row: Location) =>
-    updateStateTableLocation({ selected: row });
+  const handleToggleRowLocation = (id: number) => {
+    updateStateTableLocation({
+      selections: stateTableLocation.selections.some(
+        (item: Location) => item.id === id
+      )
+        ? stateTableLocation.selections.filter(
+            (item: Location) => item.id !== id
+          )
+        : [...stateTableLocation.selections, { id } as Location],
+    });
+  };
+
+  const handleToggleAllLocation = () => {
+    updateStateTableLocation({
+      selections:
+        stateTableLocation.selections.length ===
+        (dataLocations?.data.items?.length ?? 0)
+          ? []
+          : [...(dataLocations?.data.items ?? [])],
+    });
+  };
 
   const {
     data: dataWarehouses,
@@ -376,8 +416,11 @@ const WarehousePage = () => {
       return null;
 
     return dataLocations.data.items.map((row: Location) => {
-      const isSelected = stateTableLocation.selected?.id === row.id;
-      const rowBg = isSelected
+      const isChecked = stateTableLocation.selections.some(
+        (item: Location) => item.id === row.id
+      );
+
+      const rowBg = isChecked
         ? colorScheme === "light"
           ? "#f8f9fa"
           : "#2e2e2e"
@@ -386,11 +429,21 @@ const WarehousePage = () => {
       return (
         <Table.Tr
           key={row.id}
-          onClick={() => handleClickRowLocation(row)}
+          onClick={() => {
+            handleToggleRowLocation(row.id);
+          }}
           className="hover-row"
           style={{ cursor: "pointer", backgroundColor: rowBg }}
         >
-          <Table.Td>{row.location}</Table.Td>
+          <Table.Td w={"50px"}>
+            <Checkbox
+              checked={isChecked}
+              onChange={() => {
+                handleToggleRowLocation(row.id);
+              }}
+            />
+          </Table.Td>
+          <Table.Td w="200px">{row.location}</Table.Td>
           <Table.Td>{row.remarks}</Table.Td>
           <Table.Td w="150px">{row.updated_by?.name}</Table.Td>
           <Table.Td w="150px">{formatDateTime(row.updated_at)}</Table.Td>
@@ -401,6 +454,7 @@ const WarehousePage = () => {
     isSuccessLocations,
     dataLocations,
     stateTableLocation.selected,
+    stateTableLocation.selections,
     colorScheme,
   ]);
 
@@ -714,7 +768,7 @@ const WarehousePage = () => {
       return;
     }
 
-    if (!stateTableLocation.selected) {
+    if (stateTableLocation.selections.length === 0) {
       notifications.show({
         title: "Select Data First!",
         message: "Please select the data you want to process before proceeding",
@@ -722,16 +776,29 @@ const WarehousePage = () => {
       return;
     }
 
+    if (stateTableLocation.selections.length > 1) {
+      notifications.show({
+        title: "Too Many Selections!",
+        message:
+          "You can only select one item to proceed. Please deselect extra selections.",
+      });
+      return;
+    }
+
+    const selected: Location | undefined = dataLocations?.data.items.find(
+      (item: Location) => item.id === stateTableLocation.selections[0]?.id
+    );
+
     updateStateFormLocation({
       title: "Edit Data",
       action: "edit",
-      warehouse: stateTableLocation.selected.warehouse?.description,
+      warehouse: selected?.warehouse?.description,
     });
 
     formLocation.setValues({
-      id_warehouse: stateTableLocation.selected.warehouse?.id.toString(),
-      location: stateTableLocation.selected.location,
-      remarks: stateTableLocation.selected.remarks,
+      id_warehouse: selected?.warehouse?.id.toString(),
+      location: selected?.location,
+      remarks: selected?.remarks,
     });
 
     openFormLocation();
@@ -747,10 +814,19 @@ const WarehousePage = () => {
       return;
     }
 
-    if (!stateTableLocation.selected) {
+    if (stateTableLocation.selections.length === 0) {
       notifications.show({
         title: "Select Data First!",
         message: "Please select the data you want to process before proceeding",
+      });
+      return;
+    }
+
+    if (stateTableLocation.selections.length > 1) {
+      notifications.show({
+        title: "Too Many Selections!",
+        message:
+          "You can only select one item to proceed. Please deselect extra selections.",
       });
       return;
     }
@@ -772,7 +848,7 @@ const WarehousePage = () => {
       return;
     }
 
-    if (!stateTableLocation.selected) {
+    if (stateTableLocation.selections.length === 0) {
       notifications.show({
         title: "Select Data First!",
         message: "Please select the data you want to process before proceeding",
@@ -780,22 +856,39 @@ const WarehousePage = () => {
       return;
     }
 
+    if (stateTableLocation.selections.length > 1) {
+      notifications.show({
+        title: "Too Many Selections!",
+        message:
+          "You can only select one item to proceed. Please deselect extra selections.",
+      });
+      return;
+    }
+
+    const selected: Location | undefined = dataLocations?.data.items.find(
+      (item: Location) => item.id === stateTableLocation.selections[0]?.id
+    );
+
     updateStateFormLocation({
       title: "View Data",
       action: "view",
-      warehouse: stateTableLocation.selected.warehouse?.description,
+      warehouse: selected?.warehouse?.description,
     });
 
     formLocation.setValues({
-      id_warehouse: stateTableLocation.selected.warehouse?.id.toString(),
-      location: stateTableLocation.selected.location,
-      remarks: stateTableLocation.selected.remarks,
+      id_warehouse: selected?.warehouse?.id.toString(),
+      location: selected?.location,
+      remarks: selected?.remarks,
     });
 
     openFormLocation();
   };
 
   const handleSubmitFormLocation = () => {
+    const selected: Location | undefined = dataLocations?.data.items.find(
+      (item: Location) => item.id === stateTableLocation.selections[0]?.id
+    );
+
     const dataLocation = formLocation.getValues();
 
     let mapLocation = {
@@ -849,7 +942,7 @@ const WarehousePage = () => {
     if (stateFormLocation.action === "edit") {
       mutateUpdateLocation(
         {
-          id: stateTableLocation.selected?.id!,
+          id: selected?.id!,
           params: mapLocation,
         },
         {
@@ -859,7 +952,7 @@ const WarehousePage = () => {
               action: "Update",
               is_success: true,
               os: os,
-              message: `${res?.message} (${stateTableLocation.selected?.location} ⮕ ${mapLocation.location})`,
+              message: `${res?.message} (${selected?.location} ⮕ ${mapLocation.location})`,
             });
 
             notifications.show({
@@ -868,7 +961,6 @@ const WarehousePage = () => {
               color: "green",
             });
 
-            updateStateTableLocation({ selected: null });
             refetchLocations();
             closeFormLocation();
           },
@@ -880,7 +972,7 @@ const WarehousePage = () => {
               action: "Update",
               is_success: false,
               os: os,
-              message: `${res?.data.message} (${stateTableLocation.selected?.location} ⮕ ${mapLocation.location})`,
+              message: `${res?.data.message} (${selected?.location} ⮕ ${mapLocation.location})`,
             });
 
             notifications.show({
@@ -897,14 +989,14 @@ const WarehousePage = () => {
     }
 
     if (stateFormLocation.action === "delete") {
-      mutateDeleteLocation(stateTableLocation.selected?.id!, {
+      mutateDeleteLocation(selected?.id!, {
         onSuccess: async (res) => {
           await createActivityLog({
             username: dataUser?.data.username,
             action: "Delete",
             is_success: true,
             os: os,
-            message: `${res?.message} (${stateTableLocation.selected?.location})`,
+            message: `${res?.message} (${selected?.location})`,
           });
 
           notifications.show({
@@ -913,7 +1005,10 @@ const WarehousePage = () => {
             color: "green",
           });
 
-          updateStateTableLocation({ selected: null });
+          updateStateTableLocation({
+            selections: [],
+          });
+
           refetchLocations();
           closeFormDeleteLocation();
         },
@@ -925,7 +1020,7 @@ const WarehousePage = () => {
             action: "Delete",
             is_success: false,
             os: os,
-            message: `${res?.data.message} (${stateTableLocation.selected?.location}) `,
+            message: `${res?.data.message} (${selected?.location}) `,
           });
 
           notifications.show({
@@ -949,6 +1044,17 @@ const WarehousePage = () => {
     }
     formLocation.clearErrors();
     formLocation.reset();
+  };
+
+  const handlePrintQRCodeLocation = async () => {
+    if (stateTableLocation.selections.length === 0) {
+      notifications.show({
+        title: "Select Data First!",
+        message: "Please select the data you want to process before proceeding",
+      });
+      return;
+    }
+    openPDFQRCodeLocation();
   };
 
   const comboboxBuilding = useCombobox({
@@ -1411,7 +1517,7 @@ const WarehousePage = () => {
               size={sizeButton}
               color="red"
               loading={isPendingMutateDeleteWarehouse}
-              onClick={handleSubmitFormLocation}
+              onClick={handleSubmitFormWarehouse}
             >
               Delete
             </Button>
@@ -1517,6 +1623,41 @@ const WarehousePage = () => {
                 {btn.label}
               </Button>
             ))}
+            {dataWarehousePermission?.data.is_update && (
+              <Menu
+                transitionProps={{ transition: "pop" }}
+                position="bottom-end"
+                withinPortal
+              >
+                <Menu.Target>
+                  <Button justify="center" variant="default" size={sizeButton}>
+                    <IconDotsVertical size={sizeActionButton} />
+                  </Button>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  {[
+                    {
+                      icon: IconPrinter,
+                      label: "Print QR Code",
+                      onClick: () => handlePrintQRCodeLocation(),
+                    },
+                  ].map((item, idx) => (
+                    <Menu.Item
+                      key={idx}
+                      leftSection={
+                        <item.icon
+                          style={{ width: rem(16), height: rem(16) }}
+                          stroke={1.5}
+                        />
+                      }
+                      onClick={item.onClick}
+                    >
+                      <Text size={size}>{item.label}</Text>
+                    </Menu.Item>
+                  ))}
+                </Menu.Dropdown>
+              </Menu>
+            )}
           </Button.Group>
           <Flex gap={5}>
             <Input
@@ -1705,6 +1846,69 @@ const WarehousePage = () => {
             </Button>
           </Group>
         </Modal>
+        <Modal
+          opened={openedPDFQRCodeLocation}
+          onClose={closePDFQRCodeLocation}
+          title="PDF Preview"
+          fullScreen
+          closeOnClickOutside={false}
+        >
+          <Stack
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: "90vh",
+              gap: "20px",
+            }}
+          >
+            <Paper
+              shadow="md"
+              radius="md"
+              withBorder
+              style={{ width: "100%", height: "80vh", overflow: "hidden" }}
+            >
+              <PDFViewer style={{ width: "100%", height: "100%" }} showToolbar>
+                <QRCodeLocation qrDataArray={stateTableLocation.selections} />
+              </PDFViewer>
+            </Paper>
+            <Group>
+              <PDFDownloadLink
+                document={
+                  <QRCodeLocation qrDataArray={stateTableLocation.selections} />
+                }
+                fileName={`QR Code - ${stateTableWarehouse.selected?.description}`}
+              >
+                {({ loading }) => (
+                  <Button
+                    disabled={loading}
+                    color="blue"
+                    radius="md"
+                    size="sm"
+                    leftSection={<IconFileDownload size={18} />}
+                    rightSection={
+                      loading ? <Loader size="xs" color="white" /> : null
+                    }
+                    styles={{
+                      root: { "&:hover": { backgroundColor: "#0056b3" } },
+                    }}
+                  >
+                    {loading ? "Generating..." : "Download"}
+                  </Button>
+                )}
+              </PDFDownloadLink>
+              <Button
+                variant="default"
+                radius="md"
+                size="sm"
+                leftSection={<IconX size={18} />}
+                onClick={closePDFQRCodeLocation}
+              >
+                Cancel
+              </Button>
+            </Group>
+          </Stack>
+        </Modal>
         {isLoadingLocations && (
           <Center flex={1}>
             <Loader size={100} />
@@ -1713,7 +1917,11 @@ const WarehousePage = () => {
         {isSuccessLocations ? (
           dataLocations?.data?.pagination.total_rows > 0 ? (
             <>
-              <TableScrollable
+              <TableMultipleScrollable
+                toggleAll={() => handleToggleAllLocation()}
+                data={dataLocations.data.items}
+                selection={stateTableLocation.selections}
+                multiple={true}
                 headers={[
                   {
                     name: "Location",
