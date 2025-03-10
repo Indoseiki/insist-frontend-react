@@ -12,7 +12,6 @@ import { createTheme, Loader, MantineProvider } from "@mantine/core";
 import { NavigationProgress } from "@mantine/nprogress";
 import { Notifications } from "@mantine/notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { RingLoader } from "./components/Table/RingLoader";
 import { SizeProvider } from "./contexts/useGlobalSizes";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -53,7 +52,6 @@ createRoot(document.getElementById("root")!).render(
           <RouterProvider router={router} />
         </SizeProvider>
       </MantineProvider>
-      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
     </QueryClientProvider>
   </StrictMode>
 );

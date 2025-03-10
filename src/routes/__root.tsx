@@ -1,5 +1,4 @@
 import { Outlet, createRootRoute, useLocation } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { AppShell } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Header from "../components/layouts/Header";
@@ -19,75 +18,13 @@ function RootComponent() {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
-  // const { mutate: mutateLogout } = useLogout();
-
-  // const idle = useIdle(15 * 60 * 1000, {
-  //   initialState: false,
-  //   events: ["mousemove", "keydown", "scroll", "click"],
-  // });
-
-  // const navigate = useNavigate();
   const location = useLocation();
   const path = location.pathname;
-
-  // const os = useOs();
-  // const { data: dataUser, isSuccess: isSuccessUser } = useUserInfoQuery();
-
-  // useEffect(() => {
-  //   if (idle && path !== "/login" && !path.includes("/reset-password")) {
-  //     mutateLogout(
-  //       {},
-  //       {
-  //         onSuccess: async () => {
-  //           if (isSuccessUser) {
-  //             await createActivityLog({
-  //               username: dataUser?.data.username,
-  //               action: "Logout",
-  //               is_success: true,
-  //               os: os,
-  //               message: "Auto-logout due to inactivity.",
-  //             });
-  //           }
-
-  //           localStorage.removeItem("accessToken");
-  //           setTimeout(() => {
-  //             notifications.show({
-  //               title: "Logged Out Successfully",
-  //               message:
-  //                 "You've been inactive for 15 minutes. For your security, you've been logged out.",
-  //               color: "green",
-  //             });
-  //             navigate({ to: "/login", replace: true });
-  //           }, 500);
-  //         },
-  //         onError: async () => {
-  //           if (isSuccessUser) {
-  //             await createActivityLog({
-  //               username: dataUser?.data.username,
-  //               action: "Logout",
-  //               is_success: false,
-  //               os: os,
-  //               message: "Failed to logout automatically.",
-  //             });
-  //           }
-
-  //           notifications.show({
-  //             title: "Logged Out Failed",
-  //             message:
-  //               "Unable to log out due to a system error. Please contact support.",
-  //             color: "red",
-  //           });
-  //         },
-  //       }
-  //     );
-  //   }
-  // }, [idle, mutateLogout, path, isSuccessUser, dataUser, os, navigate]);
 
   if (path === "/login" || path.includes("/reset-password")) {
     return (
       <>
         <Outlet />
-        <TanStackRouterDevtools />
       </>
     );
   }
@@ -111,7 +48,6 @@ function RootComponent() {
       <NavbarMemo />
       <AppShell.Main h="90vh">
         <Outlet />
-        <TanStackRouterDevtools />
       </AppShell.Main>
     </AppShell>
   );

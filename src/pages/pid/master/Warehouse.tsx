@@ -28,7 +28,6 @@ import {
 import PageHeader from "../../../components/layouts/PageHeader";
 import {
   IconBinoculars,
-  IconCancel,
   IconDeviceFloppy,
   IconDotsVertical,
   IconEdit,

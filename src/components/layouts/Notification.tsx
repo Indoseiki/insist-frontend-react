@@ -15,7 +15,7 @@ import { useState } from "react";
 import { dataNotification } from "../../assets/data/dataNotification";
 
 const Notification = () => {
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [_, setSelectedItem] = useState<string | null>(null);
 
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),

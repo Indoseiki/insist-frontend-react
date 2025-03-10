@@ -8,7 +8,6 @@ const Navbar = () => {
       <AppShell.Section grow component={ScrollArea}>
         <TreeMenu />
       </AppShell.Section>
-      <AppShell.Section>Footer</AppShell.Section>
     </AppShell.Navbar>
   );
 };
