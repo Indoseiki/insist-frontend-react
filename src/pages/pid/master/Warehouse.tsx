@@ -1201,7 +1201,7 @@ const WarehousePage = () => {
   });
 
   return (
-    <>
+    <Stack h="100%" gap={20}>
       <Stack h="50%">
         <PageHeader title="Master Warehouse" />
         <Flex
@@ -1575,9 +1575,16 @@ const WarehousePage = () => {
           !isLoadingWarehouses && <NoDataFound />
         )}
       </Stack>
-      <Stack h="50%">
+      <Stack
+        pt={10}
+        h="50%"
+        style={{
+          borderTop: "1px solid gray",
+        }}
+      >
         <PageSubHeader title="Location" />
         <Flex
+          pb={10}
           direction={{ base: "column-reverse", sm: "row" }}
           justify="space-between"
           align={{ base: "normal", sm: "center" }}
@@ -1970,7 +1977,7 @@ const WarehousePage = () => {
           ))
         )}
       </Stack>
-    </>
+    </Stack>
   );
 };
 

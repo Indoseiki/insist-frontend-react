@@ -34,3 +34,36 @@ body,
     var(--mantine-color-dark-6)
   );
 }
+
+fieldset {
+  border: 2px solid var(--mantine-color-gray-4);
+  border-radius: 8px;
+  padding: 15px;
+  background-color: var(--mantine-color-gray-0);
+  transition:
+    background-color 0.3s,
+    border-color 0.3s;
+}
+
+legend {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: var(--mantine-color-dark-9);
+  padding: 0 10px;
+}
+
+/* Dark mode support */
+[data-mantine-color-scheme="dark"] fieldset {
+  border-color: var(--mantine-color-dark-4);
+  background-color: var(--mantine-color-dark-6);
+}
+
+[data-mantine-color-scheme="dark"] legend {
+  color: var(--mantine-color-gray-3);
+}
+
+@media (min-width: 600px) {
+  legend {
+    font-size: 1rem;
+  }
+}

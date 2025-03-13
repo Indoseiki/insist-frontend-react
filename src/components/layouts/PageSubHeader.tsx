@@ -6,7 +6,6 @@ const PageSubHeader = ({ title }: { title: string }) => {
 
   return (
     <Box>
-      <hr style={{ marginTop: "20px", marginBottom: "10px" }} />
       <Title size={sizeSubTitle} c="blue">
         {title}
       </Title>

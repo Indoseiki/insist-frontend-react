@@ -11,12 +11,7 @@ const useUoMsQuery = (params: UoMParams) => {
   });
 };
 
-const useUoMInfinityQuery = ({
-  search,
-}: {
-  search: string;
-  id_fcs: number;
-}) => {
+const useUoMInfinityQuery = ({ search }: { search: string }) => {
   return useInfiniteQuery<ApiResponse<Result<UoM[]>>, Error>({
     queryKey: ["InfinityUoM", search],
     queryFn: ({ pageParam }: { pageParam?: unknown }) => {

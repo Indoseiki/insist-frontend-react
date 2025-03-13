@@ -25,6 +25,7 @@ import { Route as AuthenticatedPrdMasterSectionImport } from './routes/_authenti
 import { Route as AuthenticatedPrdMasterFcsImport } from './routes/_authenticated/prd/master/fcs'
 import { Route as AuthenticatedPrdMasterBuildingImport } from './routes/_authenticated/prd/master/building'
 import { Route as AuthenticatedPidMasterWarehouseImport } from './routes/_authenticated/pid/master/warehouse'
+import { Route as AuthenticatedMntMasterMachineImport } from './routes/_authenticated/mnt/master/machine'
 import { Route as AuthenticatedEgdMasterUomImport } from './routes/_authenticated/egd/master/uom'
 import { Route as AuthenticatedEgdMasterProcessImport } from './routes/_authenticated/egd/master/process'
 import { Route as AuthenticatedAdmMasterUserImport } from './routes/_authenticated/adm/master/user'
@@ -124,6 +125,13 @@ const AuthenticatedPidMasterWarehouseRoute =
   AuthenticatedPidMasterWarehouseImport.update({
     id: '/pid/master/warehouse',
     path: '/pid/master/warehouse',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+
+const AuthenticatedMntMasterMachineRoute =
+  AuthenticatedMntMasterMachineImport.update({
+    id: '/mnt/master/machine',
+    path: '/mnt/master/machine',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
@@ -322,6 +330,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEgdMasterUomImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/_authenticated/mnt/master/machine': {
+      id: '/_authenticated/mnt/master/machine'
+      path: '/mnt/master/machine'
+      fullPath: '/mnt/master/machine'
+      preLoaderRoute: typeof AuthenticatedMntMasterMachineImport
+      parentRoute: typeof AuthenticatedImport
+    }
     '/_authenticated/pid/master/warehouse': {
       id: '/_authenticated/pid/master/warehouse'
       path: '/pid/master/warehouse'
@@ -378,6 +393,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdmMasterUserRoute: typeof AuthenticatedAdmMasterUserRoute
   AuthenticatedEgdMasterProcessRoute: typeof AuthenticatedEgdMasterProcessRoute
   AuthenticatedEgdMasterUomRoute: typeof AuthenticatedEgdMasterUomRoute
+  AuthenticatedMntMasterMachineRoute: typeof AuthenticatedMntMasterMachineRoute
   AuthenticatedPidMasterWarehouseRoute: typeof AuthenticatedPidMasterWarehouseRoute
   AuthenticatedPrdMasterBuildingRoute: typeof AuthenticatedPrdMasterBuildingRoute
   AuthenticatedPrdMasterFcsRoute: typeof AuthenticatedPrdMasterFcsRoute
@@ -402,6 +418,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdmMasterUserRoute: AuthenticatedAdmMasterUserRoute,
   AuthenticatedEgdMasterProcessRoute: AuthenticatedEgdMasterProcessRoute,
   AuthenticatedEgdMasterUomRoute: AuthenticatedEgdMasterUomRoute,
+  AuthenticatedMntMasterMachineRoute: AuthenticatedMntMasterMachineRoute,
   AuthenticatedPidMasterWarehouseRoute: AuthenticatedPidMasterWarehouseRoute,
   AuthenticatedPrdMasterBuildingRoute: AuthenticatedPrdMasterBuildingRoute,
   AuthenticatedPrdMasterFcsRoute: AuthenticatedPrdMasterFcsRoute,
@@ -432,6 +449,7 @@ export interface FileRoutesByFullPath {
   '/adm/master/user': typeof AuthenticatedAdmMasterUserRoute
   '/egd/master/process': typeof AuthenticatedEgdMasterProcessRoute
   '/egd/master/uom': typeof AuthenticatedEgdMasterUomRoute
+  '/mnt/master/machine': typeof AuthenticatedMntMasterMachineRoute
   '/pid/master/warehouse': typeof AuthenticatedPidMasterWarehouseRoute
   '/prd/master/building': typeof AuthenticatedPrdMasterBuildingRoute
   '/prd/master/fcs': typeof AuthenticatedPrdMasterFcsRoute
@@ -457,6 +475,7 @@ export interface FileRoutesByTo {
   '/adm/master/user': typeof AuthenticatedAdmMasterUserRoute
   '/egd/master/process': typeof AuthenticatedEgdMasterProcessRoute
   '/egd/master/uom': typeof AuthenticatedEgdMasterUomRoute
+  '/mnt/master/machine': typeof AuthenticatedMntMasterMachineRoute
   '/pid/master/warehouse': typeof AuthenticatedPidMasterWarehouseRoute
   '/prd/master/building': typeof AuthenticatedPrdMasterBuildingRoute
   '/prd/master/fcs': typeof AuthenticatedPrdMasterFcsRoute
@@ -484,6 +503,7 @@ export interface FileRoutesById {
   '/_authenticated/adm/master/user': typeof AuthenticatedAdmMasterUserRoute
   '/_authenticated/egd/master/process': typeof AuthenticatedEgdMasterProcessRoute
   '/_authenticated/egd/master/uom': typeof AuthenticatedEgdMasterUomRoute
+  '/_authenticated/mnt/master/machine': typeof AuthenticatedMntMasterMachineRoute
   '/_authenticated/pid/master/warehouse': typeof AuthenticatedPidMasterWarehouseRoute
   '/_authenticated/prd/master/building': typeof AuthenticatedPrdMasterBuildingRoute
   '/_authenticated/prd/master/fcs': typeof AuthenticatedPrdMasterFcsRoute
@@ -512,6 +532,7 @@ export interface FileRouteTypes {
     | '/adm/master/user'
     | '/egd/master/process'
     | '/egd/master/uom'
+    | '/mnt/master/machine'
     | '/pid/master/warehouse'
     | '/prd/master/building'
     | '/prd/master/fcs'
@@ -536,6 +557,7 @@ export interface FileRouteTypes {
     | '/adm/master/user'
     | '/egd/master/process'
     | '/egd/master/uom'
+    | '/mnt/master/machine'
     | '/pid/master/warehouse'
     | '/prd/master/building'
     | '/prd/master/fcs'
@@ -561,6 +583,7 @@ export interface FileRouteTypes {
     | '/_authenticated/adm/master/user'
     | '/_authenticated/egd/master/process'
     | '/_authenticated/egd/master/uom'
+    | '/_authenticated/mnt/master/machine'
     | '/_authenticated/pid/master/warehouse'
     | '/_authenticated/prd/master/building'
     | '/_authenticated/prd/master/fcs'
@@ -614,6 +637,7 @@ export const routeTree = rootRoute
         "/_authenticated/adm/master/user",
         "/_authenticated/egd/master/process",
         "/_authenticated/egd/master/uom",
+        "/_authenticated/mnt/master/machine",
         "/_authenticated/pid/master/warehouse",
         "/_authenticated/prd/master/building",
         "/_authenticated/prd/master/fcs",
@@ -685,6 +709,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/egd/master/uom": {
       "filePath": "_authenticated/egd/master/uom.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/mnt/master/machine": {
+      "filePath": "_authenticated/mnt/master/machine.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/pid/master/warehouse": {
