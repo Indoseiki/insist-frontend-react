@@ -534,7 +534,7 @@ const MachinePage = () => {
           className={`hover-row ${isSelected ? "selected-row" : ""}`}
           style={{ cursor: "pointer", backgroundColor: rowBg }}
         >
-          <Table.Td w={100}>{row.rev_no}</Table.Td>
+          <Table.Td w={100}>{row.rev_no ? row.rev_no : "-"}</Table.Td>
           <Table.Td>
             <Badge color={colorApprovals[row.approval_status] ?? "gray"}>
               {row.approval_status ? row.approval_status : "DRAFT"}
