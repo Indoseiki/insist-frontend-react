@@ -1,7 +1,11 @@
 import { Result } from "../types/pagination";
 import { ApiResponse } from "../types/response";
 import { Menu } from "../types/menu";
-import { ApprovalStructureParams } from "../types/approvalStructure";
+import {
+  ApprovalStructureByMenuParams,
+  ApprovalStructureParams,
+  ViewApprovalStructure,
+} from "../types/approvalStructure";
 import apiClient from "./apiClient";
 import { Approval, ApprovalRequest } from "../types/approval";
 import { ApprovalUser, ApprovalUserRequest } from "../types/approvalUser";
@@ -13,6 +17,19 @@ const getApprovalStructures = async (
 ): Promise<ApiResponse<Result<Menu[]>>> => {
   const response = await apiClient.get<ApiResponse<Result<Menu[]>>>(
     `${url}-structure`,
+    {
+      params,
+    }
+  );
+  return response.data;
+};
+
+const getApprovalStructuresByMenu = async (
+  id: number,
+  params: ApprovalStructureByMenuParams
+): Promise<ApiResponse<ViewApprovalStructure[]>> => {
+  const response = await apiClient.get<ApiResponse<ViewApprovalStructure[]>>(
+    `${url}-structure/${id}/menu`,
     {
       params,
     }
@@ -74,6 +91,7 @@ const updateApprovalUsers = async (
 
 export {
   getApprovalStructures,
+  getApprovalStructuresByMenu,
   getApprovalByMenu,
   createApproval,
   updateApproval,

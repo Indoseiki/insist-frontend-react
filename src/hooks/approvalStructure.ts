@@ -2,12 +2,17 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Result } from "../types/pagination";
 import { ApiResponse } from "../types/response";
 import { Menu } from "../types/menu";
-import { ApprovalStructureParams } from "../types/approvalStructure";
+import {
+  ApprovalStructureByMenuParams,
+  ApprovalStructureParams,
+  ViewApprovalStructure,
+} from "../types/approvalStructure";
 import {
   createApproval,
   deleteApproval,
   getApprovalByMenu,
   getApprovalStructures,
+  getApprovalStructuresByMenu,
   getApprovalUsersByApproval,
   updateApproval,
   updateApprovalUsers,
@@ -19,6 +24,17 @@ const useApprovalStructuresQuery = (params: ApprovalStructureParams) => {
   return useQuery<ApiResponse<Result<Menu[]>>, Error>({
     queryKey: ["ApprovalStructures", params],
     queryFn: () => getApprovalStructures(params),
+  });
+};
+
+const useApprovalStructuresByMenuQuery = (
+  id: number,
+  params: ApprovalStructureByMenuParams
+) => {
+  return useQuery<ApiResponse<ViewApprovalStructure[]>, Error>({
+    queryKey: ["ApprovalStructures", params],
+    queryFn: () => getApprovalStructuresByMenu(id, params),
+    enabled: !!params.path,
   });
 };
 
@@ -72,6 +88,7 @@ const useUpdateApprovalUsers = () => {
 
 export {
   useApprovalStructuresQuery,
+  useApprovalStructuresByMenuQuery,
   useApprovalByMenuQuery,
   useCreateApproval,
   useUpdateApproval,

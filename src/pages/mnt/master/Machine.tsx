@@ -29,10 +29,15 @@ import {
 import PageHeader from "../../../components/layouts/PageHeader";
 import {
   IconBinoculars,
+  IconClipboardList,
   IconDeviceFloppy,
+  IconDotsVertical,
   IconEdit,
+  IconFileCheck,
+  IconFileImport,
   IconFilter,
   IconPlus,
+  IconRefresh,
   IconSearch,
   IconTrash,
   IconX,
@@ -71,6 +76,9 @@ import PageSubHeader from "../../../components/layouts/PageSubHeader";
 import { useUoMInfinityQuery } from "../../../hooks/uom";
 import { UoM } from "../../../types/uom";
 import { useReasonsInfinityQuery } from "../../../hooks/reason";
+import { useCreateApprovalHistory } from "../../../hooks/approvalHistory";
+import { useApprovalStructuresByMenuQuery } from "../../../hooks/approvalStructure";
+import { ViewApprovalStructure } from "../../../types/approvalStructure";
 
 interface StateFilterMachine {
   open: boolean;
@@ -89,11 +97,13 @@ interface StateFormMachine extends StateForm {
   dimension_front_uom: string;
   dimension_side_uom: string;
   reason: string;
+  message: string;
 }
 
 const MachinePage = () => {
   const isSmall = useMediaQuery("(max-width: 768px)");
-  const { size, sizeButton, fullWidth, heightDropdown } = useSizes();
+  const { size, sizeButton, fullWidth, heightDropdown, sizeActionButton } =
+    useSizes();
 
   const { colorScheme } = useMantineColorScheme();
 
@@ -105,6 +115,11 @@ const MachinePage = () => {
   const [
     openedFormDeleteMachine,
     { open: openFormDeleteMachine, close: closeFormDeleteMachine },
+  ] = useDisclosure(false);
+
+  const [
+    openedFormApproval,
+    { open: openFormApproval, close: closeFormApproval },
   ] = useDisclosure(false);
 
   const [stateTableMachine, setStateTableMachine] = useState<
@@ -157,6 +172,7 @@ const MachinePage = () => {
     dimension_front_uom: "",
     dimension_side_uom: "",
     reason: "",
+    message: "",
   });
 
   const updateStateTableMachine = (
@@ -431,10 +447,29 @@ const MachinePage = () => {
     },
   });
 
+  const {
+    mutate: mutateCreateApprovalHistory,
+    isPending: isPendingMutateCreateApprovalHistory,
+  } = useCreateApprovalHistory();
+
   const os = useOs();
   const { data: dataUser } = useUserInfoQuery();
   const { data: dataMachinePermission } = useRolePermissionQuery(
     location.pathname
+  );
+  const { data: dataMachineApprovals } = useApprovalStructuresByMenuQuery(
+    dataUser?.data.id!,
+    {
+      path: location.pathname,
+    }
+  );
+
+  const approvalSubmit = dataMachineApprovals?.data.some(
+    (item: ViewApprovalStructure) => item.action === "Submit"
+  );
+
+  const approvalApprove = dataMachineApprovals?.data.some(
+    (item: ViewApprovalStructure) => item.action === "Approve"
   );
 
   const rowsMachine = useMemo(() => {
@@ -1156,6 +1191,213 @@ const MachinePage = () => {
     formMachine.reset();
   };
 
+  const handleViewDataMachineDetail = () => {
+    formMachine.clearErrors();
+    formMachine.reset();
+
+    if (!stateTableMachineDetail.selected) {
+      notifications.show({
+        title: "Select Data First!",
+        message: "Please select the data you want to machine before proceeding",
+      });
+      return;
+    }
+
+    updateStateFormMachine({
+      title: "View Data",
+      action: "view",
+      power_uom: stateTableMachineDetail.selected.power_uom_code,
+      electricity_uom: stateTableMachineDetail.selected.electricity_uom_code,
+      lubricant_uom: stateTableMachineDetail.selected.lubricant_uom_code,
+      sliding_uom: stateTableMachineDetail.selected.sliding_uom_code,
+      coolant_uom: stateTableMachineDetail.selected.coolant_uom_code,
+      hydraulic_uom: stateTableMachineDetail.selected.hydraulic_uom_code,
+      dimension_front_uom:
+        stateTableMachineDetail.selected.dimension_front_uom_code,
+      dimension_side_uom:
+        stateTableMachineDetail.selected.dimension_side_uom_code,
+      reason: stateTableMachineDetail.selected.reason_description,
+    });
+
+    formMachine.setValues({
+      machine: {
+        id: stateTableMachineDetail.selected.id,
+      },
+      machine_detail: {
+        id_machine: stateTableMachineDetail.selected.id,
+        rev_no: stateTableMachineDetail.selected.rev_no,
+        code: stateTableMachineDetail.selected.code,
+        code_old: stateTableMachineDetail.selected.code_old,
+        asset_num: stateTableMachineDetail.selected.asset_num,
+        asset_num_old: stateTableMachineDetail.selected.asset_num_old,
+        description: stateTableMachineDetail.selected.description,
+        name: stateTableMachineDetail.selected.name,
+        maker: stateTableMachineDetail.selected.maker,
+        power: stateTableMachineDetail.selected.power,
+        id_power_uom: stateTableMachineDetail.selected.id_power_uom.toString(),
+        electricity: stateTableMachineDetail.selected.electricity,
+        id_electricity_uom:
+          stateTableMachineDetail.selected.id_electricity_uom.toString(),
+        cavity: stateTableMachineDetail.selected.cavity,
+        lubricant: stateTableMachineDetail.selected.lubricant,
+        lubricant_capacity: stateTableMachineDetail.selected.lubricant_capacity,
+        id_lubricant_uom:
+          stateTableMachineDetail.selected.id_lubricant_uom.toString(),
+        sliding: stateTableMachineDetail.selected.sliding,
+        sliding_capacity: stateTableMachineDetail.selected.sliding_capacity,
+        id_sliding_uom:
+          stateTableMachineDetail.selected.id_sliding_uom.toString(),
+        coolant: stateTableMachineDetail.selected.coolant,
+        coolant_capacity: stateTableMachineDetail.selected.coolant_capacity,
+        id_coolant_uom:
+          stateTableMachineDetail.selected.id_coolant_uom.toString(),
+        hydraulic: stateTableMachineDetail.selected.hydraulic,
+        hydraulic_capacity: stateTableMachineDetail.selected.hydraulic_capacity,
+        id_hydraulic_uom:
+          stateTableMachineDetail.selected.id_hydraulic_uom.toString(),
+        dimension_front: stateTableMachineDetail.selected.dimension_front,
+        id_dimension_front_uom:
+          stateTableMachineDetail.selected.id_dimension_front_uom.toString(),
+        dimension_side: stateTableMachineDetail.selected.dimension_side,
+        id_dimension_side_uom:
+          stateTableMachineDetail.selected.id_dimension_side_uom.toString(),
+      },
+      machine_status: {
+        id_reason: stateTableMachineDetail.selected.id_reason.toString(),
+        remarks: stateTableMachineDetail.selected.remarks,
+      },
+    });
+
+    openFormMachine();
+  };
+
+  const handleSubmitData = () => {
+    if (!stateTableMachine.selected) {
+      notifications.show({
+        title: "Select Data First!",
+        message: "Please select the data you want to machine before proceeding",
+      });
+      return;
+    }
+
+    const { approval_level } = stateTableMachine.selected;
+
+    if (approval_level) {
+      notifications.show({
+        title: "Invalid Submission!",
+        message: "Only data in DRAFT status can be submitted",
+      });
+      return;
+    }
+
+    updateStateFormMachine({
+      title: "Submit Data",
+      action: "submit",
+      message: "",
+    });
+
+    openFormApproval();
+  };
+
+  const handleApproveData = () => {
+    if (!stateTableMachine.selected) {
+      notifications.show({
+        title: "Select Data First!",
+        message: "Please select the data you want to approve before proceeding",
+      });
+      return;
+    }
+
+    const { approval_level } = stateTableMachine.selected;
+
+    if (approval_level !== 1) {
+      notifications.show({
+        title: "Invalid Approval!",
+        message: "Only data in SUBMIT status can be approved",
+      });
+      return;
+    }
+
+    updateStateFormMachine({
+      title: "Approve Data",
+      action: "approve",
+      message: "",
+    });
+
+    openFormApproval();
+  };
+
+  const handleCloseFormApproval = () => {
+    updateStateFormMachine({ message: "" });
+    closeFormApproval();
+  };
+
+  const handleApproval = () => {
+    if (!stateTableMachine.selected) {
+      return;
+    }
+
+    const approval = dataMachineApprovals?.data.find(
+      (item: ViewApprovalStructure) =>
+        item.level === (stateTableMachine.selected?.approval_level ?? 0) + 1
+    );
+
+    mutateCreateApprovalHistory(
+      {
+        key: stateTableMachine.selected.code,
+        ref_id: stateTableMachine.selected.detail_id,
+        ref_table: "mst_machine_details",
+        message: stateFormMachine.message,
+        id_approval: approval?.id_approval,
+      },
+      {
+        onSuccess: async (res) => {
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Create",
+            is_success: true,
+            os: os,
+            message: `${res?.message} (${stateFormMachine.title} => ${stateTableMachine.selected?.code})`,
+          });
+
+          notifications.show({
+            title: "Submitted Successfully!",
+            message: res.message,
+            color: "green",
+          });
+
+          refetchMachines();
+          refetchMachineDetails();
+          refetchMachineStatus();
+
+          updateStateTableMachine({ selected: null });
+
+          closeFormApproval();
+        },
+        onError: async (err) => {
+          const error = err as AxiosError<ApiResponse<null>>;
+          const res = error.response;
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Create",
+            is_success: false,
+            os: os,
+            message: `${res?.data.message} (${stateFormMachine.title} => ${stateTableMachine.selected?.code})`,
+          });
+
+          notifications.show({
+            title: "Submitted Failed!",
+            message:
+              "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
+            color: "red",
+          });
+
+          closeFormApproval();
+        },
+      }
+    );
+  };
+
   const useUoMCombobox = (
     fieldKey: string,
     form: UseFormReturnType<any>,
@@ -1353,6 +1595,62 @@ const MachinePage = () => {
                 {btn.label}
               </Button>
             ))}
+            {dataMachinePermission?.data.is_update && (
+              <Menu
+                transitionProps={{ transition: "pop" }}
+                position="bottom-end"
+                withinPortal
+              >
+                <Menu.Target>
+                  <Button justify="center" variant="default" size={sizeButton}>
+                    <IconDotsVertical size={sizeActionButton} />
+                  </Button>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  {[
+                    {
+                      icon: IconClipboardList,
+                      label: "Revision",
+                      onClick: () => console.log("HAI"),
+                    },
+                    {
+                      icon: IconRefresh,
+                      label: "Change Condition",
+                      onClick: () => console.log("HAI"),
+                    },
+                    approvalSubmit
+                      ? {
+                          icon: IconFileImport,
+                          label: "Submit",
+                          onClick: () => handleSubmitData(),
+                        }
+                      : null,
+                    approvalApprove
+                      ? {
+                          icon: IconFileCheck,
+                          label: "Approve",
+                          onClick: () => handleApproveData(),
+                        }
+                      : null,
+                  ]
+                    .filter((item) => item !== null)
+                    .map((item, idx) => (
+                      <Menu.Item
+                        key={idx}
+                        leftSection={
+                          <item.icon
+                            style={{ width: rem(16), height: rem(16) }}
+                            stroke={1.5}
+                          />
+                        }
+                        onClick={item.onClick}
+                      >
+                        <Text size={size}>{item.label}</Text>
+                      </Menu.Item>
+                    ))}
+                </Menu.Dropdown>
+              </Menu>
+            )}
           </Button.Group>
           <Flex gap={5}>
             <Input
@@ -2607,6 +2905,46 @@ const MachinePage = () => {
             </Button>
           </Group>
         </Modal>
+        <Modal
+          opened={openedFormApproval}
+          onClose={closeFormApproval}
+          title={stateFormMachine.title}
+          centered
+          closeOnClickOutside={false}
+        >
+          <Text
+            size={size}
+          >{`Are you sure you want to ${stateFormMachine.action} this machine?`}</Text>
+          <Textarea
+            mt={5}
+            placeholder="Message"
+            size={size}
+            onChange={(e) =>
+              updateStateFormMachine({ message: e.target.value })
+            }
+            value={stateFormMachine.message}
+          />
+          <Group justify="end" gap={5} mt="md">
+            <Button
+              leftSection={<IconX size={16} />}
+              variant="default"
+              size={sizeButton}
+              onClick={handleCloseFormApproval}
+            >
+              Cancel
+            </Button>
+            <Button
+              leftSection={<IconDeviceFloppy size={16} />}
+              type="submit"
+              size={sizeButton}
+              color="blue"
+              loading={isPendingMutateCreateApprovalHistory}
+              onClick={handleApproval}
+            >
+              Save
+            </Button>
+          </Group>
+        </Modal>
         {isLoadingMachines && (
           <Center flex={1}>
             <Loader size={100} />
@@ -2693,6 +3031,28 @@ const MachinePage = () => {
           }}
         >
           <PageSubHeader title="Detail History" />
+          <Button.Group>
+            {[
+              {
+                icon: IconBinoculars,
+                label: "View",
+                onClick: () => handleViewDataMachineDetail(),
+                access: true,
+              },
+            ].map((btn, idx) => (
+              <Button
+                key={idx}
+                leftSection={<btn.icon size={16} />}
+                variant="default"
+                fullWidth={fullWidth}
+                size={sizeButton}
+                onClick={btn.onClick}
+                style={{ display: btn.access ? "block" : "none" }}
+              >
+                {btn.label}
+              </Button>
+            ))}
+          </Button.Group>
           {isLoadingMachineDetails && (
             <Center flex={1}>
               <Loader size={100} />
