@@ -18,6 +18,7 @@ import {
   rem,
   ScrollArea,
   Select,
+  SimpleGrid,
   Stack,
   Table,
   Text,
@@ -35,7 +36,9 @@ import {
   IconEdit,
   IconFileCheck,
   IconFileImport,
+  IconFileX,
   IconFilter,
+  IconLogs,
   IconPlus,
   IconRefresh,
   IconSearch,
@@ -43,10 +46,11 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useSizes } from "../../../contexts/useGlobalSizes";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   CreateMachineRequest,
   MachineStatus,
+  MachineStatusRequest,
   ViewMachine,
   ViewMachineDetail,
 } from "../../../types/machine";
@@ -56,7 +60,9 @@ import {
   useMachineDetailsQuery,
   useMachinesQuery,
   useMachineStatusQuery,
+  useRevisionMachine,
   useUpdateMachine,
+  useUpdateMachineStatus,
 } from "../../../hooks/machine";
 import { formatDateTime } from "../../../utils/formatTime";
 import TableScrollable from "../../../components/Table/TableScrollable";
@@ -79,12 +85,14 @@ import { useReasonsInfinityQuery } from "../../../hooks/reason";
 import { useCreateApprovalHistory } from "../../../hooks/approvalHistory";
 import { useApprovalStructuresByMenuQuery } from "../../../hooks/approvalStructure";
 import { ViewApprovalStructure } from "../../../types/approvalStructure";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 
 interface StateFilterMachine {
   open: boolean;
   search: string;
-  idUoM: string;
-  uom: string;
+  idReason: string;
+  reason: string;
+  approval: string;
 }
 
 interface StateFormMachine extends StateForm {
@@ -100,7 +108,16 @@ interface StateFormMachine extends StateForm {
   message: string;
 }
 
+interface SearchParams {
+  key: string | null;
+}
+
 const MachinePage = () => {
+  const navigate = useNavigate();
+  const searchParams: SearchParams = useSearch({
+    from: "/_authenticated/mnt/master/machine",
+  });
+
   const isSmall = useMediaQuery("(max-width: 768px)");
   const { size, sizeButton, fullWidth, heightDropdown, sizeActionButton } =
     useSizes();
@@ -122,6 +139,11 @@ const MachinePage = () => {
     { open: openFormApproval, close: closeFormApproval },
   ] = useDisclosure(false);
 
+  const [
+    openedFormChangeCondition,
+    { open: openFormChangeCondition, close: closeFormChangeCondition },
+  ] = useDisclosure(false);
+
   const [stateTableMachine, setStateTableMachine] = useState<
     StateTable<ViewMachine>
   >({
@@ -138,8 +160,8 @@ const MachinePage = () => {
     activePage: 1,
     rowsPerPage: "20",
     selected: null,
-    sortBy: "code",
-    sortDirection: false,
+    sortBy: "rev_no",
+    sortDirection: true,
   });
 
   const [stateTableMachineStatus, setStateTableMachineStatus] = useState<
@@ -156,8 +178,9 @@ const MachinePage = () => {
     useState<StateFilterMachine>({
       open: false,
       search: "",
-      idUoM: "",
-      uom: "",
+      idReason: "",
+      reason: "",
+      approval: "",
     });
 
   const [stateFormMachine, setStateFormMachine] = useState<StateFormMachine>({
@@ -205,6 +228,12 @@ const MachinePage = () => {
     updateStateTableMachineStatus({ selected: row });
   };
 
+  useEffect(() => {
+    updateStateFilterMachine({
+      search: searchParams.key ? searchParams.key : "",
+    });
+  }, [searchParams]);
+
   const {
     data: dataMachines,
     isSuccess: isSuccessMachines,
@@ -213,6 +242,8 @@ const MachinePage = () => {
   } = useMachinesQuery({
     page: stateTableMachine.activePage,
     rows: stateTableMachine.rowsPerPage,
+    id_reason: parseInt(stateFilterMachine.idReason),
+    approval: stateFilterMachine.approval,
     search: stateFilterMachine.search,
     sortBy: stateTableMachine.sortBy,
     sortDirection: stateTableMachine.sortDirection,
@@ -362,6 +393,8 @@ const MachinePage = () => {
     isFetchingNextPage: isFetchingNextPageSelectReasons,
   } = useReasonsInfinityQuery({
     search: stateFormMachine.reason,
+    key: "STATUS",
+    path: location.pathname,
   });
 
   const flatDataSelectReasons =
@@ -379,28 +412,30 @@ const MachinePage = () => {
   }, [flatDataSelectReasons]);
 
   const {
-    data: dataFilterUoMs,
-    isSuccess: isSuccessFilterUoMs,
-    fetchNextPage: fetchNextPageFilterUoMs,
-    hasNextPage: hasNextPageFilterUoMs,
-    isFetchingNextPage: isFetchingNextPageFilterUoMs,
-  } = useUoMInfinityQuery({
-    search: stateFilterMachine.uom,
+    data: dataFilterReasons,
+    isSuccess: isSuccessFilterReasons,
+    fetchNextPage: fetchNextPageFilterReasons,
+    hasNextPage: hasNextPageFilterReasons,
+    isFetchingNextPage: isFetchingNextPageFilterReasons,
+  } = useReasonsInfinityQuery({
+    search: stateFilterMachine.reason,
+    key: "STATUS",
+    path: location.pathname,
   });
 
-  const flatDataFilterUoMs =
-    (isSuccessFilterUoMs &&
-      dataFilterUoMs?.pages.flatMap((page) =>
+  const flatDataFilterReasons =
+    (isSuccessFilterReasons &&
+      dataFilterReasons?.pages.flatMap((page) =>
         page.status === 200 ? page.data?.items : []
       )) ||
     [];
 
-  const mappedDataFilterUoMs = useMemo(() => {
-    return flatDataFilterUoMs.map((uom) => ({
+  const mappedDataFilterReasons = useMemo(() => {
+    return flatDataFilterReasons.map((uom) => ({
       value: uom.id.toString(),
       label: uom.description ? uom.description : "",
     }));
-  }, [flatDataFilterUoMs]);
+  }, [flatDataFilterReasons]);
 
   const {
     mutate: mutateCreateMachine,
@@ -452,11 +487,22 @@ const MachinePage = () => {
     isPending: isPendingMutateCreateApprovalHistory,
   } = useCreateApprovalHistory();
 
+  const {
+    mutate: mutateRevisionMachine,
+    isPending: isPendingMutateRevisionMachine,
+  } = useRevisionMachine();
+
+  const {
+    mutate: mutateMachineStatus,
+    isPending: isPendingMutateMachineStatus,
+  } = useUpdateMachineStatus();
+
   const os = useOs();
   const { data: dataUser } = useUserInfoQuery();
   const { data: dataMachinePermission } = useRolePermissionQuery(
     location.pathname
   );
+
   const { data: dataMachineApprovals } = useApprovalStructuresByMenuQuery(
     dataUser?.data.id!,
     {
@@ -480,6 +526,7 @@ const MachinePage = () => {
     const colorApprovals: Record<string, string> = {
       SUBMITTED: "blue",
       APPROVED: "teal",
+      REJECTED: "red",
     };
 
     const colorCondition: Record<string, string> = {
@@ -550,6 +597,7 @@ const MachinePage = () => {
     const colorApprovals: Record<string, string> = {
       SUBMITTED: "blue",
       APPROVED: "teal",
+      REJECTED: "red",
     };
 
     return dataMachineDetails.data.items?.map((row: ViewMachineDetail) => {
@@ -782,6 +830,30 @@ const MachinePage = () => {
 
       if (isEmptyString(values.machine_status.id_reason)) {
         errors["machine_status.id_reason"] = "Reason is required";
+      }
+
+      return errors;
+    },
+  });
+
+  const formMachineStatus = useForm<MachineStatusRequest>({
+    mode: "uncontrolled",
+    initialValues: {
+      id_reason: "",
+      remarks: "",
+    },
+
+    validate: (values) => {
+      const errors: Record<string, string> = {};
+
+      const isEmptyString = (value: unknown) =>
+        typeof value === "string" && value.trim() === "";
+
+      if (isEmptyString(values.id_reason.toString())) {
+        errors["id_reason"] = "Reason is required";
+      }
+      if (isEmptyString(values.remarks)) {
+        errors["remarks"] = "Remarks is required";
       }
 
       return errors;
@@ -1327,6 +1399,34 @@ const MachinePage = () => {
     openFormApproval();
   };
 
+  const handleRejectData = () => {
+    if (!stateTableMachine.selected) {
+      notifications.show({
+        title: "Select Data First!",
+        message: "Please select the data you want to approve before proceeding",
+      });
+      return;
+    }
+
+    const { approval_level } = stateTableMachine.selected;
+
+    if (approval_level !== 1) {
+      notifications.show({
+        title: "Invalid Approval!",
+        message: "Only data in SUBMIT status can be rejected",
+      });
+      return;
+    }
+
+    updateStateFormMachine({
+      title: "Reject Data",
+      action: "reject",
+      message: "",
+    });
+
+    openFormApproval();
+  };
+
   const handleCloseFormApproval = () => {
     updateStateFormMachine({ message: "" });
     closeFormApproval();
@@ -1337,10 +1437,18 @@ const MachinePage = () => {
       return;
     }
 
-    const approval = dataMachineApprovals?.data.find(
-      (item: ViewApprovalStructure) =>
-        item.level === (stateTableMachine.selected?.approval_level ?? 0) + 1
-    );
+    let approval: ViewApprovalStructure | undefined;
+
+    if (stateFormMachine.action === "reject") {
+      approval = dataMachineApprovals?.data.find(
+        (item: ViewApprovalStructure) => item.level === -1
+      );
+    } else {
+      approval = dataMachineApprovals?.data.find(
+        (item: ViewApprovalStructure) =>
+          item.level === (stateTableMachine.selected?.approval_level ?? 0) + 1
+      );
+    }
 
     mutateCreateApprovalHistory(
       {
@@ -1393,6 +1501,167 @@ const MachinePage = () => {
           });
 
           closeFormApproval();
+        },
+      }
+    );
+  };
+
+  const handleRevisionData = () => {
+    if (!stateTableMachine.selected) {
+      notifications.show({
+        title: "Select Data First!",
+        message: "Please select the data you want to approve before proceeding",
+      });
+      return;
+    }
+
+    const { approval_level } = stateTableMachine.selected;
+
+    if (approval_level !== 2 && approval_level !== -1) {
+      notifications.show({
+        title: "Invalid Revision!",
+        message: "Only data in APPROVE or REJECT status can be revised",
+      });
+      return;
+    }
+
+    updateStateFormMachine({
+      title: "Revision Data",
+      action: "revision",
+      message: "",
+    });
+
+    openFormApproval();
+  };
+
+  const handleRevision = () => {
+    if (!stateTableMachine.selected) {
+      return;
+    }
+
+    mutateRevisionMachine(stateTableMachine.selected.detail_id, {
+      onSuccess: async (res) => {
+        await createActivityLog({
+          username: dataUser?.data.username,
+          action: "Create",
+          is_success: true,
+          os: os,
+          message: `${res?.message} (${stateFormMachine.title} => ${stateTableMachine.selected?.code})`,
+        });
+
+        notifications.show({
+          title: "Revised Successfully!",
+          message: res.message,
+          color: "green",
+        });
+
+        refetchMachines();
+        refetchMachineDetails();
+        refetchMachineStatus();
+
+        updateStateTableMachine({ selected: null });
+
+        closeFormApproval();
+      },
+      onError: async (err) => {
+        const error = err as AxiosError<ApiResponse<null>>;
+        const res = error.response;
+        await createActivityLog({
+          username: dataUser?.data.username,
+          action: "Create",
+          is_success: false,
+          os: os,
+          message: `${res?.data.message} (${stateFormMachine.title} => ${stateTableMachine.selected?.code})`,
+        });
+
+        notifications.show({
+          title: "Revised Failed!",
+          message:
+            "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
+          color: "red",
+        });
+
+        closeFormApproval();
+      },
+    });
+  };
+
+  const handleChangeConditionData = () => {
+    formMachineStatus.clearErrors();
+    formMachineStatus.reset();
+    updateStateFormMachine({ reason: "" });
+    if (!stateTableMachine.selected) {
+      notifications.show({
+        title: "Select Data First!",
+        message: "Please select the data you want to approve before proceeding",
+      });
+      return;
+    }
+
+    updateStateFormMachine({
+      title: "Change Condition",
+      action: "change_condition",
+      message: "",
+    });
+
+    openFormChangeCondition();
+  };
+
+  const handleCloseFormChangeCondition = () => {
+    closeFormChangeCondition();
+  };
+
+  const handleChangeCondition = () => {
+    let dataMachineStatus = formMachineStatus.getValues();
+    dataMachineStatus.id_reason = parseInt(
+      dataMachineStatus.id_reason as string
+    );
+
+    mutateMachineStatus(
+      { id: stateTableMachine.selected?.id!, params: dataMachineStatus },
+      {
+        onSuccess: async (res) => {
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Create",
+            is_success: true,
+            os: os,
+            message: `${res?.message} (${stateFormMachine.title} => ${stateTableMachine.selected?.code})`,
+          });
+
+          notifications.show({
+            title: "Change Condition Successfully!",
+            message: res.message,
+            color: "green",
+          });
+
+          refetchMachines();
+          refetchMachineDetails();
+          refetchMachineStatus();
+
+          updateStateTableMachine({ selected: null });
+
+          closeFormChangeCondition();
+        },
+        onError: async (err) => {
+          const error = err as AxiosError<ApiResponse<null>>;
+          const res = error.response;
+          await createActivityLog({
+            username: dataUser?.data.username,
+            action: "Create",
+            is_success: false,
+            os: os,
+            message: `${res?.data.message} (${stateFormMachine.title} => ${stateTableMachine.selected?.code})`,
+          });
+
+          notifications.show({
+            title: "Change Condition Failed!",
+            message:
+              "Action failed due to system restrictions. Please check your data and try again, or contact support for assistance.",
+            color: "red",
+          });
+
+          closeFormChangeCondition();
         },
       }
     );
@@ -1611,12 +1880,12 @@ const MachinePage = () => {
                     {
                       icon: IconClipboardList,
                       label: "Revision",
-                      onClick: () => console.log("HAI"),
+                      onClick: () => handleRevisionData(),
                     },
                     {
                       icon: IconRefresh,
                       label: "Change Condition",
-                      onClick: () => console.log("HAI"),
+                      onClick: () => handleChangeConditionData(),
                     },
                     approvalSubmit
                       ? {
@@ -1630,6 +1899,13 @@ const MachinePage = () => {
                           icon: IconFileCheck,
                           label: "Approve",
                           onClick: () => handleApproveData(),
+                        }
+                      : null,
+                    approvalApprove
+                      ? {
+                          icon: IconFileX,
+                          label: "Reject",
+                          onClick: () => handleRejectData(),
                         }
                       : null,
                   ]
@@ -1668,7 +1944,15 @@ const MachinePage = () => {
               rightSection={
                 <CloseButton
                   size={16}
-                  onClick={() => updateStateFilterMachine({ search: "" })}
+                  onClick={() => {
+                    updateStateFilterMachine({ search: "" });
+                    navigate({
+                      to: "/mnt/master/machine",
+                      search: {
+                        key: undefined,
+                      },
+                    });
+                  }}
                   style={{
                     display: stateFilterMachine.search ? undefined : "none",
                   }}
@@ -1696,46 +1980,72 @@ const MachinePage = () => {
               </Menu.Target>
               <Menu.Dropdown p={15} w="fit-content">
                 <Text mb={5}>Filter</Text>
-                <Select
-                  placeholder="UoM"
-                  data={mappedDataFilterUoMs}
-                  size={size}
-                  searchable
-                  searchValue={stateFilterMachine.uom || ""}
-                  onSearchChange={(value) =>
-                    updateStateFilterMachine({ uom: value || "" })
-                  }
-                  value={
-                    stateFilterMachine.idUoM ? stateFilterMachine.idUoM : ""
-                  }
-                  onChange={(value, _option) =>
-                    updateStateFilterMachine({ idUoM: value || "" })
-                  }
-                  maxDropdownHeight={heightDropdown}
-                  nothingFoundMessage="Nothing found..."
-                  clearable
-                  clearButtonProps={{
-                    onClick: () => {
-                      updateStateFilterMachine({ uom: "" });
-                    },
-                  }}
-                  scrollAreaProps={{
-                    onScrollPositionChange: (position) => {
-                      let maxY = 37;
-                      const dataCount = mappedDataFilterUoMs.length;
-                      const multipleOf10 = Math.floor(dataCount / 10) * 10;
-                      if (position.y >= maxY) {
-                        maxY += Math.floor(multipleOf10 / 10) * 37;
-                        if (
-                          hasNextPageFilterUoMs &&
-                          !isFetchingNextPageFilterUoMs
-                        ) {
-                          fetchNextPageFilterUoMs();
+                <SimpleGrid cols={{ base: 2, sm: 2 }}>
+                  <Select
+                    placeholder="Status"
+                    size={size}
+                    data={[
+                      { label: "DRAFT", value: "-" },
+                      { label: "SUBMITTED", value: "SUBMITTED" },
+                      { label: "APPROVED", value: "APPROVED" },
+                      { label: "REJECTED", value: "REJECTED" },
+                    ]}
+                    value={
+                      stateFilterMachine.approval
+                        ? stateFilterMachine.approval
+                        : ""
+                    }
+                    onChange={(value, _option) =>
+                      updateStateFilterMachine({ approval: value || "" })
+                    }
+                    clearable
+                    clearButtonProps={{
+                      onClick: () => updateStateFilterMachine({ approval: "" }),
+                    }}
+                  />
+                  <Select
+                    placeholder="Reason"
+                    data={mappedDataFilterReasons}
+                    size={size}
+                    searchable
+                    searchValue={stateFilterMachine.reason || ""}
+                    onSearchChange={(value) =>
+                      updateStateFilterMachine({ reason: value || "" })
+                    }
+                    value={
+                      stateFilterMachine.idReason
+                        ? stateFilterMachine.idReason
+                        : ""
+                    }
+                    onChange={(value, _option) =>
+                      updateStateFilterMachine({ idReason: value || "" })
+                    }
+                    maxDropdownHeight={heightDropdown}
+                    nothingFoundMessage="Nothing found..."
+                    clearable
+                    clearButtonProps={{
+                      onClick: () => {
+                        updateStateFilterMachine({ reason: "" });
+                      },
+                    }}
+                    scrollAreaProps={{
+                      onScrollPositionChange: (position) => {
+                        let maxY = 37;
+                        const dataCount = mappedDataFilterReasons.length;
+                        const multipleOf10 = Math.floor(dataCount / 10) * 10;
+                        if (position.y >= maxY) {
+                          maxY += Math.floor(multipleOf10 / 10) * 37;
+                          if (
+                            hasNextPageFilterReasons &&
+                            !isFetchingNextPageFilterReasons
+                          ) {
+                            fetchNextPageFilterReasons();
+                          }
                         }
-                      }
-                    },
-                  }}
-                />
+                      },
+                    }}
+                  />
+                </SimpleGrid>
                 <Flex justify="end" pt={10}>
                   <Button
                     leftSection={<IconX size={14} />}
@@ -2915,15 +3225,17 @@ const MachinePage = () => {
           <Text
             size={size}
           >{`Are you sure you want to ${stateFormMachine.action} this machine?`}</Text>
-          <Textarea
-            mt={5}
-            placeholder="Message"
-            size={size}
-            onChange={(e) =>
-              updateStateFormMachine({ message: e.target.value })
-            }
-            value={stateFormMachine.message}
-          />
+          {stateFormMachine.action !== "revision" && (
+            <Textarea
+              mt={5}
+              placeholder="Message"
+              size={size}
+              onChange={(e) =>
+                updateStateFormMachine({ message: e.target.value })
+              }
+              value={stateFormMachine.message}
+            />
+          )}
           <Group justify="end" gap={5} mt="md">
             <Button
               leftSection={<IconX size={16} />}
@@ -2938,12 +3250,100 @@ const MachinePage = () => {
               type="submit"
               size={sizeButton}
               color="blue"
-              loading={isPendingMutateCreateApprovalHistory}
-              onClick={handleApproval}
+              loading={
+                isPendingMutateCreateApprovalHistory ||
+                isPendingMutateRevisionMachine
+              }
+              onClick={
+                stateFormMachine.action !== "revision"
+                  ? handleApproval
+                  : handleRevision
+              }
             >
               Save
             </Button>
           </Group>
+        </Modal>
+        <Modal
+          opened={openedFormChangeCondition}
+          onClose={closeFormChangeCondition}
+          title={stateFormMachine.title}
+          centered
+          closeOnClickOutside={false}
+        >
+          <form onSubmit={formMachineStatus.onSubmit(handleChangeCondition)}>
+            <Select
+              label="Reason"
+              placeholder="Reason"
+              data={mappedDataSelectReasons}
+              key={formMachineStatus.key("id_reason")}
+              size={size}
+              {...formMachineStatus.getInputProps("id_reason")}
+              searchable
+              searchValue={stateFormMachine.reason}
+              onSearchChange={(value) =>
+                updateStateFormMachine({ reason: value })
+              }
+              maxDropdownHeight={heightDropdown}
+              nothingFoundMessage="Nothing found..."
+              clearable
+              clearButtonProps={{
+                onClick: () => {
+                  formMachineStatus.setFieldValue("id_reason", "");
+                  updateStateFormMachine({ reason: "" });
+                },
+              }}
+              scrollAreaProps={{
+                onScrollPositionChange: (position) => {
+                  let maxY = 37;
+                  const dataCount = mappedDataSelectReasons.length;
+                  const multipleOf10 = Math.floor(dataCount / 10) * 10;
+                  if (position.y >= maxY) {
+                    maxY += Math.floor(multipleOf10 / 10) * 37;
+                    if (
+                      hasNextPageSelectReasons &&
+                      !isFetchingNextPageSelectReasons
+                    ) {
+                      fetchNextPageSelectReasons();
+                    }
+                  }
+                },
+              }}
+              disabled={
+                stateFormMachine.action === "view" ||
+                stateFormMachine.action === "edit"
+              }
+            />
+            <Textarea
+              label="Remarks"
+              placeholder="Remarks"
+              key={formMachineStatus.key("remarks")}
+              size={size}
+              disabled={
+                stateFormMachine.action === "view" ||
+                stateFormMachine.action === "edit"
+              }
+              {...formMachineStatus.getInputProps("remarks")}
+            />
+            <Group justify="end" gap={5} mt="md">
+              <Button
+                leftSection={<IconX size={16} />}
+                variant="default"
+                size={sizeButton}
+                onClick={handleCloseFormChangeCondition}
+              >
+                Cancel
+              </Button>
+              <Button
+                leftSection={<IconDeviceFloppy size={16} />}
+                type="submit"
+                size={sizeButton}
+                loading={isPendingMutateMachineStatus}
+              >
+                Save
+              </Button>
+            </Group>
+          </form>
         </Modal>
         {isLoadingMachines && (
           <Center flex={1}>
@@ -3036,6 +3436,12 @@ const MachinePage = () => {
               {
                 icon: IconBinoculars,
                 label: "View",
+                onClick: () => handleViewDataMachineDetail(),
+                access: true,
+              },
+              {
+                icon: IconLogs,
+                label: "Approval History",
                 onClick: () => handleViewDataMachineDetail(),
                 access: true,
               },

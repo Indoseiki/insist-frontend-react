@@ -21,6 +21,8 @@ export interface Reason {
 export interface ReasonParams {
   page: number;
   rows: string;
+  key?: string;
+  path?: string;
   search?: string;
   id_menu?: string | null;
   sortBy?: string | null;

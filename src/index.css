@@ -67,3 +67,8 @@ legend {
     font-size: 1rem;
   }
 }
+
+.m_8fb7ebe7:disabled,
+.m_8fb7ebe7[data-disabled] {
+  color: black !important;
+}

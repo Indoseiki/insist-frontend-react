@@ -240,6 +240,8 @@ export interface ViewMachineDetail {
 export interface MachineParams {
   page: number;
   rows: string;
+  id_reason?: number;
+  approval?: string;
   search?: string;
   sortBy?: string | null;
   sortDirection?: boolean;

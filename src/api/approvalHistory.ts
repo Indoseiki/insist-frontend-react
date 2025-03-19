@@ -3,16 +3,17 @@ import { ApiResponse } from "../types/response";
 import {
   ApprovalHistory,
   ApprovalHistoryParams,
+  ViewApprovalNotification,
 } from "../types/approvalHistory";
 import apiClient from "./apiClient";
 
-const url = "/admin/approval-history";
+const url = "/admin/approval";
 
 const getApprovalHistorys = async (
   params: ApprovalHistoryParams
 ): Promise<ApiResponse<Result<ApprovalHistory[]>>> => {
   const response = await apiClient.get<ApiResponse<Result<ApprovalHistory[]>>>(
-    url,
+    `${url}-history`,
     {
       params,
     }
@@ -24,7 +25,7 @@ const createApprovalHistory = async (
   params: Partial<ApprovalHistory>
 ): Promise<ApiResponse<ApprovalHistory>> => {
   const response = await apiClient.post<ApiResponse<ApprovalHistory>>(
-    url,
+    `${url}-history`,
     params
   );
   return response.data;
@@ -35,7 +36,7 @@ const updateApprovalHistory = async (
   params: Partial<ApprovalHistory>
 ): Promise<ApiResponse<Partial<ApprovalHistory>>> => {
   const response = await apiClient.put<ApiResponse<Partial<ApprovalHistory>>>(
-    `${url}/${id}`,
+    `${url}-history/${id}`,
     params
   );
   return response.data;
@@ -44,7 +45,18 @@ const updateApprovalHistory = async (
 const deleteApprovalHistory = async (
   id: number
 ): Promise<ApiResponse<null>> => {
-  const response = await apiClient.delete<ApiResponse<null>>(`${url}/${id}`);
+  const response = await apiClient.delete<ApiResponse<null>>(
+    `${url}-history/${id}`
+  );
+  return response.data;
+};
+
+const getApprovalNotifications = async (): Promise<
+  ApiResponse<ViewApprovalNotification[]>
+> => {
+  const response = await apiClient.get<ApiResponse<ViewApprovalNotification[]>>(
+    `${url}-notification`
+  );
   return response.data;
 };
 
@@ -53,4 +65,5 @@ export {
   createApprovalHistory,
   updateApprovalHistory,
   deleteApprovalHistory,
+  getApprovalNotifications,
 };

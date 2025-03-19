@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import MachinePage from "../../../../pages/mnt/master/machine";
+import MachinePage from "../../../../pages/mnt/master/Machine";
 
 export const Route = createFileRoute("/_authenticated/mnt/master/machine")({
   component: RouteComponent,

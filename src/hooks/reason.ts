@@ -16,15 +16,25 @@ const useReasonsQuery = (params: ReasonParams) => {
   });
 };
 
-const useReasonsInfinityQuery = ({ search }: { search: string }) => {
+const useReasonsInfinityQuery = ({
+  search,
+  key,
+  path,
+}: {
+  search: string;
+  key: string;
+  path: string;
+}) => {
   return useInfiniteQuery<ApiResponse<Result<Reason[]>>, Error>({
-    queryKey: ["InfinityReasons", search],
+    queryKey: ["InfinityReasons", search, key, path],
     queryFn: ({ pageParam }: { pageParam?: unknown }) => {
       const page = pageParam as number;
       return getReasons({
         page,
         rows: "10",
         search,
+        key,
+        path,
       });
     },
     getNextPageParam: (lastPage) => {
