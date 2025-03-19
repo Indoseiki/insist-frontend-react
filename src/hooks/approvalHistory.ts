@@ -4,11 +4,13 @@ import { ApiResponse } from "../types/response";
 import {
   ApprovalHistory,
   ApprovalHistoryParams,
+  ViewApprovalNotification,
 } from "../types/approvalHistory";
 import {
   createApprovalHistory,
   deleteApprovalHistory,
   getApprovalHistorys,
+  getApprovalNotifications,
   updateApprovalHistory,
 } from "../api/approvalHistory";
 
@@ -63,10 +65,19 @@ const useDeleteApprovalHistory = () => {
   });
 };
 
+const useApprovalNotificationQuery = () => {
+  return useQuery<ApiResponse<ViewApprovalNotification[]>, Error>({
+    queryKey: ["ApprovalNotification"],
+    queryFn: () => getApprovalNotifications(),
+    refetchInterval: 5000,
+  });
+};
+
 export {
   useApprovalHistorysQuery,
   useApprovalHistorysInfinityQuery,
   useCreateApprovalHistory,
   useUpdateApprovalHistory,
   useDeleteApprovalHistory,
+  useApprovalNotificationQuery,
 };

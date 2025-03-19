@@ -22,3 +22,25 @@ export interface ApprovalHistoryParams {
   sortBy?: string | null;
   sortDirection?: boolean;
 }
+
+export interface ViewApprovalNotification {
+  id: number;
+  menu_name: string;
+  menu_path: string;
+  ref_table: string;
+  ref_id: number;
+  key: string;
+  message: string;
+  approval_id: number;
+  current_level: number;
+  status: string;
+  action: string;
+  current_approver_id?: number;
+  current_approver_name?: string;
+  next_approval_id?: number;
+  next_level?: number;
+  next_id_user?: number;
+  next_approval_name?: string;
+  next_action?: string;
+  next_status?: string;
+}
