@@ -1,6 +1,5 @@
 import axios from "axios";
 import { getToken, removeToken, setToken } from "../utils/auth";
-import { redirect } from "@tanstack/react-router";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
@@ -30,6 +29,12 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    if (error.response?.status === 403) {
+      removeToken();
+      window.location.href = "/login";
+      return Promise.reject(error);
+    }
+
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
@@ -38,10 +43,8 @@ apiClient.interceptors.response.use(
 
         if (!token) {
           removeToken();
-          throw redirect({
-            to: "/login",
-            replace: true,
-          });
+          window.location.href = "/login";
+          return Promise.reject(error);
         }
 
         const response = await axios.get(`${baseURL}/auth/token`, {
@@ -58,10 +61,8 @@ apiClient.interceptors.response.use(
         return apiClient(originalRequest);
       } catch (refreshError) {
         removeToken();
-        throw redirect({
-          to: "/login",
-          replace: true,
-        });
+        window.location.href = "/login";
+        return Promise.reject(refreshError);
       }
     }
 
