@@ -132,10 +132,12 @@ const ActivityLogPage = () => {
           <Table.Td>{row.user?.name}</Table.Td>
           <Table.Td>{row.ip_address}</Table.Td>
           <Table.Td>
-            <Badge color={actionColor}>{row.action}</Badge>
+            <Badge size={size} color={actionColor}>
+              {row.action}
+            </Badge>
           </Table.Td>
           <Table.Td>
-            <Badge color={row.is_success ? "blue" : "red"}>
+            <Badge size={size} color={row.is_success ? "blue" : "red"}>
               {row.is_success ? "Success" : "Failure"}
             </Badge>
           </Table.Td>

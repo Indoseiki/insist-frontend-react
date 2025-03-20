@@ -138,7 +138,7 @@ const EmployeePage = () => {
           <Table.Td w={200}>{row.department}</Table.Td>
           <Table.Td w={150}>{row.position}</Table.Td>
           <Table.Td w={140}>
-            <Badge color={row.is_active ? "blue" : "red"}>
+            <Badge size={size} color={row.is_active ? "blue" : "red"}>
               {row.is_active ? "Active" : "Inactive"}
             </Badge>
           </Table.Td>

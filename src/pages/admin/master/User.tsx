@@ -252,12 +252,12 @@ const UserPage = () => {
           <Table.Td>{row.email}</Table.Td>
           <Table.Td>{row.dept?.code}</Table.Td>
           <Table.Td>
-            <Badge color={row.is_active ? "blue" : "red"}>
+            <Badge size={size} color={row.is_active ? "blue" : "red"}>
               {row.is_active ? "Active" : "Inactive"}
             </Badge>
           </Table.Td>
           <Table.Td>
-            <Badge color={row.is_two_fa ? "teal" : "red"}>
+            <Badge size={size} color={row.is_two_fa ? "teal" : "red"}>
               {row.is_two_fa ? "Active" : "Inactive"}
             </Badge>
           </Table.Td>

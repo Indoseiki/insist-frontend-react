@@ -82,10 +82,14 @@ import PageSubHeader from "../../../components/layouts/PageSubHeader";
 import { useUoMInfinityQuery } from "../../../hooks/uom";
 import { UoM } from "../../../types/uom";
 import { useReasonsInfinityQuery } from "../../../hooks/reason";
-import { useCreateApprovalHistory } from "../../../hooks/approvalHistory";
+import {
+  useApprovalHistoriesByrefQuery,
+  useCreateApprovalHistory,
+} from "../../../hooks/approvalHistory";
 import { useApprovalStructuresByMenuQuery } from "../../../hooks/approvalStructure";
 import { ViewApprovalStructure } from "../../../types/approvalStructure";
 import { useNavigate, useSearch } from "@tanstack/react-router";
+import { ApprovalHistory } from "../../../types/approvalHistory";
 
 interface StateFilterMachine {
   open: boolean;
@@ -142,6 +146,11 @@ const MachinePage = () => {
   const [
     openedFormChangeCondition,
     { open: openFormChangeCondition, close: closeFormChangeCondition },
+  ] = useDisclosure(false);
+
+  const [
+    openedApprovalHistories,
+    { open: openApprovalHistories, close: closeApprovalHistories },
   ] = useDisclosure(false);
 
   const [stateTableMachine, setStateTableMachine] = useState<
@@ -497,6 +506,11 @@ const MachinePage = () => {
     isPending: isPendingMutateMachineStatus,
   } = useUpdateMachineStatus();
 
+  const { data: dataApprovalHistories, isSuccess: isSuccessApprovalHistories } =
+    useApprovalHistoriesByrefQuery(stateTableMachineDetail.selected?.id ?? 0, {
+      ref_table: "mst_machine_details",
+    });
+
   const os = useOs();
   const { data: dataUser } = useUserInfoQuery();
   const { data: dataMachinePermission } = useRolePermissionQuery(
@@ -556,12 +570,18 @@ const MachinePage = () => {
         >
           <Table.Td>{row.code}</Table.Td>
           <Table.Td>
-            <Badge color={colorApprovals[row.approval_status] ?? "gray"}>
+            <Badge
+              size={size}
+              color={colorApprovals[row.approval_status] ?? "gray"}
+            >
               {row.approval_status ? row.approval_status : "DRAFT"}
             </Badge>
           </Table.Td>
           <Table.Td>
-            <Badge color={colorCondition[row.reason_description] ?? "gray"}>
+            <Badge
+              size={size}
+              color={colorCondition[row.reason_description] ?? "gray"}
+            >
               {row.reason_description ?? "-"}
             </Badge>
           </Table.Td>
@@ -619,7 +639,10 @@ const MachinePage = () => {
         >
           <Table.Td w={100}>{row.rev_no ? row.rev_no : "-"}</Table.Td>
           <Table.Td>
-            <Badge color={colorApprovals[row.approval_status] ?? "gray"}>
+            <Badge
+              size={size}
+              color={colorApprovals[row.approval_status] ?? "gray"}
+            >
               {row.approval_status ? row.approval_status : "DRAFT"}
             </Badge>
           </Table.Td>
@@ -677,6 +700,7 @@ const MachinePage = () => {
         >
           <Table.Td w={200}>
             <Badge
+              size={size}
               color={colorCondition[row.reason?.description ?? "INACTIVE"]}
             >
               {row.reason?.description ?? "INACTIVE"}
@@ -695,6 +719,44 @@ const MachinePage = () => {
     dataMachineStatus,
     stateTableMachine.selected,
     stateTableMachineStatus.selected,
+    colorScheme,
+  ]);
+
+  const rowsApprovalHistory = useMemo(() => {
+    if (!isSuccessApprovalHistories || !dataApprovalHistories?.data) {
+      return null;
+    }
+
+    const colorApprovals: Record<string, string> = {
+      SUBMITTED: "blue",
+      APPROVED: "teal",
+      REJECTED: "red",
+    };
+
+    return dataApprovalHistories.data?.map((row: ApprovalHistory) => {
+      return (
+        <Table.Tr key={row.id} style={{ cursor: "pointer" }}>
+          <Table.Td>
+            <Badge
+              size={size}
+              color={colorApprovals[row.approval?.status!] ?? "gray"}
+            >
+              {row.approval?.status ? row.approval?.status : "DRAFT"}
+            </Badge>
+          </Table.Td>
+          <Table.Td>{row.message}</Table.Td>
+          <Table.Td>{row.created_by?.name || "-"}</Table.Td>
+          <Table.Td>
+            {row.created_at ? formatDateTime(row.created_at) : "-"}
+          </Table.Td>
+        </Table.Tr>
+      );
+    });
+  }, [
+    isSuccessApprovalHistories,
+    dataApprovalHistories,
+    ,
+    stateTableMachineDetail.selected,
     colorScheme,
   ]);
 
@@ -1665,6 +1727,17 @@ const MachinePage = () => {
         },
       }
     );
+  };
+
+  const handleApprovalHisotires = () => {
+    if (!stateTableMachineDetail.selected) {
+      notifications.show({
+        title: "Select Data First!",
+        message: "Please select a machine before viewing approval histories.",
+      });
+      return;
+    }
+    openApprovalHistories();
   };
 
   const useUoMCombobox = (
@@ -3442,7 +3515,7 @@ const MachinePage = () => {
               {
                 icon: IconLogs,
                 label: "Approval History",
-                onClick: () => handleViewDataMachineDetail(),
+                onClick: () => handleApprovalHisotires(),
                 access: true,
               },
             ].map((btn, idx) => (
@@ -3459,6 +3532,33 @@ const MachinePage = () => {
               </Button>
             ))}
           </Button.Group>
+          <Modal
+            opened={openedApprovalHistories}
+            onClose={closeApprovalHistories}
+            title="Approval History"
+            centered
+            size="lg"
+            closeOnClickOutside={false}
+          >
+            <TableScrollable
+              minWidth={400}
+              headers={[
+                {
+                  name: "Status",
+                },
+                {
+                  name: "Remarks",
+                },
+                {
+                  name: "User",
+                },
+                {
+                  name: "Date",
+                },
+              ]}
+              rows={rowsApprovalHistory}
+            />
+          </Modal>
           {isLoadingMachineDetails && (
             <Center flex={1}>
               <Loader size={100} />
