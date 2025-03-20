@@ -745,8 +745,8 @@ const MachinePage = () => {
             </Badge>
           </Table.Td>
           <Table.Td>{row.message}</Table.Td>
-          <Table.Td>{row.created_by?.name || "-"}</Table.Td>
-          <Table.Td>
+          <Table.Td w="120px">{row.created_by?.name || "-"}</Table.Td>
+          <Table.Td w="130px">
             {row.created_at ? formatDateTime(row.created_at) : "-"}
           </Table.Td>
         </Table.Tr>
@@ -3541,7 +3541,7 @@ const MachinePage = () => {
             closeOnClickOutside={false}
           >
             <TableScrollable
-              minWidth={400}
+              minWidth={500}
               headers={[
                 {
                   name: "Status",
