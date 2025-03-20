@@ -2,6 +2,7 @@ import { Result } from "../types/pagination";
 import { ApiResponse } from "../types/response";
 import {
   ApprovalHistory,
+  ApprovalHistoryByRefParams,
   ApprovalHistoryParams,
   ViewApprovalNotification,
 } from "../types/approvalHistory";
@@ -9,11 +10,24 @@ import apiClient from "./apiClient";
 
 const url = "/admin/approval";
 
-const getApprovalHistorys = async (
+const getApprovalHistories = async (
   params: ApprovalHistoryParams
 ): Promise<ApiResponse<Result<ApprovalHistory[]>>> => {
   const response = await apiClient.get<ApiResponse<Result<ApprovalHistory[]>>>(
     `${url}-history`,
+    {
+      params,
+    }
+  );
+  return response.data;
+};
+
+const getApprovalHistoriesByRef = async (
+  id: number,
+  params: ApprovalHistoryByRefParams
+): Promise<ApiResponse<ApprovalHistory[]>> => {
+  const response = await apiClient.get<ApiResponse<ApprovalHistory[]>>(
+    `${url}-history/${id}/ref`,
     {
       params,
     }
@@ -61,7 +75,8 @@ const getApprovalNotifications = async (): Promise<
 };
 
 export {
-  getApprovalHistorys,
+  getApprovalHistories,
+  getApprovalHistoriesByRef,
   createApprovalHistory,
   updateApprovalHistory,
   deleteApprovalHistory,

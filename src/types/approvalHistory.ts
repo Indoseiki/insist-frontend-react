@@ -23,6 +23,10 @@ export interface ApprovalHistoryParams {
   sortDirection?: boolean;
 }
 
+export interface ApprovalHistoryByRefParams {
+  ref_table: string;
+}
+
 export interface ViewApprovalNotification {
   id: number;
   menu_name: string;

@@ -3,30 +3,43 @@ import { Result } from "../types/pagination";
 import { ApiResponse } from "../types/response";
 import {
   ApprovalHistory,
+  ApprovalHistoryByRefParams,
   ApprovalHistoryParams,
   ViewApprovalNotification,
 } from "../types/approvalHistory";
 import {
   createApprovalHistory,
   deleteApprovalHistory,
-  getApprovalHistorys,
+  getApprovalHistories,
+  getApprovalHistoriesByRef,
   getApprovalNotifications,
   updateApprovalHistory,
 } from "../api/approvalHistory";
 
-const useApprovalHistorysQuery = (params: ApprovalHistoryParams) => {
+const useApprovalHistoriesQuery = (params: ApprovalHistoryParams) => {
   return useQuery<ApiResponse<Result<ApprovalHistory[]>>, Error>({
-    queryKey: ["ApprovalHistorys", params],
-    queryFn: () => getApprovalHistorys(params),
+    queryKey: ["ApprovalHistories", params],
+    queryFn: () => getApprovalHistories(params),
   });
 };
 
-const useApprovalHistorysInfinityQuery = ({ search }: { search: string }) => {
+const useApprovalHistoriesByrefQuery = (
+  id: number,
+  params: ApprovalHistoryByRefParams
+) => {
+  return useQuery<ApiResponse<ApprovalHistory[]>, Error>({
+    queryKey: ["ApprovalHistoriesByRef", id, params],
+    queryFn: () => getApprovalHistoriesByRef(id, params),
+    enabled: !!id && !!params.ref_table,
+  });
+};
+
+const useApprovalHistoriesInfinityQuery = ({ search }: { search: string }) => {
   return useInfiniteQuery<ApiResponse<Result<ApprovalHistory[]>>, Error>({
-    queryKey: ["InfinityApprovalHistorys", search],
+    queryKey: ["InfinityApprovalHistories", search],
     queryFn: ({ pageParam }: { pageParam?: unknown }) => {
       const page = pageParam as number;
-      return getApprovalHistorys({
+      return getApprovalHistories({
         page,
         rows: "10",
         search,
@@ -74,8 +87,9 @@ const useApprovalNotificationQuery = () => {
 };
 
 export {
-  useApprovalHistorysQuery,
-  useApprovalHistorysInfinityQuery,
+  useApprovalHistoriesQuery,
+  useApprovalHistoriesByrefQuery,
+  useApprovalHistoriesInfinityQuery,
   useCreateApprovalHistory,
   useUpdateApprovalHistory,
   useDeleteApprovalHistory,
