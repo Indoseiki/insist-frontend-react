@@ -68,7 +68,14 @@ legend {
   }
 }
 
-.m_8fb7ebe7:disabled,
-.m_8fb7ebe7[data-disabled] {
-  color: black !important;
+/* Light mode */
+[data-mantine-color-scheme="light"] .m_8fb7ebe7:disabled,
+[data-mantine-color-scheme="light"] .m_8fb7ebe7[data-disabled] {
+  color: var(--mantine-color-dark-9) !important;
+}
+
+/* Dark mode */
+[data-mantine-color-scheme="dark"] .m_8fb7ebe7:disabled,
+[data-mantine-color-scheme="dark"] .m_8fb7ebe7[data-disabled] {
+  color: var(--mantine-color-gray-3) !important;
 }

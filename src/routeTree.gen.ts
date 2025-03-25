@@ -35,6 +35,7 @@ import { Route as AuthenticatedAdmMasterMenuImport } from './routes/_authenticat
 import { Route as AuthenticatedAdmMasterKeyValueImport } from './routes/_authenticated/adm/master/key-value'
 import { Route as AuthenticatedAdmMasterEmployeeImport } from './routes/_authenticated/adm/master/employee'
 import { Route as AuthenticatedAdmMasterDepartmentImport } from './routes/_authenticated/adm/master/department'
+import { Route as AuthenticatedAcfMasterChartOfAccountImport } from './routes/_authenticated/acf/master/chart-of-account'
 
 // Create/Update Routes
 
@@ -200,6 +201,13 @@ const AuthenticatedAdmMasterDepartmentRoute =
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
+const AuthenticatedAcfMasterChartOfAccountRoute =
+  AuthenticatedAcfMasterChartOfAccountImport.update({
+    id: '/acf/master/chart-of-account',
+    path: '/acf/master/chart-of-account',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -265,6 +273,13 @@ declare module '@tanstack/react-router' {
       path: '/adm/user-role'
       fullPath: '/adm/user-role'
       preLoaderRoute: typeof AuthenticatedAdmUserRoleImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/acf/master/chart-of-account': {
+      id: '/_authenticated/acf/master/chart-of-account'
+      path: '/acf/master/chart-of-account'
+      fullPath: '/acf/master/chart-of-account'
+      preLoaderRoute: typeof AuthenticatedAcfMasterChartOfAccountImport
       parentRoute: typeof AuthenticatedImport
     }
     '/_authenticated/adm/master/department': {
@@ -384,6 +399,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdmRoleMenuRoute: typeof AuthenticatedAdmRoleMenuRoute
   AuthenticatedAdmRolePermissionRoute: typeof AuthenticatedAdmRolePermissionRoute
   AuthenticatedAdmUserRoleRoute: typeof AuthenticatedAdmUserRoleRoute
+  AuthenticatedAcfMasterChartOfAccountRoute: typeof AuthenticatedAcfMasterChartOfAccountRoute
   AuthenticatedAdmMasterDepartmentRoute: typeof AuthenticatedAdmMasterDepartmentRoute
   AuthenticatedAdmMasterEmployeeRoute: typeof AuthenticatedAdmMasterEmployeeRoute
   AuthenticatedAdmMasterKeyValueRoute: typeof AuthenticatedAdmMasterKeyValueRoute
@@ -409,6 +425,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdmRoleMenuRoute: AuthenticatedAdmRoleMenuRoute,
   AuthenticatedAdmRolePermissionRoute: AuthenticatedAdmRolePermissionRoute,
   AuthenticatedAdmUserRoleRoute: AuthenticatedAdmUserRoleRoute,
+  AuthenticatedAcfMasterChartOfAccountRoute:
+    AuthenticatedAcfMasterChartOfAccountRoute,
   AuthenticatedAdmMasterDepartmentRoute: AuthenticatedAdmMasterDepartmentRoute,
   AuthenticatedAdmMasterEmployeeRoute: AuthenticatedAdmMasterEmployeeRoute,
   AuthenticatedAdmMasterKeyValueRoute: AuthenticatedAdmMasterKeyValueRoute,
@@ -440,6 +458,7 @@ export interface FileRoutesByFullPath {
   '/adm/role-menu': typeof AuthenticatedAdmRoleMenuRoute
   '/adm/role-permission': typeof AuthenticatedAdmRolePermissionRoute
   '/adm/user-role': typeof AuthenticatedAdmUserRoleRoute
+  '/acf/master/chart-of-account': typeof AuthenticatedAcfMasterChartOfAccountRoute
   '/adm/master/department': typeof AuthenticatedAdmMasterDepartmentRoute
   '/adm/master/employee': typeof AuthenticatedAdmMasterEmployeeRoute
   '/adm/master/key-value': typeof AuthenticatedAdmMasterKeyValueRoute
@@ -466,6 +485,7 @@ export interface FileRoutesByTo {
   '/adm/role-menu': typeof AuthenticatedAdmRoleMenuRoute
   '/adm/role-permission': typeof AuthenticatedAdmRolePermissionRoute
   '/adm/user-role': typeof AuthenticatedAdmUserRoleRoute
+  '/acf/master/chart-of-account': typeof AuthenticatedAcfMasterChartOfAccountRoute
   '/adm/master/department': typeof AuthenticatedAdmMasterDepartmentRoute
   '/adm/master/employee': typeof AuthenticatedAdmMasterEmployeeRoute
   '/adm/master/key-value': typeof AuthenticatedAdmMasterKeyValueRoute
@@ -494,6 +514,7 @@ export interface FileRoutesById {
   '/_authenticated/adm/role-menu': typeof AuthenticatedAdmRoleMenuRoute
   '/_authenticated/adm/role-permission': typeof AuthenticatedAdmRolePermissionRoute
   '/_authenticated/adm/user-role': typeof AuthenticatedAdmUserRoleRoute
+  '/_authenticated/acf/master/chart-of-account': typeof AuthenticatedAcfMasterChartOfAccountRoute
   '/_authenticated/adm/master/department': typeof AuthenticatedAdmMasterDepartmentRoute
   '/_authenticated/adm/master/employee': typeof AuthenticatedAdmMasterEmployeeRoute
   '/_authenticated/adm/master/key-value': typeof AuthenticatedAdmMasterKeyValueRoute
@@ -523,6 +544,7 @@ export interface FileRouteTypes {
     | '/adm/role-menu'
     | '/adm/role-permission'
     | '/adm/user-role'
+    | '/acf/master/chart-of-account'
     | '/adm/master/department'
     | '/adm/master/employee'
     | '/adm/master/key-value'
@@ -548,6 +570,7 @@ export interface FileRouteTypes {
     | '/adm/role-menu'
     | '/adm/role-permission'
     | '/adm/user-role'
+    | '/acf/master/chart-of-account'
     | '/adm/master/department'
     | '/adm/master/employee'
     | '/adm/master/key-value'
@@ -574,6 +597,7 @@ export interface FileRouteTypes {
     | '/_authenticated/adm/role-menu'
     | '/_authenticated/adm/role-permission'
     | '/_authenticated/adm/user-role'
+    | '/_authenticated/acf/master/chart-of-account'
     | '/_authenticated/adm/master/department'
     | '/_authenticated/adm/master/employee'
     | '/_authenticated/adm/master/key-value'
@@ -628,6 +652,7 @@ export const routeTree = rootRoute
         "/_authenticated/adm/role-menu",
         "/_authenticated/adm/role-permission",
         "/_authenticated/adm/user-role",
+        "/_authenticated/acf/master/chart-of-account",
         "/_authenticated/adm/master/department",
         "/_authenticated/adm/master/employee",
         "/_authenticated/adm/master/key-value",
@@ -673,6 +698,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/adm/user-role": {
       "filePath": "_authenticated/adm/user-role.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/acf/master/chart-of-account": {
+      "filePath": "_authenticated/acf/master/chart-of-account.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/adm/master/department": {
