@@ -2,7 +2,7 @@ import { User } from "./user";
 
 export interface ChartOfAccount {
   id: number;
-  account: number;
+  account: number | string;
   description?: string;
   type?: string;
   class?: string;

@@ -173,7 +173,7 @@ const ChartOfAccountPage = () => {
   const formChartOfAccount = useForm<Partial<ChartOfAccount>>({
     mode: "uncontrolled",
     initialValues: {
-      account: 0,
+      account: "",
       description: "",
       class: "",
       type: "",
@@ -181,7 +181,8 @@ const ChartOfAccountPage = () => {
     },
 
     validate: {
-      account: (value) => (value === 0 ? "Account is required" : null),
+      account: (value) =>
+        value?.toString().length === 0 ? "Account is required" : null,
       description: (value) =>
         value!.length === 0 ? "Description is required" : null,
       class: (value) => (value!.length === 0 ? "Class is required" : null),
