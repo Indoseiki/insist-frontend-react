@@ -12,7 +12,6 @@ import {
   Stack,
   Table,
   Text,
-  Textarea,
   TextInput,
   useMantineColorScheme,
 } from "@mantine/core";
@@ -53,12 +52,6 @@ import { useLocation } from "@tanstack/react-router";
 
 interface StateFilter {
   search: string;
-}
-
-interface FormValues {
-  code: string;
-  description: string;
-  remarks: string;
 }
 
 const ChartOfAccountPage = () => {
