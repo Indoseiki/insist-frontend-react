@@ -602,7 +602,7 @@ const ChartOfAccountPage = () => {
         closeOnClickOutside={false}
       >
         <Text size={size}>
-          Are you sure you want to delete this chartOfAccount?
+          Are you sure you want to delete this Chart of Account?
         </Text>
         <Group justify="end" gap={5} mt="md">
           <Button

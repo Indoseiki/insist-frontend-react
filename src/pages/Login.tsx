@@ -284,7 +284,8 @@ const LoginPage = () => {
             <Divider my="xs" size="sm" />
             <Stack gap={0} justify="center" align="center">
               <Text size="sm" c="dimmed">
-                &copy; Copyright 2024 PT. Indoseiki Metalutama
+                &copy; Copyright {new Date().getFullYear()} PT. Indoseiki
+                Metalutama
               </Text>
               <Text size="sm" c="dimmed">
                 Powered by ICT Department
