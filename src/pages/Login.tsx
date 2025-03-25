@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Anchor,
   Box,
   Button,
   Center,
@@ -272,14 +273,15 @@ const LoginPage = () => {
           <Flex direction="column" pos="absolute" bottom={20}>
             <Flex justify="center" gap={2}>
               <Text size="sm">Have trouble?</Text>
-              <Text
+              <Anchor
+                href="http://192.168.30.86:83/ict/index.php?redirect=/front/ticket.php?error=3&noAUTO=1"
+                target="_blank"
                 size="sm"
-                td="underline"
+                underline="always"
                 c="blue"
-                style={{ cursor: "pointer" }}
               >
                 Contact Us
-              </Text>
+              </Anchor>
             </Flex>
             <Divider my="xs" size="sm" />
             <Stack gap={0} justify="center" align="center">
