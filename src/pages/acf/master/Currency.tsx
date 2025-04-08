@@ -1259,6 +1259,8 @@ const CurrencyPage = () => {
                 decimalSeparator=","
                 thousandSeparator="."
                 decimalScale={2}
+                fixedDecimalScale
+                hideControls
               />
               <NumberInput
                 label="Selling Rate"
@@ -1272,6 +1274,7 @@ const CurrencyPage = () => {
                 thousandSeparator="."
                 decimalScale={2}
                 fixedDecimalScale
+                hideControls
               />
               <DatePickerInput
                 label="Effective Date"
