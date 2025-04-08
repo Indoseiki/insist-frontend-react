@@ -15,7 +15,6 @@ import {
   NumberInput,
   Radio,
   ScrollArea,
-  Select,
   Stack,
   Table,
   Text,
