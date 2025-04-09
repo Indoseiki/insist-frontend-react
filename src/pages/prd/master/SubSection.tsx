@@ -881,11 +881,11 @@ const SubSubSectionPage = () => {
                     type="scroll"
                     mah={heightDropdown}
                     onScrollPositionChange={(position) => {
-                      let maxY = 790;
+                      let maxY = 400;
                       const dataCount = optionsSection.length;
                       const multipleOf10 = Math.floor(dataCount / 10) * 10;
                       if (position.y >= maxY) {
-                        maxY += Math.floor(multipleOf10 / 10) * 790;
+                        maxY += Math.floor(multipleOf10 / 10) * 400;
                         if (
                           hasNextPageSelectSections &&
                           !isFetchingNextPageSelectSections
@@ -959,11 +959,11 @@ const SubSubSectionPage = () => {
                     type="scroll"
                     mah={heightDropdown}
                     onScrollPositionChange={(position) => {
-                      let maxY = 790;
+                      let maxY = 400;
                       const dataCount = optionsBuilding.length;
                       const multipleOf10 = Math.floor(dataCount / 10) * 10;
                       if (position.y >= maxY) {
-                        maxY += Math.floor(multipleOf10 / 10) * 790;
+                        maxY += Math.floor(multipleOf10 / 10) * 400;
                         if (
                           hasNextPageSelectBuildings &&
                           !isFetchingNextPageSelectBuildings

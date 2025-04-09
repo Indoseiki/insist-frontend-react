@@ -2314,12 +2314,12 @@ const MachinePage = () => {
                               type="scroll"
                               mah={heightDropdown}
                               onScrollPositionChange={(position) => {
-                                let maxY = 790;
+                                let maxY = 400;
                                 const dataCount = optionsUoMPower.length;
                                 const multipleOf10 =
                                   Math.floor(dataCount / 10) * 10;
                                 if (position.y >= maxY) {
-                                  maxY += Math.floor(multipleOf10 / 10) * 790;
+                                  maxY += Math.floor(multipleOf10 / 10) * 400;
                                   if (
                                     hasNextPageSelectUoMsPower &&
                                     !isFetchingNextPageSelectUoMsPower
@@ -2425,12 +2425,12 @@ const MachinePage = () => {
                               type="scroll"
                               mah={heightDropdown}
                               onScrollPositionChange={(position) => {
-                                let maxY = 790;
+                                let maxY = 400;
                                 const dataCount = optionsUoMElectricity.length;
                                 const multipleOf10 =
                                   Math.floor(dataCount / 10) * 10;
                                 if (position.y >= maxY) {
-                                  maxY += Math.floor(multipleOf10 / 10) * 790;
+                                  maxY += Math.floor(multipleOf10 / 10) * 400;
                                   if (
                                     hasNextPageSelectUoMsElectricity &&
                                     !isFetchingNextPageSelectUoMsElectricity
@@ -2566,12 +2566,12 @@ const MachinePage = () => {
                               type="scroll"
                               mah={heightDropdown}
                               onScrollPositionChange={(position) => {
-                                let maxY = 790;
+                                let maxY = 400;
                                 const dataCount = optionsUoMLubricant.length;
                                 const multipleOf10 =
                                   Math.floor(dataCount / 10) * 10;
                                 if (position.y >= maxY) {
-                                  maxY += Math.floor(multipleOf10 / 10) * 790;
+                                  maxY += Math.floor(multipleOf10 / 10) * 400;
                                   if (
                                     hasNextPageSelectUoMsLubricant &&
                                     !isFetchingNextPageSelectUoMsLubricant
@@ -2681,12 +2681,12 @@ const MachinePage = () => {
                               type="scroll"
                               mah={heightDropdown}
                               onScrollPositionChange={(position) => {
-                                let maxY = 790;
+                                let maxY = 400;
                                 const dataCount = optionsUoMSliding.length;
                                 const multipleOf10 =
                                   Math.floor(dataCount / 10) * 10;
                                 if (position.y >= maxY) {
-                                  maxY += Math.floor(multipleOf10 / 10) * 790;
+                                  maxY += Math.floor(multipleOf10 / 10) * 400;
                                   if (
                                     hasNextPageSelectUoMsSliding &&
                                     !isFetchingNextPageSelectUoMsSliding
@@ -2796,12 +2796,12 @@ const MachinePage = () => {
                               type="scroll"
                               mah={heightDropdown}
                               onScrollPositionChange={(position) => {
-                                let maxY = 790;
+                                let maxY = 400;
                                 const dataCount = optionsUoMCoolant.length;
                                 const multipleOf10 =
                                   Math.floor(dataCount / 10) * 10;
                                 if (position.y >= maxY) {
-                                  maxY += Math.floor(multipleOf10 / 10) * 790;
+                                  maxY += Math.floor(multipleOf10 / 10) * 400;
                                   if (
                                     hasNextPageSelectUoMsCoolant &&
                                     !isFetchingNextPageSelectUoMsCoolant
@@ -2919,12 +2919,12 @@ const MachinePage = () => {
                               type="scroll"
                               mah={heightDropdown}
                               onScrollPositionChange={(position) => {
-                                let maxY = 790;
+                                let maxY = 400;
                                 const dataCount = optionsUoMHydraulic.length;
                                 const multipleOf10 =
                                   Math.floor(dataCount / 10) * 10;
                                 if (position.y >= maxY) {
-                                  maxY += Math.floor(multipleOf10 / 10) * 790;
+                                  maxY += Math.floor(multipleOf10 / 10) * 400;
                                   if (
                                     hasNextPageSelectUoMsHydraulic &&
                                     !isFetchingNextPageSelectUoMsHydraulic
@@ -3031,12 +3031,12 @@ const MachinePage = () => {
                               type="scroll"
                               mah={heightDropdown}
                               onScrollPositionChange={(position) => {
-                                let maxY = 790;
+                                let maxY = 400;
                                 const dataCount = optionsUoMFront.length;
                                 const multipleOf10 =
                                   Math.floor(dataCount / 10) * 10;
                                 if (position.y >= maxY) {
-                                  maxY += Math.floor(multipleOf10 / 10) * 790;
+                                  maxY += Math.floor(multipleOf10 / 10) * 400;
                                   if (
                                     hasNextPageSelectUoMsFront &&
                                     !isFetchingNextPageSelectUoMsFront
@@ -3138,12 +3138,12 @@ const MachinePage = () => {
                               type="scroll"
                               mah={heightDropdown}
                               onScrollPositionChange={(position) => {
-                                let maxY = 790;
+                                let maxY = 400;
                                 const dataCount = optionsUoMSide.length;
                                 const multipleOf10 =
                                   Math.floor(dataCount / 10) * 10;
                                 if (position.y >= maxY) {
-                                  maxY += Math.floor(multipleOf10 / 10) * 790;
+                                  maxY += Math.floor(multipleOf10 / 10) * 400;
                                   if (
                                     hasNextPageSelectUoMsSide &&
                                     !isFetchingNextPageSelectUoMsSide

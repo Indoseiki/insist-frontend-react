@@ -1029,12 +1029,12 @@ const TaxCodePage = () => {
                             type="scroll"
                             mah={heightDropdown}
                             onScrollPositionChange={(position) => {
-                              let maxY = 790;
+                              let maxY = 400;
                               const dataCount = optionsARAccount.length;
                               const multipleOf10 =
                                 Math.floor(dataCount / 10) * 10;
                               if (position.y >= maxY) {
-                                maxY += Math.floor(multipleOf10 / 10) * 790;
+                                maxY += Math.floor(multipleOf10 / 10) * 400;
                                 if (
                                   hasNextPageSelectARAccount &&
                                   !isFetchingNextPageSelectARAccount
@@ -1131,12 +1131,12 @@ const TaxCodePage = () => {
                             type="scroll"
                             mah={heightDropdown}
                             onScrollPositionChange={(position) => {
-                              let maxY = 790;
+                              let maxY = 400;
                               const dataCount = optionsARAccountProcess.length;
                               const multipleOf10 =
                                 Math.floor(dataCount / 10) * 10;
                               if (position.y >= maxY) {
-                                maxY += Math.floor(multipleOf10 / 10) * 790;
+                                maxY += Math.floor(multipleOf10 / 10) * 400;
                                 if (
                                   hasNextPageSelectARAccountProcess &&
                                   !isFetchingNextPageSelectARAccountProcess
@@ -1227,12 +1227,12 @@ const TaxCodePage = () => {
                             type="scroll"
                             mah={heightDropdown}
                             onScrollPositionChange={(position) => {
-                              let maxY = 790;
+                              let maxY = 400;
                               const dataCount = optionsAPAccount.length;
                               const multipleOf10 =
                                 Math.floor(dataCount / 10) * 10;
                               if (position.y >= maxY) {
-                                maxY += Math.floor(multipleOf10 / 10) * 790;
+                                maxY += Math.floor(multipleOf10 / 10) * 400;
                                 if (
                                   hasNextPageSelectAPAccount &&
                                   !isFetchingNextPageSelectAPAccount

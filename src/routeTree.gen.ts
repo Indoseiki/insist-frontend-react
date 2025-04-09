@@ -38,6 +38,7 @@ import { Route as AuthenticatedAdmMasterDepartmentImport } from './routes/_authe
 import { Route as AuthenticatedAcfMasterTaxCodeImport } from './routes/_authenticated/acf/master/tax-code'
 import { Route as AuthenticatedAcfMasterCurrencyImport } from './routes/_authenticated/acf/master/currency'
 import { Route as AuthenticatedAcfMasterChartOfAccountImport } from './routes/_authenticated/acf/master/chart-of-account'
+import { Route as AuthenticatedAcfMasterBankImport } from './routes/_authenticated/acf/master/bank'
 
 // Create/Update Routes
 
@@ -224,6 +225,14 @@ const AuthenticatedAcfMasterChartOfAccountRoute =
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
+const AuthenticatedAcfMasterBankRoute = AuthenticatedAcfMasterBankImport.update(
+  {
+    id: '/acf/master/bank',
+    path: '/acf/master/bank',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any,
+)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -289,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/adm/user-role'
       fullPath: '/adm/user-role'
       preLoaderRoute: typeof AuthenticatedAdmUserRoleImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/acf/master/bank': {
+      id: '/_authenticated/acf/master/bank'
+      path: '/acf/master/bank'
+      fullPath: '/acf/master/bank'
+      preLoaderRoute: typeof AuthenticatedAcfMasterBankImport
       parentRoute: typeof AuthenticatedImport
     }
     '/_authenticated/acf/master/chart-of-account': {
@@ -429,6 +445,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdmRoleMenuRoute: typeof AuthenticatedAdmRoleMenuRoute
   AuthenticatedAdmRolePermissionRoute: typeof AuthenticatedAdmRolePermissionRoute
   AuthenticatedAdmUserRoleRoute: typeof AuthenticatedAdmUserRoleRoute
+  AuthenticatedAcfMasterBankRoute: typeof AuthenticatedAcfMasterBankRoute
   AuthenticatedAcfMasterChartOfAccountRoute: typeof AuthenticatedAcfMasterChartOfAccountRoute
   AuthenticatedAcfMasterCurrencyRoute: typeof AuthenticatedAcfMasterCurrencyRoute
   AuthenticatedAcfMasterTaxCodeRoute: typeof AuthenticatedAcfMasterTaxCodeRoute
@@ -457,6 +474,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdmRoleMenuRoute: AuthenticatedAdmRoleMenuRoute,
   AuthenticatedAdmRolePermissionRoute: AuthenticatedAdmRolePermissionRoute,
   AuthenticatedAdmUserRoleRoute: AuthenticatedAdmUserRoleRoute,
+  AuthenticatedAcfMasterBankRoute: AuthenticatedAcfMasterBankRoute,
   AuthenticatedAcfMasterChartOfAccountRoute:
     AuthenticatedAcfMasterChartOfAccountRoute,
   AuthenticatedAcfMasterCurrencyRoute: AuthenticatedAcfMasterCurrencyRoute,
@@ -492,6 +510,7 @@ export interface FileRoutesByFullPath {
   '/adm/role-menu': typeof AuthenticatedAdmRoleMenuRoute
   '/adm/role-permission': typeof AuthenticatedAdmRolePermissionRoute
   '/adm/user-role': typeof AuthenticatedAdmUserRoleRoute
+  '/acf/master/bank': typeof AuthenticatedAcfMasterBankRoute
   '/acf/master/chart-of-account': typeof AuthenticatedAcfMasterChartOfAccountRoute
   '/acf/master/currency': typeof AuthenticatedAcfMasterCurrencyRoute
   '/acf/master/tax-code': typeof AuthenticatedAcfMasterTaxCodeRoute
@@ -521,6 +540,7 @@ export interface FileRoutesByTo {
   '/adm/role-menu': typeof AuthenticatedAdmRoleMenuRoute
   '/adm/role-permission': typeof AuthenticatedAdmRolePermissionRoute
   '/adm/user-role': typeof AuthenticatedAdmUserRoleRoute
+  '/acf/master/bank': typeof AuthenticatedAcfMasterBankRoute
   '/acf/master/chart-of-account': typeof AuthenticatedAcfMasterChartOfAccountRoute
   '/acf/master/currency': typeof AuthenticatedAcfMasterCurrencyRoute
   '/acf/master/tax-code': typeof AuthenticatedAcfMasterTaxCodeRoute
@@ -552,6 +572,7 @@ export interface FileRoutesById {
   '/_authenticated/adm/role-menu': typeof AuthenticatedAdmRoleMenuRoute
   '/_authenticated/adm/role-permission': typeof AuthenticatedAdmRolePermissionRoute
   '/_authenticated/adm/user-role': typeof AuthenticatedAdmUserRoleRoute
+  '/_authenticated/acf/master/bank': typeof AuthenticatedAcfMasterBankRoute
   '/_authenticated/acf/master/chart-of-account': typeof AuthenticatedAcfMasterChartOfAccountRoute
   '/_authenticated/acf/master/currency': typeof AuthenticatedAcfMasterCurrencyRoute
   '/_authenticated/acf/master/tax-code': typeof AuthenticatedAcfMasterTaxCodeRoute
@@ -584,6 +605,7 @@ export interface FileRouteTypes {
     | '/adm/role-menu'
     | '/adm/role-permission'
     | '/adm/user-role'
+    | '/acf/master/bank'
     | '/acf/master/chart-of-account'
     | '/acf/master/currency'
     | '/acf/master/tax-code'
@@ -612,6 +634,7 @@ export interface FileRouteTypes {
     | '/adm/role-menu'
     | '/adm/role-permission'
     | '/adm/user-role'
+    | '/acf/master/bank'
     | '/acf/master/chart-of-account'
     | '/acf/master/currency'
     | '/acf/master/tax-code'
@@ -641,6 +664,7 @@ export interface FileRouteTypes {
     | '/_authenticated/adm/role-menu'
     | '/_authenticated/adm/role-permission'
     | '/_authenticated/adm/user-role'
+    | '/_authenticated/acf/master/bank'
     | '/_authenticated/acf/master/chart-of-account'
     | '/_authenticated/acf/master/currency'
     | '/_authenticated/acf/master/tax-code'
@@ -698,6 +722,7 @@ export const routeTree = rootRoute
         "/_authenticated/adm/role-menu",
         "/_authenticated/adm/role-permission",
         "/_authenticated/adm/user-role",
+        "/_authenticated/acf/master/bank",
         "/_authenticated/acf/master/chart-of-account",
         "/_authenticated/acf/master/currency",
         "/_authenticated/acf/master/tax-code",
@@ -746,6 +771,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/adm/user-role": {
       "filePath": "_authenticated/adm/user-role.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/acf/master/bank": {
+      "filePath": "_authenticated/acf/master/bank.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/acf/master/chart-of-account": {
