@@ -11,7 +11,6 @@ import {
   InputBase,
   Loader,
   Modal,
-  NumberInput,
   ScrollArea,
   Select,
   Stack,
