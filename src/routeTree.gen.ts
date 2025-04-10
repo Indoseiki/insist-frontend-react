@@ -20,12 +20,14 @@ import { Route as AuthenticatedAdmRolePermissionImport } from './routes/_authent
 import { Route as AuthenticatedAdmRoleMenuImport } from './routes/_authenticated/adm/role-menu'
 import { Route as AuthenticatedAdmApprovalStructureImport } from './routes/_authenticated/adm/approval-structure'
 import { Route as AuthenticatedAdmActivityLogImport } from './routes/_authenticated/adm/activity-log'
+import { Route as AuthenticatedPurMasterBillingTermImport } from './routes/_authenticated/pur/master/billing-term'
 import { Route as AuthenticatedPrdMasterSubSectionImport } from './routes/_authenticated/prd/master/sub-section'
 import { Route as AuthenticatedPrdMasterSectionImport } from './routes/_authenticated/prd/master/section'
 import { Route as AuthenticatedPrdMasterFcsImport } from './routes/_authenticated/prd/master/fcs'
 import { Route as AuthenticatedPrdMasterBuildingImport } from './routes/_authenticated/prd/master/building'
 import { Route as AuthenticatedPidMasterWarehouseImport } from './routes/_authenticated/pid/master/warehouse'
 import { Route as AuthenticatedMntMasterMachineImport } from './routes/_authenticated/mnt/master/machine'
+import { Route as AuthenticatedMktMasterBillingTermImport } from './routes/_authenticated/mkt/master/billing-term'
 import { Route as AuthenticatedEgdMasterUomImport } from './routes/_authenticated/egd/master/uom'
 import { Route as AuthenticatedEgdMasterProcessImport } from './routes/_authenticated/egd/master/process'
 import { Route as AuthenticatedAdmMasterUserImport } from './routes/_authenticated/adm/master/user'
@@ -33,12 +35,14 @@ import { Route as AuthenticatedAdmMasterRoleImport } from './routes/_authenticat
 import { Route as AuthenticatedAdmMasterReasonImport } from './routes/_authenticated/adm/master/reason'
 import { Route as AuthenticatedAdmMasterMenuImport } from './routes/_authenticated/adm/master/menu'
 import { Route as AuthenticatedAdmMasterKeyValueImport } from './routes/_authenticated/adm/master/key-value'
+import { Route as AuthenticatedAdmMasterItemCategoryImport } from './routes/_authenticated/adm/master/item-category'
 import { Route as AuthenticatedAdmMasterEmployeeImport } from './routes/_authenticated/adm/master/employee'
 import { Route as AuthenticatedAdmMasterDepartmentImport } from './routes/_authenticated/adm/master/department'
 import { Route as AuthenticatedAcfMasterTaxCodeImport } from './routes/_authenticated/acf/master/tax-code'
 import { Route as AuthenticatedAcfMasterCurrencyImport } from './routes/_authenticated/acf/master/currency'
 import { Route as AuthenticatedAcfMasterChartOfAccountImport } from './routes/_authenticated/acf/master/chart-of-account'
 import { Route as AuthenticatedAcfMasterBankImport } from './routes/_authenticated/acf/master/bank'
+import { Route as AuthenticatedEgdMasterItemRawMaterialProductImport } from './routes/_authenticated/egd/master/item/raw-material/product'
 
 // Create/Update Routes
 
@@ -98,6 +102,13 @@ const AuthenticatedAdmActivityLogRoute =
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
+const AuthenticatedPurMasterBillingTermRoute =
+  AuthenticatedPurMasterBillingTermImport.update({
+    id: '/pur/master/billing-term',
+    path: '/pur/master/billing-term',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+
 const AuthenticatedPrdMasterSubSectionRoute =
   AuthenticatedPrdMasterSubSectionImport.update({
     id: '/prd/master/sub-section',
@@ -136,6 +147,13 @@ const AuthenticatedMntMasterMachineRoute =
   AuthenticatedMntMasterMachineImport.update({
     id: '/mnt/master/machine',
     path: '/mnt/master/machine',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+
+const AuthenticatedMktMasterBillingTermRoute =
+  AuthenticatedMktMasterBillingTermImport.update({
+    id: '/mkt/master/billing-term',
+    path: '/mkt/master/billing-term',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
@@ -190,6 +208,13 @@ const AuthenticatedAdmMasterKeyValueRoute =
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
+const AuthenticatedAdmMasterItemCategoryRoute =
+  AuthenticatedAdmMasterItemCategoryImport.update({
+    id: '/adm/master/item-category',
+    path: '/adm/master/item-category',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+
 const AuthenticatedAdmMasterEmployeeRoute =
   AuthenticatedAdmMasterEmployeeImport.update({
     id: '/adm/master/employee',
@@ -232,6 +257,13 @@ const AuthenticatedAcfMasterBankRoute = AuthenticatedAcfMasterBankImport.update(
     getParentRoute: () => AuthenticatedRoute,
   } as any,
 )
+
+const AuthenticatedEgdMasterItemRawMaterialProductRoute =
+  AuthenticatedEgdMasterItemRawMaterialProductImport.update({
+    id: '/egd/master/item/raw-material/product',
+    path: '/egd/master/item/raw-material/product',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -342,6 +374,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdmMasterEmployeeImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/_authenticated/adm/master/item-category': {
+      id: '/_authenticated/adm/master/item-category'
+      path: '/adm/master/item-category'
+      fullPath: '/adm/master/item-category'
+      preLoaderRoute: typeof AuthenticatedAdmMasterItemCategoryImport
+      parentRoute: typeof AuthenticatedImport
+    }
     '/_authenticated/adm/master/key-value': {
       id: '/_authenticated/adm/master/key-value'
       path: '/adm/master/key-value'
@@ -391,6 +430,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEgdMasterUomImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/_authenticated/mkt/master/billing-term': {
+      id: '/_authenticated/mkt/master/billing-term'
+      path: '/mkt/master/billing-term'
+      fullPath: '/mkt/master/billing-term'
+      preLoaderRoute: typeof AuthenticatedMktMasterBillingTermImport
+      parentRoute: typeof AuthenticatedImport
+    }
     '/_authenticated/mnt/master/machine': {
       id: '/_authenticated/mnt/master/machine'
       path: '/mnt/master/machine'
@@ -433,6 +479,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPrdMasterSubSectionImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/_authenticated/pur/master/billing-term': {
+      id: '/_authenticated/pur/master/billing-term'
+      path: '/pur/master/billing-term'
+      fullPath: '/pur/master/billing-term'
+      preLoaderRoute: typeof AuthenticatedPurMasterBillingTermImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/egd/master/item/raw-material/product': {
+      id: '/_authenticated/egd/master/item/raw-material/product'
+      path: '/egd/master/item/raw-material/product'
+      fullPath: '/egd/master/item/raw-material/product'
+      preLoaderRoute: typeof AuthenticatedEgdMasterItemRawMaterialProductImport
+      parentRoute: typeof AuthenticatedImport
+    }
   }
 }
 
@@ -451,6 +511,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAcfMasterTaxCodeRoute: typeof AuthenticatedAcfMasterTaxCodeRoute
   AuthenticatedAdmMasterDepartmentRoute: typeof AuthenticatedAdmMasterDepartmentRoute
   AuthenticatedAdmMasterEmployeeRoute: typeof AuthenticatedAdmMasterEmployeeRoute
+  AuthenticatedAdmMasterItemCategoryRoute: typeof AuthenticatedAdmMasterItemCategoryRoute
   AuthenticatedAdmMasterKeyValueRoute: typeof AuthenticatedAdmMasterKeyValueRoute
   AuthenticatedAdmMasterMenuRoute: typeof AuthenticatedAdmMasterMenuRoute
   AuthenticatedAdmMasterReasonRoute: typeof AuthenticatedAdmMasterReasonRoute
@@ -458,12 +519,15 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdmMasterUserRoute: typeof AuthenticatedAdmMasterUserRoute
   AuthenticatedEgdMasterProcessRoute: typeof AuthenticatedEgdMasterProcessRoute
   AuthenticatedEgdMasterUomRoute: typeof AuthenticatedEgdMasterUomRoute
+  AuthenticatedMktMasterBillingTermRoute: typeof AuthenticatedMktMasterBillingTermRoute
   AuthenticatedMntMasterMachineRoute: typeof AuthenticatedMntMasterMachineRoute
   AuthenticatedPidMasterWarehouseRoute: typeof AuthenticatedPidMasterWarehouseRoute
   AuthenticatedPrdMasterBuildingRoute: typeof AuthenticatedPrdMasterBuildingRoute
   AuthenticatedPrdMasterFcsRoute: typeof AuthenticatedPrdMasterFcsRoute
   AuthenticatedPrdMasterSectionRoute: typeof AuthenticatedPrdMasterSectionRoute
   AuthenticatedPrdMasterSubSectionRoute: typeof AuthenticatedPrdMasterSubSectionRoute
+  AuthenticatedPurMasterBillingTermRoute: typeof AuthenticatedPurMasterBillingTermRoute
+  AuthenticatedEgdMasterItemRawMaterialProductRoute: typeof AuthenticatedEgdMasterItemRawMaterialProductRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -481,6 +545,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAcfMasterTaxCodeRoute: AuthenticatedAcfMasterTaxCodeRoute,
   AuthenticatedAdmMasterDepartmentRoute: AuthenticatedAdmMasterDepartmentRoute,
   AuthenticatedAdmMasterEmployeeRoute: AuthenticatedAdmMasterEmployeeRoute,
+  AuthenticatedAdmMasterItemCategoryRoute:
+    AuthenticatedAdmMasterItemCategoryRoute,
   AuthenticatedAdmMasterKeyValueRoute: AuthenticatedAdmMasterKeyValueRoute,
   AuthenticatedAdmMasterMenuRoute: AuthenticatedAdmMasterMenuRoute,
   AuthenticatedAdmMasterReasonRoute: AuthenticatedAdmMasterReasonRoute,
@@ -488,12 +554,18 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdmMasterUserRoute: AuthenticatedAdmMasterUserRoute,
   AuthenticatedEgdMasterProcessRoute: AuthenticatedEgdMasterProcessRoute,
   AuthenticatedEgdMasterUomRoute: AuthenticatedEgdMasterUomRoute,
+  AuthenticatedMktMasterBillingTermRoute:
+    AuthenticatedMktMasterBillingTermRoute,
   AuthenticatedMntMasterMachineRoute: AuthenticatedMntMasterMachineRoute,
   AuthenticatedPidMasterWarehouseRoute: AuthenticatedPidMasterWarehouseRoute,
   AuthenticatedPrdMasterBuildingRoute: AuthenticatedPrdMasterBuildingRoute,
   AuthenticatedPrdMasterFcsRoute: AuthenticatedPrdMasterFcsRoute,
   AuthenticatedPrdMasterSectionRoute: AuthenticatedPrdMasterSectionRoute,
   AuthenticatedPrdMasterSubSectionRoute: AuthenticatedPrdMasterSubSectionRoute,
+  AuthenticatedPurMasterBillingTermRoute:
+    AuthenticatedPurMasterBillingTermRoute,
+  AuthenticatedEgdMasterItemRawMaterialProductRoute:
+    AuthenticatedEgdMasterItemRawMaterialProductRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -516,6 +588,7 @@ export interface FileRoutesByFullPath {
   '/acf/master/tax-code': typeof AuthenticatedAcfMasterTaxCodeRoute
   '/adm/master/department': typeof AuthenticatedAdmMasterDepartmentRoute
   '/adm/master/employee': typeof AuthenticatedAdmMasterEmployeeRoute
+  '/adm/master/item-category': typeof AuthenticatedAdmMasterItemCategoryRoute
   '/adm/master/key-value': typeof AuthenticatedAdmMasterKeyValueRoute
   '/adm/master/menu': typeof AuthenticatedAdmMasterMenuRoute
   '/adm/master/reason': typeof AuthenticatedAdmMasterReasonRoute
@@ -523,12 +596,15 @@ export interface FileRoutesByFullPath {
   '/adm/master/user': typeof AuthenticatedAdmMasterUserRoute
   '/egd/master/process': typeof AuthenticatedEgdMasterProcessRoute
   '/egd/master/uom': typeof AuthenticatedEgdMasterUomRoute
+  '/mkt/master/billing-term': typeof AuthenticatedMktMasterBillingTermRoute
   '/mnt/master/machine': typeof AuthenticatedMntMasterMachineRoute
   '/pid/master/warehouse': typeof AuthenticatedPidMasterWarehouseRoute
   '/prd/master/building': typeof AuthenticatedPrdMasterBuildingRoute
   '/prd/master/fcs': typeof AuthenticatedPrdMasterFcsRoute
   '/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
   '/prd/master/sub-section': typeof AuthenticatedPrdMasterSubSectionRoute
+  '/pur/master/billing-term': typeof AuthenticatedPurMasterBillingTermRoute
+  '/egd/master/item/raw-material/product': typeof AuthenticatedEgdMasterItemRawMaterialProductRoute
 }
 
 export interface FileRoutesByTo {
@@ -546,6 +622,7 @@ export interface FileRoutesByTo {
   '/acf/master/tax-code': typeof AuthenticatedAcfMasterTaxCodeRoute
   '/adm/master/department': typeof AuthenticatedAdmMasterDepartmentRoute
   '/adm/master/employee': typeof AuthenticatedAdmMasterEmployeeRoute
+  '/adm/master/item-category': typeof AuthenticatedAdmMasterItemCategoryRoute
   '/adm/master/key-value': typeof AuthenticatedAdmMasterKeyValueRoute
   '/adm/master/menu': typeof AuthenticatedAdmMasterMenuRoute
   '/adm/master/reason': typeof AuthenticatedAdmMasterReasonRoute
@@ -553,12 +630,15 @@ export interface FileRoutesByTo {
   '/adm/master/user': typeof AuthenticatedAdmMasterUserRoute
   '/egd/master/process': typeof AuthenticatedEgdMasterProcessRoute
   '/egd/master/uom': typeof AuthenticatedEgdMasterUomRoute
+  '/mkt/master/billing-term': typeof AuthenticatedMktMasterBillingTermRoute
   '/mnt/master/machine': typeof AuthenticatedMntMasterMachineRoute
   '/pid/master/warehouse': typeof AuthenticatedPidMasterWarehouseRoute
   '/prd/master/building': typeof AuthenticatedPrdMasterBuildingRoute
   '/prd/master/fcs': typeof AuthenticatedPrdMasterFcsRoute
   '/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
   '/prd/master/sub-section': typeof AuthenticatedPrdMasterSubSectionRoute
+  '/pur/master/billing-term': typeof AuthenticatedPurMasterBillingTermRoute
+  '/egd/master/item/raw-material/product': typeof AuthenticatedEgdMasterItemRawMaterialProductRoute
 }
 
 export interface FileRoutesById {
@@ -578,6 +658,7 @@ export interface FileRoutesById {
   '/_authenticated/acf/master/tax-code': typeof AuthenticatedAcfMasterTaxCodeRoute
   '/_authenticated/adm/master/department': typeof AuthenticatedAdmMasterDepartmentRoute
   '/_authenticated/adm/master/employee': typeof AuthenticatedAdmMasterEmployeeRoute
+  '/_authenticated/adm/master/item-category': typeof AuthenticatedAdmMasterItemCategoryRoute
   '/_authenticated/adm/master/key-value': typeof AuthenticatedAdmMasterKeyValueRoute
   '/_authenticated/adm/master/menu': typeof AuthenticatedAdmMasterMenuRoute
   '/_authenticated/adm/master/reason': typeof AuthenticatedAdmMasterReasonRoute
@@ -585,12 +666,15 @@ export interface FileRoutesById {
   '/_authenticated/adm/master/user': typeof AuthenticatedAdmMasterUserRoute
   '/_authenticated/egd/master/process': typeof AuthenticatedEgdMasterProcessRoute
   '/_authenticated/egd/master/uom': typeof AuthenticatedEgdMasterUomRoute
+  '/_authenticated/mkt/master/billing-term': typeof AuthenticatedMktMasterBillingTermRoute
   '/_authenticated/mnt/master/machine': typeof AuthenticatedMntMasterMachineRoute
   '/_authenticated/pid/master/warehouse': typeof AuthenticatedPidMasterWarehouseRoute
   '/_authenticated/prd/master/building': typeof AuthenticatedPrdMasterBuildingRoute
   '/_authenticated/prd/master/fcs': typeof AuthenticatedPrdMasterFcsRoute
   '/_authenticated/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
   '/_authenticated/prd/master/sub-section': typeof AuthenticatedPrdMasterSubSectionRoute
+  '/_authenticated/pur/master/billing-term': typeof AuthenticatedPurMasterBillingTermRoute
+  '/_authenticated/egd/master/item/raw-material/product': typeof AuthenticatedEgdMasterItemRawMaterialProductRoute
 }
 
 export interface FileRouteTypes {
@@ -611,6 +695,7 @@ export interface FileRouteTypes {
     | '/acf/master/tax-code'
     | '/adm/master/department'
     | '/adm/master/employee'
+    | '/adm/master/item-category'
     | '/adm/master/key-value'
     | '/adm/master/menu'
     | '/adm/master/reason'
@@ -618,12 +703,15 @@ export interface FileRouteTypes {
     | '/adm/master/user'
     | '/egd/master/process'
     | '/egd/master/uom'
+    | '/mkt/master/billing-term'
     | '/mnt/master/machine'
     | '/pid/master/warehouse'
     | '/prd/master/building'
     | '/prd/master/fcs'
     | '/prd/master/section'
     | '/prd/master/sub-section'
+    | '/pur/master/billing-term'
+    | '/egd/master/item/raw-material/product'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -640,6 +728,7 @@ export interface FileRouteTypes {
     | '/acf/master/tax-code'
     | '/adm/master/department'
     | '/adm/master/employee'
+    | '/adm/master/item-category'
     | '/adm/master/key-value'
     | '/adm/master/menu'
     | '/adm/master/reason'
@@ -647,12 +736,15 @@ export interface FileRouteTypes {
     | '/adm/master/user'
     | '/egd/master/process'
     | '/egd/master/uom'
+    | '/mkt/master/billing-term'
     | '/mnt/master/machine'
     | '/pid/master/warehouse'
     | '/prd/master/building'
     | '/prd/master/fcs'
     | '/prd/master/section'
     | '/prd/master/sub-section'
+    | '/pur/master/billing-term'
+    | '/egd/master/item/raw-material/product'
   id:
     | '__root__'
     | '/_authenticated'
@@ -670,6 +762,7 @@ export interface FileRouteTypes {
     | '/_authenticated/acf/master/tax-code'
     | '/_authenticated/adm/master/department'
     | '/_authenticated/adm/master/employee'
+    | '/_authenticated/adm/master/item-category'
     | '/_authenticated/adm/master/key-value'
     | '/_authenticated/adm/master/menu'
     | '/_authenticated/adm/master/reason'
@@ -677,12 +770,15 @@ export interface FileRouteTypes {
     | '/_authenticated/adm/master/user'
     | '/_authenticated/egd/master/process'
     | '/_authenticated/egd/master/uom'
+    | '/_authenticated/mkt/master/billing-term'
     | '/_authenticated/mnt/master/machine'
     | '/_authenticated/pid/master/warehouse'
     | '/_authenticated/prd/master/building'
     | '/_authenticated/prd/master/fcs'
     | '/_authenticated/prd/master/section'
     | '/_authenticated/prd/master/sub-section'
+    | '/_authenticated/pur/master/billing-term'
+    | '/_authenticated/egd/master/item/raw-material/product'
   fileRoutesById: FileRoutesById
 }
 
@@ -728,6 +824,7 @@ export const routeTree = rootRoute
         "/_authenticated/acf/master/tax-code",
         "/_authenticated/adm/master/department",
         "/_authenticated/adm/master/employee",
+        "/_authenticated/adm/master/item-category",
         "/_authenticated/adm/master/key-value",
         "/_authenticated/adm/master/menu",
         "/_authenticated/adm/master/reason",
@@ -735,12 +832,15 @@ export const routeTree = rootRoute
         "/_authenticated/adm/master/user",
         "/_authenticated/egd/master/process",
         "/_authenticated/egd/master/uom",
+        "/_authenticated/mkt/master/billing-term",
         "/_authenticated/mnt/master/machine",
         "/_authenticated/pid/master/warehouse",
         "/_authenticated/prd/master/building",
         "/_authenticated/prd/master/fcs",
         "/_authenticated/prd/master/section",
-        "/_authenticated/prd/master/sub-section"
+        "/_authenticated/prd/master/sub-section",
+        "/_authenticated/pur/master/billing-term",
+        "/_authenticated/egd/master/item/raw-material/product"
       ]
     },
     "/login": {
@@ -797,6 +897,10 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/adm/master/employee.tsx",
       "parent": "/_authenticated"
     },
+    "/_authenticated/adm/master/item-category": {
+      "filePath": "_authenticated/adm/master/item-category.tsx",
+      "parent": "/_authenticated"
+    },
     "/_authenticated/adm/master/key-value": {
       "filePath": "_authenticated/adm/master/key-value.tsx",
       "parent": "/_authenticated"
@@ -825,6 +929,10 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/egd/master/uom.tsx",
       "parent": "/_authenticated"
     },
+    "/_authenticated/mkt/master/billing-term": {
+      "filePath": "_authenticated/mkt/master/billing-term.tsx",
+      "parent": "/_authenticated"
+    },
     "/_authenticated/mnt/master/machine": {
       "filePath": "_authenticated/mnt/master/machine.tsx",
       "parent": "/_authenticated"
@@ -847,6 +955,14 @@ export const routeTree = rootRoute
     },
     "/_authenticated/prd/master/sub-section": {
       "filePath": "_authenticated/prd/master/sub-section.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/pur/master/billing-term": {
+      "filePath": "_authenticated/pur/master/billing-term.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/egd/master/item/raw-material/product": {
+      "filePath": "_authenticated/egd/master/item/raw-material/product.tsx",
       "parent": "/_authenticated"
     }
   }
