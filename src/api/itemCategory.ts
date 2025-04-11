@@ -3,7 +3,7 @@ import { Result } from "../types/pagination";
 import { ApiResponse } from "../types/response";
 import apiClient from "./apiClient";
 
-const url = "/admin/master/item-category";
+const url = "/general/master/item/category";
 
 const getItemCategories = async (
   params: ItemCategoryParams
@@ -13,6 +13,15 @@ const getItemCategories = async (
     {
       params,
     }
+  );
+  return response.data;
+};
+
+const getItemCategory = async (
+  param: string
+): Promise<ApiResponse<ItemCategory>> => {
+  const response = await apiClient.get<ApiResponse<ItemCategory>>(
+    `${url}/${param}`
   );
   return response.data;
 };
@@ -42,6 +51,7 @@ const deleteItemCategory = async (id: number): Promise<ApiResponse<null>> => {
 
 export {
   getItemCategories,
+  getItemCategory,
   createItemCategory,
   updateItemCategory,
   deleteItemCategory,

@@ -6,6 +6,7 @@ import {
   createItemCategory,
   deleteItemCategory,
   getItemCategories,
+  getItemCategory,
   updateItemCategory,
 } from "../api/itemCategory";
 
@@ -13,6 +14,13 @@ const useItemCategoriesQuery = (params: ItemCategoryParams) => {
   return useQuery<ApiResponse<Result<ItemCategory[]>>, Error>({
     queryKey: ["ItemCategories", params],
     queryFn: () => getItemCategories(params),
+  });
+};
+
+const useItemCategoryQuery = (param: string) => {
+  return useQuery<ApiResponse<ItemCategory>, Error>({
+    queryKey: ["ItemCategory", param],
+    queryFn: () => getItemCategory(param),
   });
 };
 
@@ -62,6 +70,7 @@ const useDeleteItemCategory = () => {
 
 export {
   useItemCategoriesQuery,
+  useItemCategoryQuery,
   useItemCategoriesInfinityQuery,
   useCreateItemCategory,
   useUpdateItemCategory,
