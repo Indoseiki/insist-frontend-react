@@ -43,6 +43,7 @@ import { Route as AuthenticatedAcfMasterCurrencyImport } from './routes/_authent
 import { Route as AuthenticatedAcfMasterChartOfAccountImport } from './routes/_authenticated/acf/master/chart-of-account'
 import { Route as AuthenticatedAcfMasterBankImport } from './routes/_authenticated/acf/master/bank'
 import { Route as AuthenticatedEgdMasterItemRawMaterialProductImport } from './routes/_authenticated/egd/master/item/raw-material/product'
+import { Route as AuthenticatedEgdMasterItemRawMaterialGroupImport } from './routes/_authenticated/egd/master/item/raw-material/group'
 
 // Create/Update Routes
 
@@ -262,6 +263,13 @@ const AuthenticatedEgdMasterItemRawMaterialProductRoute =
   AuthenticatedEgdMasterItemRawMaterialProductImport.update({
     id: '/egd/master/item/raw-material/product',
     path: '/egd/master/item/raw-material/product',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+
+const AuthenticatedEgdMasterItemRawMaterialGroupRoute =
+  AuthenticatedEgdMasterItemRawMaterialGroupImport.update({
+    id: '/egd/master/item/raw-material/group',
+    path: '/egd/master/item/raw-material/group',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
@@ -486,6 +494,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPurMasterBillingTermImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/_authenticated/egd/master/item/raw-material/group': {
+      id: '/_authenticated/egd/master/item/raw-material/group'
+      path: '/egd/master/item/raw-material/group'
+      fullPath: '/egd/master/item/raw-material/group'
+      preLoaderRoute: typeof AuthenticatedEgdMasterItemRawMaterialGroupImport
+      parentRoute: typeof AuthenticatedImport
+    }
     '/_authenticated/egd/master/item/raw-material/product': {
       id: '/_authenticated/egd/master/item/raw-material/product'
       path: '/egd/master/item/raw-material/product'
@@ -527,6 +542,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPrdMasterSectionRoute: typeof AuthenticatedPrdMasterSectionRoute
   AuthenticatedPrdMasterSubSectionRoute: typeof AuthenticatedPrdMasterSubSectionRoute
   AuthenticatedPurMasterBillingTermRoute: typeof AuthenticatedPurMasterBillingTermRoute
+  AuthenticatedEgdMasterItemRawMaterialGroupRoute: typeof AuthenticatedEgdMasterItemRawMaterialGroupRoute
   AuthenticatedEgdMasterItemRawMaterialProductRoute: typeof AuthenticatedEgdMasterItemRawMaterialProductRoute
 }
 
@@ -564,6 +580,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPrdMasterSubSectionRoute: AuthenticatedPrdMasterSubSectionRoute,
   AuthenticatedPurMasterBillingTermRoute:
     AuthenticatedPurMasterBillingTermRoute,
+  AuthenticatedEgdMasterItemRawMaterialGroupRoute:
+    AuthenticatedEgdMasterItemRawMaterialGroupRoute,
   AuthenticatedEgdMasterItemRawMaterialProductRoute:
     AuthenticatedEgdMasterItemRawMaterialProductRoute,
 }
@@ -604,6 +622,7 @@ export interface FileRoutesByFullPath {
   '/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
   '/prd/master/sub-section': typeof AuthenticatedPrdMasterSubSectionRoute
   '/pur/master/billing-term': typeof AuthenticatedPurMasterBillingTermRoute
+  '/egd/master/item/raw-material/group': typeof AuthenticatedEgdMasterItemRawMaterialGroupRoute
   '/egd/master/item/raw-material/product': typeof AuthenticatedEgdMasterItemRawMaterialProductRoute
 }
 
@@ -638,6 +657,7 @@ export interface FileRoutesByTo {
   '/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
   '/prd/master/sub-section': typeof AuthenticatedPrdMasterSubSectionRoute
   '/pur/master/billing-term': typeof AuthenticatedPurMasterBillingTermRoute
+  '/egd/master/item/raw-material/group': typeof AuthenticatedEgdMasterItemRawMaterialGroupRoute
   '/egd/master/item/raw-material/product': typeof AuthenticatedEgdMasterItemRawMaterialProductRoute
 }
 
@@ -674,6 +694,7 @@ export interface FileRoutesById {
   '/_authenticated/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
   '/_authenticated/prd/master/sub-section': typeof AuthenticatedPrdMasterSubSectionRoute
   '/_authenticated/pur/master/billing-term': typeof AuthenticatedPurMasterBillingTermRoute
+  '/_authenticated/egd/master/item/raw-material/group': typeof AuthenticatedEgdMasterItemRawMaterialGroupRoute
   '/_authenticated/egd/master/item/raw-material/product': typeof AuthenticatedEgdMasterItemRawMaterialProductRoute
 }
 
@@ -711,6 +732,7 @@ export interface FileRouteTypes {
     | '/prd/master/section'
     | '/prd/master/sub-section'
     | '/pur/master/billing-term'
+    | '/egd/master/item/raw-material/group'
     | '/egd/master/item/raw-material/product'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -744,6 +766,7 @@ export interface FileRouteTypes {
     | '/prd/master/section'
     | '/prd/master/sub-section'
     | '/pur/master/billing-term'
+    | '/egd/master/item/raw-material/group'
     | '/egd/master/item/raw-material/product'
   id:
     | '__root__'
@@ -778,6 +801,7 @@ export interface FileRouteTypes {
     | '/_authenticated/prd/master/section'
     | '/_authenticated/prd/master/sub-section'
     | '/_authenticated/pur/master/billing-term'
+    | '/_authenticated/egd/master/item/raw-material/group'
     | '/_authenticated/egd/master/item/raw-material/product'
   fileRoutesById: FileRoutesById
 }
@@ -840,6 +864,7 @@ export const routeTree = rootRoute
         "/_authenticated/prd/master/section",
         "/_authenticated/prd/master/sub-section",
         "/_authenticated/pur/master/billing-term",
+        "/_authenticated/egd/master/item/raw-material/group",
         "/_authenticated/egd/master/item/raw-material/product"
       ]
     },
@@ -959,6 +984,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/pur/master/billing-term": {
       "filePath": "_authenticated/pur/master/billing-term.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/egd/master/item/raw-material/group": {
+      "filePath": "_authenticated/egd/master/item/raw-material/group.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/egd/master/item/raw-material/product": {
