@@ -43,6 +43,7 @@ import { Route as AuthenticatedAcfMasterCurrencyImport } from './routes/_authent
 import { Route as AuthenticatedAcfMasterChartOfAccountImport } from './routes/_authenticated/acf/master/chart-of-account'
 import { Route as AuthenticatedAcfMasterBankImport } from './routes/_authenticated/acf/master/bank'
 import { Route as AuthenticatedEgdMasterItemRawMaterialProductImport } from './routes/_authenticated/egd/master/item/raw-material/product'
+import { Route as AuthenticatedEgdMasterItemRawMaterialProcessingImport } from './routes/_authenticated/egd/master/item/raw-material/processing'
 import { Route as AuthenticatedEgdMasterItemRawMaterialGroupImport } from './routes/_authenticated/egd/master/item/raw-material/group'
 
 // Create/Update Routes
@@ -263,6 +264,13 @@ const AuthenticatedEgdMasterItemRawMaterialProductRoute =
   AuthenticatedEgdMasterItemRawMaterialProductImport.update({
     id: '/egd/master/item/raw-material/product',
     path: '/egd/master/item/raw-material/product',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+
+const AuthenticatedEgdMasterItemRawMaterialProcessingRoute =
+  AuthenticatedEgdMasterItemRawMaterialProcessingImport.update({
+    id: '/egd/master/item/raw-material/processing',
+    path: '/egd/master/item/raw-material/processing',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
@@ -501,6 +509,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEgdMasterItemRawMaterialGroupImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/_authenticated/egd/master/item/raw-material/processing': {
+      id: '/_authenticated/egd/master/item/raw-material/processing'
+      path: '/egd/master/item/raw-material/processing'
+      fullPath: '/egd/master/item/raw-material/processing'
+      preLoaderRoute: typeof AuthenticatedEgdMasterItemRawMaterialProcessingImport
+      parentRoute: typeof AuthenticatedImport
+    }
     '/_authenticated/egd/master/item/raw-material/product': {
       id: '/_authenticated/egd/master/item/raw-material/product'
       path: '/egd/master/item/raw-material/product'
@@ -543,6 +558,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPrdMasterSubSectionRoute: typeof AuthenticatedPrdMasterSubSectionRoute
   AuthenticatedPurMasterBillingTermRoute: typeof AuthenticatedPurMasterBillingTermRoute
   AuthenticatedEgdMasterItemRawMaterialGroupRoute: typeof AuthenticatedEgdMasterItemRawMaterialGroupRoute
+  AuthenticatedEgdMasterItemRawMaterialProcessingRoute: typeof AuthenticatedEgdMasterItemRawMaterialProcessingRoute
   AuthenticatedEgdMasterItemRawMaterialProductRoute: typeof AuthenticatedEgdMasterItemRawMaterialProductRoute
 }
 
@@ -582,6 +598,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
     AuthenticatedPurMasterBillingTermRoute,
   AuthenticatedEgdMasterItemRawMaterialGroupRoute:
     AuthenticatedEgdMasterItemRawMaterialGroupRoute,
+  AuthenticatedEgdMasterItemRawMaterialProcessingRoute:
+    AuthenticatedEgdMasterItemRawMaterialProcessingRoute,
   AuthenticatedEgdMasterItemRawMaterialProductRoute:
     AuthenticatedEgdMasterItemRawMaterialProductRoute,
 }
@@ -623,6 +641,7 @@ export interface FileRoutesByFullPath {
   '/prd/master/sub-section': typeof AuthenticatedPrdMasterSubSectionRoute
   '/pur/master/billing-term': typeof AuthenticatedPurMasterBillingTermRoute
   '/egd/master/item/raw-material/group': typeof AuthenticatedEgdMasterItemRawMaterialGroupRoute
+  '/egd/master/item/raw-material/processing': typeof AuthenticatedEgdMasterItemRawMaterialProcessingRoute
   '/egd/master/item/raw-material/product': typeof AuthenticatedEgdMasterItemRawMaterialProductRoute
 }
 
@@ -658,6 +677,7 @@ export interface FileRoutesByTo {
   '/prd/master/sub-section': typeof AuthenticatedPrdMasterSubSectionRoute
   '/pur/master/billing-term': typeof AuthenticatedPurMasterBillingTermRoute
   '/egd/master/item/raw-material/group': typeof AuthenticatedEgdMasterItemRawMaterialGroupRoute
+  '/egd/master/item/raw-material/processing': typeof AuthenticatedEgdMasterItemRawMaterialProcessingRoute
   '/egd/master/item/raw-material/product': typeof AuthenticatedEgdMasterItemRawMaterialProductRoute
 }
 
@@ -695,6 +715,7 @@ export interface FileRoutesById {
   '/_authenticated/prd/master/sub-section': typeof AuthenticatedPrdMasterSubSectionRoute
   '/_authenticated/pur/master/billing-term': typeof AuthenticatedPurMasterBillingTermRoute
   '/_authenticated/egd/master/item/raw-material/group': typeof AuthenticatedEgdMasterItemRawMaterialGroupRoute
+  '/_authenticated/egd/master/item/raw-material/processing': typeof AuthenticatedEgdMasterItemRawMaterialProcessingRoute
   '/_authenticated/egd/master/item/raw-material/product': typeof AuthenticatedEgdMasterItemRawMaterialProductRoute
 }
 
@@ -733,6 +754,7 @@ export interface FileRouteTypes {
     | '/prd/master/sub-section'
     | '/pur/master/billing-term'
     | '/egd/master/item/raw-material/group'
+    | '/egd/master/item/raw-material/processing'
     | '/egd/master/item/raw-material/product'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -767,6 +789,7 @@ export interface FileRouteTypes {
     | '/prd/master/sub-section'
     | '/pur/master/billing-term'
     | '/egd/master/item/raw-material/group'
+    | '/egd/master/item/raw-material/processing'
     | '/egd/master/item/raw-material/product'
   id:
     | '__root__'
@@ -802,6 +825,7 @@ export interface FileRouteTypes {
     | '/_authenticated/prd/master/sub-section'
     | '/_authenticated/pur/master/billing-term'
     | '/_authenticated/egd/master/item/raw-material/group'
+    | '/_authenticated/egd/master/item/raw-material/processing'
     | '/_authenticated/egd/master/item/raw-material/product'
   fileRoutesById: FileRoutesById
 }
@@ -865,6 +889,7 @@ export const routeTree = rootRoute
         "/_authenticated/prd/master/sub-section",
         "/_authenticated/pur/master/billing-term",
         "/_authenticated/egd/master/item/raw-material/group",
+        "/_authenticated/egd/master/item/raw-material/processing",
         "/_authenticated/egd/master/item/raw-material/product"
       ]
     },
@@ -988,6 +1013,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/egd/master/item/raw-material/group": {
       "filePath": "_authenticated/egd/master/item/raw-material/group.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/egd/master/item/raw-material/processing": {
+      "filePath": "_authenticated/egd/master/item/raw-material/processing.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/egd/master/item/raw-material/product": {
