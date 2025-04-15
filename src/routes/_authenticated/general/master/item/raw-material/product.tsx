@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import ItemProductPage from "../../../../../../pages/egd/master/item/rawMaterial/Product";
+import ItemProductPage from "../../../../../../pages/general/master/item/rawMaterial/Product";
 
 export const Route = createFileRoute(
-  "/_authenticated/egd/master/item/raw-material/product"
+  "/_authenticated/general/master/item/raw-material/product"
 )({
   component: RouteComponent,
 });

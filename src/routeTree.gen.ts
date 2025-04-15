@@ -42,9 +42,10 @@ import { Route as AuthenticatedAcfMasterTaxCodeImport } from './routes/_authenti
 import { Route as AuthenticatedAcfMasterCurrencyImport } from './routes/_authenticated/acf/master/currency'
 import { Route as AuthenticatedAcfMasterChartOfAccountImport } from './routes/_authenticated/acf/master/chart-of-account'
 import { Route as AuthenticatedAcfMasterBankImport } from './routes/_authenticated/acf/master/bank'
-import { Route as AuthenticatedEgdMasterItemRawMaterialProductImport } from './routes/_authenticated/egd/master/item/raw-material/product'
-import { Route as AuthenticatedEgdMasterItemRawMaterialProcessingImport } from './routes/_authenticated/egd/master/item/raw-material/processing'
-import { Route as AuthenticatedEgdMasterItemRawMaterialGroupImport } from './routes/_authenticated/egd/master/item/raw-material/group'
+import { Route as AuthenticatedGeneralMasterItemRawMaterialSurfaceFinishingImport } from './routes/_authenticated/general/master/item/raw-material/surface-finishing'
+import { Route as AuthenticatedGeneralMasterItemRawMaterialProductImport } from './routes/_authenticated/general/master/item/raw-material/product'
+import { Route as AuthenticatedGeneralMasterItemRawMaterialProcessingImport } from './routes/_authenticated/general/master/item/raw-material/processing'
+import { Route as AuthenticatedGeneralMasterItemRawMaterialGroupImport } from './routes/_authenticated/general/master/item/raw-material/group'
 
 // Create/Update Routes
 
@@ -260,24 +261,31 @@ const AuthenticatedAcfMasterBankRoute = AuthenticatedAcfMasterBankImport.update(
   } as any,
 )
 
-const AuthenticatedEgdMasterItemRawMaterialProductRoute =
-  AuthenticatedEgdMasterItemRawMaterialProductImport.update({
-    id: '/egd/master/item/raw-material/product',
-    path: '/egd/master/item/raw-material/product',
+const AuthenticatedGeneralMasterItemRawMaterialSurfaceFinishingRoute =
+  AuthenticatedGeneralMasterItemRawMaterialSurfaceFinishingImport.update({
+    id: '/general/master/item/raw-material/surface-finishing',
+    path: '/general/master/item/raw-material/surface-finishing',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
-const AuthenticatedEgdMasterItemRawMaterialProcessingRoute =
-  AuthenticatedEgdMasterItemRawMaterialProcessingImport.update({
-    id: '/egd/master/item/raw-material/processing',
-    path: '/egd/master/item/raw-material/processing',
+const AuthenticatedGeneralMasterItemRawMaterialProductRoute =
+  AuthenticatedGeneralMasterItemRawMaterialProductImport.update({
+    id: '/general/master/item/raw-material/product',
+    path: '/general/master/item/raw-material/product',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
-const AuthenticatedEgdMasterItemRawMaterialGroupRoute =
-  AuthenticatedEgdMasterItemRawMaterialGroupImport.update({
-    id: '/egd/master/item/raw-material/group',
-    path: '/egd/master/item/raw-material/group',
+const AuthenticatedGeneralMasterItemRawMaterialProcessingRoute =
+  AuthenticatedGeneralMasterItemRawMaterialProcessingImport.update({
+    id: '/general/master/item/raw-material/processing',
+    path: '/general/master/item/raw-material/processing',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+
+const AuthenticatedGeneralMasterItemRawMaterialGroupRoute =
+  AuthenticatedGeneralMasterItemRawMaterialGroupImport.update({
+    id: '/general/master/item/raw-material/group',
+    path: '/general/master/item/raw-material/group',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
@@ -502,25 +510,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPurMasterBillingTermImport
       parentRoute: typeof AuthenticatedImport
     }
-    '/_authenticated/egd/master/item/raw-material/group': {
-      id: '/_authenticated/egd/master/item/raw-material/group'
-      path: '/egd/master/item/raw-material/group'
-      fullPath: '/egd/master/item/raw-material/group'
-      preLoaderRoute: typeof AuthenticatedEgdMasterItemRawMaterialGroupImport
+    '/_authenticated/general/master/item/raw-material/group': {
+      id: '/_authenticated/general/master/item/raw-material/group'
+      path: '/general/master/item/raw-material/group'
+      fullPath: '/general/master/item/raw-material/group'
+      preLoaderRoute: typeof AuthenticatedGeneralMasterItemRawMaterialGroupImport
       parentRoute: typeof AuthenticatedImport
     }
-    '/_authenticated/egd/master/item/raw-material/processing': {
-      id: '/_authenticated/egd/master/item/raw-material/processing'
-      path: '/egd/master/item/raw-material/processing'
-      fullPath: '/egd/master/item/raw-material/processing'
-      preLoaderRoute: typeof AuthenticatedEgdMasterItemRawMaterialProcessingImport
+    '/_authenticated/general/master/item/raw-material/processing': {
+      id: '/_authenticated/general/master/item/raw-material/processing'
+      path: '/general/master/item/raw-material/processing'
+      fullPath: '/general/master/item/raw-material/processing'
+      preLoaderRoute: typeof AuthenticatedGeneralMasterItemRawMaterialProcessingImport
       parentRoute: typeof AuthenticatedImport
     }
-    '/_authenticated/egd/master/item/raw-material/product': {
-      id: '/_authenticated/egd/master/item/raw-material/product'
-      path: '/egd/master/item/raw-material/product'
-      fullPath: '/egd/master/item/raw-material/product'
-      preLoaderRoute: typeof AuthenticatedEgdMasterItemRawMaterialProductImport
+    '/_authenticated/general/master/item/raw-material/product': {
+      id: '/_authenticated/general/master/item/raw-material/product'
+      path: '/general/master/item/raw-material/product'
+      fullPath: '/general/master/item/raw-material/product'
+      preLoaderRoute: typeof AuthenticatedGeneralMasterItemRawMaterialProductImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/general/master/item/raw-material/surface-finishing': {
+      id: '/_authenticated/general/master/item/raw-material/surface-finishing'
+      path: '/general/master/item/raw-material/surface-finishing'
+      fullPath: '/general/master/item/raw-material/surface-finishing'
+      preLoaderRoute: typeof AuthenticatedGeneralMasterItemRawMaterialSurfaceFinishingImport
       parentRoute: typeof AuthenticatedImport
     }
   }
@@ -557,9 +572,10 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPrdMasterSectionRoute: typeof AuthenticatedPrdMasterSectionRoute
   AuthenticatedPrdMasterSubSectionRoute: typeof AuthenticatedPrdMasterSubSectionRoute
   AuthenticatedPurMasterBillingTermRoute: typeof AuthenticatedPurMasterBillingTermRoute
-  AuthenticatedEgdMasterItemRawMaterialGroupRoute: typeof AuthenticatedEgdMasterItemRawMaterialGroupRoute
-  AuthenticatedEgdMasterItemRawMaterialProcessingRoute: typeof AuthenticatedEgdMasterItemRawMaterialProcessingRoute
-  AuthenticatedEgdMasterItemRawMaterialProductRoute: typeof AuthenticatedEgdMasterItemRawMaterialProductRoute
+  AuthenticatedGeneralMasterItemRawMaterialGroupRoute: typeof AuthenticatedGeneralMasterItemRawMaterialGroupRoute
+  AuthenticatedGeneralMasterItemRawMaterialProcessingRoute: typeof AuthenticatedGeneralMasterItemRawMaterialProcessingRoute
+  AuthenticatedGeneralMasterItemRawMaterialProductRoute: typeof AuthenticatedGeneralMasterItemRawMaterialProductRoute
+  AuthenticatedGeneralMasterItemRawMaterialSurfaceFinishingRoute: typeof AuthenticatedGeneralMasterItemRawMaterialSurfaceFinishingRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -596,12 +612,14 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPrdMasterSubSectionRoute: AuthenticatedPrdMasterSubSectionRoute,
   AuthenticatedPurMasterBillingTermRoute:
     AuthenticatedPurMasterBillingTermRoute,
-  AuthenticatedEgdMasterItemRawMaterialGroupRoute:
-    AuthenticatedEgdMasterItemRawMaterialGroupRoute,
-  AuthenticatedEgdMasterItemRawMaterialProcessingRoute:
-    AuthenticatedEgdMasterItemRawMaterialProcessingRoute,
-  AuthenticatedEgdMasterItemRawMaterialProductRoute:
-    AuthenticatedEgdMasterItemRawMaterialProductRoute,
+  AuthenticatedGeneralMasterItemRawMaterialGroupRoute:
+    AuthenticatedGeneralMasterItemRawMaterialGroupRoute,
+  AuthenticatedGeneralMasterItemRawMaterialProcessingRoute:
+    AuthenticatedGeneralMasterItemRawMaterialProcessingRoute,
+  AuthenticatedGeneralMasterItemRawMaterialProductRoute:
+    AuthenticatedGeneralMasterItemRawMaterialProductRoute,
+  AuthenticatedGeneralMasterItemRawMaterialSurfaceFinishingRoute:
+    AuthenticatedGeneralMasterItemRawMaterialSurfaceFinishingRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -640,9 +658,10 @@ export interface FileRoutesByFullPath {
   '/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
   '/prd/master/sub-section': typeof AuthenticatedPrdMasterSubSectionRoute
   '/pur/master/billing-term': typeof AuthenticatedPurMasterBillingTermRoute
-  '/egd/master/item/raw-material/group': typeof AuthenticatedEgdMasterItemRawMaterialGroupRoute
-  '/egd/master/item/raw-material/processing': typeof AuthenticatedEgdMasterItemRawMaterialProcessingRoute
-  '/egd/master/item/raw-material/product': typeof AuthenticatedEgdMasterItemRawMaterialProductRoute
+  '/general/master/item/raw-material/group': typeof AuthenticatedGeneralMasterItemRawMaterialGroupRoute
+  '/general/master/item/raw-material/processing': typeof AuthenticatedGeneralMasterItemRawMaterialProcessingRoute
+  '/general/master/item/raw-material/product': typeof AuthenticatedGeneralMasterItemRawMaterialProductRoute
+  '/general/master/item/raw-material/surface-finishing': typeof AuthenticatedGeneralMasterItemRawMaterialSurfaceFinishingRoute
 }
 
 export interface FileRoutesByTo {
@@ -676,9 +695,10 @@ export interface FileRoutesByTo {
   '/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
   '/prd/master/sub-section': typeof AuthenticatedPrdMasterSubSectionRoute
   '/pur/master/billing-term': typeof AuthenticatedPurMasterBillingTermRoute
-  '/egd/master/item/raw-material/group': typeof AuthenticatedEgdMasterItemRawMaterialGroupRoute
-  '/egd/master/item/raw-material/processing': typeof AuthenticatedEgdMasterItemRawMaterialProcessingRoute
-  '/egd/master/item/raw-material/product': typeof AuthenticatedEgdMasterItemRawMaterialProductRoute
+  '/general/master/item/raw-material/group': typeof AuthenticatedGeneralMasterItemRawMaterialGroupRoute
+  '/general/master/item/raw-material/processing': typeof AuthenticatedGeneralMasterItemRawMaterialProcessingRoute
+  '/general/master/item/raw-material/product': typeof AuthenticatedGeneralMasterItemRawMaterialProductRoute
+  '/general/master/item/raw-material/surface-finishing': typeof AuthenticatedGeneralMasterItemRawMaterialSurfaceFinishingRoute
 }
 
 export interface FileRoutesById {
@@ -714,9 +734,10 @@ export interface FileRoutesById {
   '/_authenticated/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
   '/_authenticated/prd/master/sub-section': typeof AuthenticatedPrdMasterSubSectionRoute
   '/_authenticated/pur/master/billing-term': typeof AuthenticatedPurMasterBillingTermRoute
-  '/_authenticated/egd/master/item/raw-material/group': typeof AuthenticatedEgdMasterItemRawMaterialGroupRoute
-  '/_authenticated/egd/master/item/raw-material/processing': typeof AuthenticatedEgdMasterItemRawMaterialProcessingRoute
-  '/_authenticated/egd/master/item/raw-material/product': typeof AuthenticatedEgdMasterItemRawMaterialProductRoute
+  '/_authenticated/general/master/item/raw-material/group': typeof AuthenticatedGeneralMasterItemRawMaterialGroupRoute
+  '/_authenticated/general/master/item/raw-material/processing': typeof AuthenticatedGeneralMasterItemRawMaterialProcessingRoute
+  '/_authenticated/general/master/item/raw-material/product': typeof AuthenticatedGeneralMasterItemRawMaterialProductRoute
+  '/_authenticated/general/master/item/raw-material/surface-finishing': typeof AuthenticatedGeneralMasterItemRawMaterialSurfaceFinishingRoute
 }
 
 export interface FileRouteTypes {
@@ -753,9 +774,10 @@ export interface FileRouteTypes {
     | '/prd/master/section'
     | '/prd/master/sub-section'
     | '/pur/master/billing-term'
-    | '/egd/master/item/raw-material/group'
-    | '/egd/master/item/raw-material/processing'
-    | '/egd/master/item/raw-material/product'
+    | '/general/master/item/raw-material/group'
+    | '/general/master/item/raw-material/processing'
+    | '/general/master/item/raw-material/product'
+    | '/general/master/item/raw-material/surface-finishing'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -788,9 +810,10 @@ export interface FileRouteTypes {
     | '/prd/master/section'
     | '/prd/master/sub-section'
     | '/pur/master/billing-term'
-    | '/egd/master/item/raw-material/group'
-    | '/egd/master/item/raw-material/processing'
-    | '/egd/master/item/raw-material/product'
+    | '/general/master/item/raw-material/group'
+    | '/general/master/item/raw-material/processing'
+    | '/general/master/item/raw-material/product'
+    | '/general/master/item/raw-material/surface-finishing'
   id:
     | '__root__'
     | '/_authenticated'
@@ -824,9 +847,10 @@ export interface FileRouteTypes {
     | '/_authenticated/prd/master/section'
     | '/_authenticated/prd/master/sub-section'
     | '/_authenticated/pur/master/billing-term'
-    | '/_authenticated/egd/master/item/raw-material/group'
-    | '/_authenticated/egd/master/item/raw-material/processing'
-    | '/_authenticated/egd/master/item/raw-material/product'
+    | '/_authenticated/general/master/item/raw-material/group'
+    | '/_authenticated/general/master/item/raw-material/processing'
+    | '/_authenticated/general/master/item/raw-material/product'
+    | '/_authenticated/general/master/item/raw-material/surface-finishing'
   fileRoutesById: FileRoutesById
 }
 
@@ -888,9 +912,10 @@ export const routeTree = rootRoute
         "/_authenticated/prd/master/section",
         "/_authenticated/prd/master/sub-section",
         "/_authenticated/pur/master/billing-term",
-        "/_authenticated/egd/master/item/raw-material/group",
-        "/_authenticated/egd/master/item/raw-material/processing",
-        "/_authenticated/egd/master/item/raw-material/product"
+        "/_authenticated/general/master/item/raw-material/group",
+        "/_authenticated/general/master/item/raw-material/processing",
+        "/_authenticated/general/master/item/raw-material/product",
+        "/_authenticated/general/master/item/raw-material/surface-finishing"
       ]
     },
     "/login": {
@@ -1011,16 +1036,20 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/pur/master/billing-term.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/egd/master/item/raw-material/group": {
-      "filePath": "_authenticated/egd/master/item/raw-material/group.tsx",
+    "/_authenticated/general/master/item/raw-material/group": {
+      "filePath": "_authenticated/general/master/item/raw-material/group.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/egd/master/item/raw-material/processing": {
-      "filePath": "_authenticated/egd/master/item/raw-material/processing.tsx",
+    "/_authenticated/general/master/item/raw-material/processing": {
+      "filePath": "_authenticated/general/master/item/raw-material/processing.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/egd/master/item/raw-material/product": {
-      "filePath": "_authenticated/egd/master/item/raw-material/product.tsx",
+    "/_authenticated/general/master/item/raw-material/product": {
+      "filePath": "_authenticated/general/master/item/raw-material/product.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/general/master/item/raw-material/surface-finishing": {
+      "filePath": "_authenticated/general/master/item/raw-material/surface-finishing.tsx",
       "parent": "/_authenticated"
     }
   }
