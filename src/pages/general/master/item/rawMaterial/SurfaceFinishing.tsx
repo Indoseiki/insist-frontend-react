@@ -41,31 +41,31 @@ import { AxiosError } from "axios";
 import { ApiResponse } from "../../../../../types/response";
 import { createActivityLog } from "../../../../../api/activityLog";
 import {
-  useCreateItemProcess,
-  useDeleteItemProcess,
-  useItemProcessesQuery,
-  useUpdateItemProcess,
-} from "../../../../../hooks/itemProcess";
-import { ItemProcess } from "../../../../../types/itemProcess";
+  useCreateItemSurface,
+  useDeleteItemSurface,
+  useItemSurfacesQuery,
+  useUpdateItemSurface,
+} from "../../../../../hooks/itemSurface";
+import { ItemSurface } from "../../../../../types/itemSurface";
 import { useItemCategoryQuery } from "../../../../../hooks/itemCategory";
 
 interface StateFilter {
   search: string;
 }
 
-const ItemProcessingPage = () => {
+const ItemSurfaceFinishingPage = () => {
   const { size, sizeButton, fullWidth } = useSizes();
 
   const { colorScheme } = useMantineColorScheme();
 
   const [
-    openedFormProcess,
-    { open: openFormProcess, close: closeFormProcess },
+    openedFormSurface,
+    { open: openFormSurface, close: closeFormSurface },
   ] = useDisclosure(false);
   const [openedFormDelete, { open: openFormDelete, close: closeFormDelete }] =
     useDisclosure(false);
 
-  const [stateTable, setStateTable] = useState<StateTable<ItemProcess>>({
+  const [stateTable, setStateTable] = useState<StateTable<ItemSurface>>({
     activePage: 1,
     rowsPerPage: "20",
     selected: null,
@@ -82,7 +82,7 @@ const ItemProcessingPage = () => {
     action: "",
   });
 
-  const updateStateTable = (newState: Partial<StateTable<ItemProcess>>) =>
+  const updateStateTable = (newState: Partial<StateTable<ItemSurface>>) =>
     setStateTable((prev) => ({ ...prev, ...newState }));
 
   const updateStateFilter = (newState: Partial<StateFilter>) =>
@@ -91,17 +91,17 @@ const ItemProcessingPage = () => {
   const updateStateForm = (newState: Partial<StateForm>) =>
     setStateForm((prev) => ({ ...prev, ...newState }));
 
-  const handleClickRow = (row: ItemProcess) =>
+  const handleClickRow = (row: ItemSurface) =>
     updateStateTable({ selected: row });
 
   const { data: dataCategory } = useItemCategoryQuery("A");
 
   const {
-    data: dataProcesses,
-    isSuccess: isSuccessProcesses,
-    isLoading: isLoadingProcesses,
-    refetch: refetchProcesses,
-  } = useItemProcessesQuery({
+    data: dataSurfaces,
+    isSuccess: isSuccessSurfaces,
+    isLoading: isLoadingSurfaces,
+    refetch: refetchSurfaces,
+  } = useItemSurfacesQuery({
     page: stateTable.activePage,
     rows: stateTable.rowsPerPage,
     search: stateFilter.search,
@@ -111,31 +111,31 @@ const ItemProcessingPage = () => {
   });
 
   const {
-    mutate: mutateCreateProcess,
-    isPending: isPendingMutateCreateProcess,
-  } = useCreateItemProcess();
+    mutate: mutateCreateSurface,
+    isPending: isPendingMutateCreateSurface,
+  } = useCreateItemSurface();
 
   const {
-    mutate: mutateUpdateProcess,
-    isPending: isPendingMutateUpdateProcess,
-  } = useUpdateItemProcess();
+    mutate: mutateUpdateSurface,
+    isPending: isPendingMutateUpdateSurface,
+  } = useUpdateItemSurface();
 
   const {
-    mutate: mutateDeleteProcess,
-    isPending: isPendingMutateDeleteProcess,
-  } = useDeleteItemProcess();
+    mutate: mutateDeleteSurface,
+    isPending: isPendingMutateDeleteSurface,
+  } = useDeleteItemSurface();
 
   const os = useOs();
   const { data: dataUser } = useUserInfoQuery();
-  const { data: dataProcessPermission } = useRolePermissionQuery(
+  const { data: dataSurfacePermission } = useRolePermissionQuery(
     location.pathname
   );
 
   const rows = useMemo(() => {
-    if (!isSuccessProcesses || !dataProcesses?.data?.pagination.total_rows)
+    if (!isSuccessSurfaces || !dataSurfaces?.data?.pagination.total_rows)
       return null;
 
-    return dataProcesses.data.items.map((row: ItemProcess) => {
+    return dataSurfaces.data.items.map((row: ItemSurface) => {
       const isSelected = stateTable.selected?.id === row.id;
       const rowBg = isSelected
         ? colorScheme === "light"
@@ -158,9 +158,9 @@ const ItemProcessingPage = () => {
         </Table.Tr>
       );
     });
-  }, [isSuccessProcesses, dataProcesses, stateTable.selected, colorScheme]);
+  }, [isSuccessSurfaces, dataSurfaces, stateTable.selected, colorScheme]);
 
-  const formProcess = useForm<Partial<ItemProcess>>({
+  const formSurface = useForm<Partial<ItemSurface>>({
     mode: "uncontrolled",
     initialValues: {
       id_item_category: 0,
@@ -177,17 +177,17 @@ const ItemProcessingPage = () => {
   });
 
   const handleAddData = () => {
-    formProcess.clearErrors();
-    formProcess.reset();
-    formProcess.setFieldValue("id_item_category", dataCategory?.data.id);
+    formSurface.clearErrors();
+    formSurface.reset();
+    formSurface.setFieldValue("id_item_category", dataCategory?.data.id);
     updateStateForm({ title: "Add Data", action: "add" });
-    openFormProcess();
+    openFormSurface();
   };
 
   const handleEditData = () => {
-    formProcess.clearErrors();
-    formProcess.reset();
-    formProcess.setFieldValue("id_item_category", dataCategory?.data.id);
+    formSurface.clearErrors();
+    formSurface.reset();
+    formSurface.setFieldValue("id_item_category", dataCategory?.data.id);
     if (!stateTable.selected) {
       notifications.show({
         title: "Select Data First!",
@@ -201,13 +201,13 @@ const ItemProcessingPage = () => {
       action: "edit",
     });
 
-    formProcess.setValues({
+    formSurface.setValues({
       code: stateTable.selected.code,
       description: stateTable.selected.description,
       remarks: stateTable.selected.remarks,
     });
 
-    openFormProcess();
+    openFormSurface();
   };
 
   const handleDeleteData = () => {
@@ -224,8 +224,8 @@ const ItemProcessingPage = () => {
   };
 
   const handleViewData = () => {
-    formProcess.clearErrors();
-    formProcess.reset();
+    formSurface.clearErrors();
+    formSurface.reset();
 
     if (!stateTable.selected) {
       notifications.show({
@@ -240,27 +240,27 @@ const ItemProcessingPage = () => {
       action: "view",
     });
 
-    formProcess.setValues({
+    formSurface.setValues({
       code: stateTable.selected.code,
       description: stateTable.selected.description,
       remarks: stateTable.selected.remarks,
     });
 
-    openFormProcess();
+    openFormSurface();
   };
 
   const handleSubmitForm = () => {
-    const dataProcess = formProcess.getValues();
+    const dataSurface = formSurface.getValues();
 
     if (stateForm.action === "add") {
-      mutateCreateProcess(dataProcess, {
+      mutateCreateSurface(dataSurface, {
         onSuccess: async (res) => {
           await createActivityLog({
             username: dataUser?.data.username,
             action: "Create",
             is_success: true,
             os: os,
-            message: `${res?.message} (${dataProcess.code})`,
+            message: `${res?.message} (${dataSurface.code})`,
           });
 
           notifications.show({
@@ -269,8 +269,8 @@ const ItemProcessingPage = () => {
             color: "green",
           });
 
-          refetchProcesses();
-          closeFormProcess();
+          refetchSurfaces();
+          closeFormSurface();
         },
         onError: async (err) => {
           const error = err as AxiosError<ApiResponse<null>>;
@@ -280,7 +280,7 @@ const ItemProcessingPage = () => {
             action: "Create",
             is_success: false,
             os: os,
-            message: `${res?.data.message} (${dataProcess.code})`,
+            message: `${res?.data.message} (${dataSurface.code})`,
           });
 
           notifications.show({
@@ -290,16 +290,16 @@ const ItemProcessingPage = () => {
             color: "red",
           });
 
-          closeFormProcess();
+          closeFormSurface();
         },
       });
     }
 
     if (stateForm.action === "edit") {
-      mutateUpdateProcess(
+      mutateUpdateSurface(
         {
           id: stateTable.selected?.id!,
-          params: dataProcess,
+          params: dataSurface,
         },
         {
           onSuccess: async (res) => {
@@ -308,7 +308,7 @@ const ItemProcessingPage = () => {
               action: "Update",
               is_success: true,
               os: os,
-              message: `${res?.message} (${stateTable.selected?.code} ⮕ ${dataProcess.code})`,
+              message: `${res?.message} (${stateTable.selected?.code} ⮕ ${dataSurface.code})`,
             });
 
             notifications.show({
@@ -318,8 +318,8 @@ const ItemProcessingPage = () => {
             });
 
             updateStateTable({ selected: null });
-            refetchProcesses();
-            closeFormProcess();
+            refetchSurfaces();
+            closeFormSurface();
           },
           onError: async (err) => {
             const error = err as AxiosError<ApiResponse<null>>;
@@ -329,7 +329,7 @@ const ItemProcessingPage = () => {
               action: "Update",
               is_success: false,
               os: os,
-              message: `${res?.data.message} (${stateTable.selected?.code} ⮕ ${dataProcess.code})`,
+              message: `${res?.data.message} (${stateTable.selected?.code} ⮕ ${dataSurface.code})`,
             });
 
             notifications.show({
@@ -339,14 +339,14 @@ const ItemProcessingPage = () => {
               color: "red",
             });
 
-            closeFormProcess();
+            closeFormSurface();
           },
         }
       );
     }
 
     if (stateForm.action === "delete") {
-      mutateDeleteProcess(stateTable.selected?.id!, {
+      mutateDeleteSurface(stateTable.selected?.id!, {
         onSuccess: async (res) => {
           await createActivityLog({
             username: dataUser?.data.username,
@@ -363,7 +363,7 @@ const ItemProcessingPage = () => {
           });
 
           updateStateTable({ selected: null });
-          refetchProcesses();
+          refetchSurfaces();
           closeFormDelete();
         },
         onError: async (err) => {
@@ -390,19 +390,19 @@ const ItemProcessingPage = () => {
     }
   };
 
-  const handleCloseFormProcess = () => {
+  const handleCloseFormSurface = () => {
     if (stateForm.action === "delete") {
       closeFormDelete();
     } else {
-      closeFormProcess();
+      closeFormSurface();
     }
-    formProcess.clearErrors();
-    formProcess.reset();
+    formSurface.clearErrors();
+    formSurface.reset();
   };
 
   return (
     <Stack h="100%">
-      <PageHeader title="Processing" />
+      <PageHeader title="Surface Finishing" />
       <Flex
         direction={{ base: "column-reverse", sm: "row" }}
         justify="space-between"
@@ -415,19 +415,19 @@ const ItemProcessingPage = () => {
               icon: IconPlus,
               label: "Add",
               onClick: () => handleAddData(),
-              access: dataProcessPermission?.data.is_create,
+              access: dataSurfacePermission?.data.is_create,
             },
             {
               icon: IconEdit,
               label: "Edit",
               onClick: () => handleEditData(),
-              access: dataProcessPermission?.data.is_update,
+              access: dataSurfacePermission?.data.is_update,
             },
             {
               icon: IconTrash,
               label: "Delete",
               onClick: () => handleDeleteData(),
-              access: dataProcessPermission?.data.is_delete,
+              access: dataSurfacePermission?.data.is_delete,
             },
             {
               icon: IconBinoculars,
@@ -473,28 +473,28 @@ const ItemProcessingPage = () => {
         </Flex>
       </Flex>
       <Modal
-        opened={openedFormProcess}
-        onClose={closeFormProcess}
+        opened={openedFormSurface}
+        onClose={closeFormSurface}
         title={stateForm.title}
         closeOnClickOutside={false}
       >
-        <form onSubmit={formProcess.onSubmit(handleSubmitForm)}>
+        <form onSubmit={formSurface.onSubmit(handleSubmitForm)}>
           <Stack gap={5}>
             <TextInput
               label="Code"
               placeholder="Code"
-              key={formProcess.key("code")}
+              key={formSurface.key("code")}
               size={size}
               disabled={stateForm.action === "view"}
-              {...formProcess.getInputProps("code")}
+              {...formSurface.getInputProps("code")}
             />
             <TextInput
               label="Description"
               placeholder="Description"
-              key={formProcess.key("description")}
+              key={formSurface.key("description")}
               size={size}
               disabled={stateForm.action === "view"}
-              {...formProcess.getInputProps("description")}
+              {...formSurface.getInputProps("description")}
             />
             <Textarea
               label="Remarks"
@@ -502,10 +502,10 @@ const ItemProcessingPage = () => {
               autosize
               minRows={2}
               maxRows={4}
-              key={formProcess.key("remarks")}
+              key={formSurface.key("remarks")}
               size={size}
               disabled={stateForm.action === "view"}
-              {...formProcess.getInputProps("remarks")}
+              {...formSurface.getInputProps("remarks")}
             />
           </Stack>
           <Group justify="end" gap={5} mt="md">
@@ -513,7 +513,7 @@ const ItemProcessingPage = () => {
               leftSection={<IconX size={16} />}
               variant="default"
               size={sizeButton}
-              onClick={handleCloseFormProcess}
+              onClick={handleCloseFormSurface}
             >
               Close
             </Button>
@@ -523,7 +523,7 @@ const ItemProcessingPage = () => {
                 type="submit"
                 size={sizeButton}
                 loading={
-                  isPendingMutateCreateProcess || isPendingMutateUpdateProcess
+                  isPendingMutateCreateSurface || isPendingMutateUpdateSurface
                 }
               >
                 Save
@@ -540,14 +540,14 @@ const ItemProcessingPage = () => {
         closeOnClickOutside={false}
       >
         <Text size={size}>
-          Are you sure you want to delete this processing?
+          Are you sure you want to delete this surface finishing?
         </Text>
         <Group justify="end" gap={5} mt="md">
           <Button
             leftSection={<IconX size={16} />}
             variant="default"
             size={sizeButton}
-            onClick={handleCloseFormProcess}
+            onClick={handleCloseFormSurface}
           >
             Cancel
           </Button>
@@ -556,20 +556,20 @@ const ItemProcessingPage = () => {
             type="submit"
             size={sizeButton}
             color="red"
-            loading={isPendingMutateDeleteProcess}
+            loading={isPendingMutateDeleteSurface}
             onClick={handleSubmitForm}
           >
             Delete
           </Button>
         </Group>
       </Modal>
-      {isLoadingProcesses && (
+      {isLoadingSurfaces && (
         <Center flex={1}>
           <Loader size={100} />
         </Center>
       )}
-      {isSuccessProcesses ? (
-        dataProcesses?.data?.pagination.total_rows > 0 ? (
+      {isSuccessSurfaces ? (
+        dataSurfaces?.data?.pagination.total_rows > 0 ? (
           <>
             <TableScrollable
               headers={[
@@ -592,10 +592,10 @@ const ItemProcessingPage = () => {
               rows={rows}
             />
             <TableFooter
-              from={dataProcesses.data.pagination.from}
-              to={dataProcesses.data.pagination.to}
-              totalPages={dataProcesses.data.pagination.total_pages}
-              totalRows={dataProcesses.data.pagination.total_rows}
+              from={dataSurfaces.data.pagination.from}
+              to={dataSurfaces.data.pagination.to}
+              totalPages={dataSurfaces.data.pagination.total_pages}
+              totalRows={dataSurfaces.data.pagination.total_rows}
               rowsPerPage={stateTable.rowsPerPage}
               onRowsPerPageChange={(rows) =>
                 updateStateTable({ rowsPerPage: rows || "" })
@@ -610,10 +610,10 @@ const ItemProcessingPage = () => {
           <NoDataFound />
         )
       ) : (
-        !isLoadingProcesses && <NoDataFound />
+        !isLoadingSurfaces && <NoDataFound />
       )}
     </Stack>
   );
 };
 
-export default ItemProcessingPage;
+export default ItemSurfaceFinishingPage;

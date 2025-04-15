@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import ItemProcessPage from "../../../../../../pages/general/master/item/rawMaterial/Processing";
+import ItemProcessingPage from "../../../../../../pages/general/master/item/rawMaterial/Processing";
 
 export const Route = createFileRoute(
   "/_authenticated/general/master/item/raw-material/processing"
@@ -8,5 +8,5 @@ export const Route = createFileRoute(
 });
 
 function RouteComponent() {
-  return <ItemProcessPage />;
+  return <ItemProcessingPage />;
 }
