@@ -17,12 +17,19 @@ const useItemProductsQuery = (params: ItemProductParams) => {
   });
 };
 
-const useItemProductsInfinityQuery = ({ search }: { search: string }) => {
+const useItemProductsInfinityQuery = ({
+  search,
+  categoryCode,
+}: {
+  search: string;
+  categoryCode?: string;
+}) => {
   return useInfiniteQuery<ApiResponse<Result<ItemProduct[]>>, Error>({
-    queryKey: ["InfinityItemProducts", search],
+    queryKey: ["InfinityItemProducts", search, categoryCode],
     queryFn: ({ pageParam }: { pageParam?: unknown }) => {
       const page = pageParam as number;
       return getItemProducts({
+        categoryCode,
         page,
         rows: "10",
         search,

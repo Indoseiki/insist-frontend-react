@@ -79,3 +79,7 @@ legend {
 [data-mantine-color-scheme="dark"] .m_8fb7ebe7[data-disabled] {
   color: var(--mantine-color-gray-3) !important;
 }
+
+td {
+  vertical-align: top;
+}

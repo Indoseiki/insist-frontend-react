@@ -17,12 +17,19 @@ const useItemProcessesQuery = (params: ItemProcessParams) => {
   });
 };
 
-const useItemProcessesInfinityQuery = ({ search }: { search: string }) => {
+const useItemProcessesInfinityQuery = ({
+  search,
+  categoryCode,
+}: {
+  search: string;
+  categoryCode: string;
+}) => {
   return useInfiniteQuery<ApiResponse<Result<ItemProcess[]>>, Error>({
     queryKey: ["InfinityItemProcesses", search],
     queryFn: ({ pageParam }: { pageParam?: unknown }) => {
       const page = pageParam as number;
       return getItemProcesses({
+        categoryCode,
         page,
         rows: "10",
         search,

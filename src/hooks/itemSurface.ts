@@ -17,12 +17,19 @@ const useItemSurfacesQuery = (params: ItemSurfaceParams) => {
   });
 };
 
-const useItemSurfacesInfinityQuery = ({ search }: { search: string }) => {
+const useItemSurfacesInfinityQuery = ({
+  search,
+  categoryCode,
+}: {
+  search: string;
+  categoryCode: string;
+}) => {
   return useInfiniteQuery<ApiResponse<Result<ItemSurface[]>>, Error>({
-    queryKey: ["InfinityItemSurfaces", search],
+    queryKey: ["InfinityItemSurfaces", search, categoryCode],
     queryFn: ({ pageParam }: { pageParam?: unknown }) => {
       const page = pageParam as number;
       return getItemSurfaces({
+        categoryCode,
         page,
         rows: "10",
         search,

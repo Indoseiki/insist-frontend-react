@@ -17,12 +17,19 @@ const useItemSourcesQuery = (params: ItemSourceParams) => {
   });
 };
 
-const useItemSourcesInfinityQuery = ({ search }: { search: string }) => {
+const useItemSourcesInfinityQuery = ({
+  search,
+  categoryCode,
+}: {
+  search: string;
+  categoryCode: string;
+}) => {
   return useInfiniteQuery<ApiResponse<Result<ItemSource[]>>, Error>({
-    queryKey: ["InfinityItemSources", search],
+    queryKey: ["InfinityItemSources", search, categoryCode],
     queryFn: ({ pageParam }: { pageParam?: unknown }) => {
       const page = pageParam as number;
       return getItemSources({
+        categoryCode,
         page,
         rows: "10",
         search,

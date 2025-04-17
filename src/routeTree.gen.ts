@@ -47,6 +47,7 @@ import { Route as AuthenticatedGeneralMasterItemRawMaterialSourcingImport } from
 import { Route as AuthenticatedGeneralMasterItemRawMaterialProductImport } from './routes/_authenticated/general/master/item/raw-material/product'
 import { Route as AuthenticatedGeneralMasterItemRawMaterialProcessingImport } from './routes/_authenticated/general/master/item/raw-material/processing'
 import { Route as AuthenticatedGeneralMasterItemRawMaterialGroupImport } from './routes/_authenticated/general/master/item/raw-material/group'
+import { Route as AuthenticatedGeneralMasterItemRawMaterialGenerateImport } from './routes/_authenticated/general/master/item/raw-material/generate'
 
 // Create/Update Routes
 
@@ -297,6 +298,13 @@ const AuthenticatedGeneralMasterItemRawMaterialGroupRoute =
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
+const AuthenticatedGeneralMasterItemRawMaterialGenerateRoute =
+  AuthenticatedGeneralMasterItemRawMaterialGenerateImport.update({
+    id: '/general/master/item/raw-material/generate',
+    path: '/general/master/item/raw-material/generate',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -518,6 +526,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPurMasterBillingTermImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/_authenticated/general/master/item/raw-material/generate': {
+      id: '/_authenticated/general/master/item/raw-material/generate'
+      path: '/general/master/item/raw-material/generate'
+      fullPath: '/general/master/item/raw-material/generate'
+      preLoaderRoute: typeof AuthenticatedGeneralMasterItemRawMaterialGenerateImport
+      parentRoute: typeof AuthenticatedImport
+    }
     '/_authenticated/general/master/item/raw-material/group': {
       id: '/_authenticated/general/master/item/raw-material/group'
       path: '/general/master/item/raw-material/group'
@@ -587,6 +602,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPrdMasterSectionRoute: typeof AuthenticatedPrdMasterSectionRoute
   AuthenticatedPrdMasterSubSectionRoute: typeof AuthenticatedPrdMasterSubSectionRoute
   AuthenticatedPurMasterBillingTermRoute: typeof AuthenticatedPurMasterBillingTermRoute
+  AuthenticatedGeneralMasterItemRawMaterialGenerateRoute: typeof AuthenticatedGeneralMasterItemRawMaterialGenerateRoute
   AuthenticatedGeneralMasterItemRawMaterialGroupRoute: typeof AuthenticatedGeneralMasterItemRawMaterialGroupRoute
   AuthenticatedGeneralMasterItemRawMaterialProcessingRoute: typeof AuthenticatedGeneralMasterItemRawMaterialProcessingRoute
   AuthenticatedGeneralMasterItemRawMaterialProductRoute: typeof AuthenticatedGeneralMasterItemRawMaterialProductRoute
@@ -628,6 +644,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPrdMasterSubSectionRoute: AuthenticatedPrdMasterSubSectionRoute,
   AuthenticatedPurMasterBillingTermRoute:
     AuthenticatedPurMasterBillingTermRoute,
+  AuthenticatedGeneralMasterItemRawMaterialGenerateRoute:
+    AuthenticatedGeneralMasterItemRawMaterialGenerateRoute,
   AuthenticatedGeneralMasterItemRawMaterialGroupRoute:
     AuthenticatedGeneralMasterItemRawMaterialGroupRoute,
   AuthenticatedGeneralMasterItemRawMaterialProcessingRoute:
@@ -676,6 +694,7 @@ export interface FileRoutesByFullPath {
   '/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
   '/prd/master/sub-section': typeof AuthenticatedPrdMasterSubSectionRoute
   '/pur/master/billing-term': typeof AuthenticatedPurMasterBillingTermRoute
+  '/general/master/item/raw-material/generate': typeof AuthenticatedGeneralMasterItemRawMaterialGenerateRoute
   '/general/master/item/raw-material/group': typeof AuthenticatedGeneralMasterItemRawMaterialGroupRoute
   '/general/master/item/raw-material/processing': typeof AuthenticatedGeneralMasterItemRawMaterialProcessingRoute
   '/general/master/item/raw-material/product': typeof AuthenticatedGeneralMasterItemRawMaterialProductRoute
@@ -714,6 +733,7 @@ export interface FileRoutesByTo {
   '/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
   '/prd/master/sub-section': typeof AuthenticatedPrdMasterSubSectionRoute
   '/pur/master/billing-term': typeof AuthenticatedPurMasterBillingTermRoute
+  '/general/master/item/raw-material/generate': typeof AuthenticatedGeneralMasterItemRawMaterialGenerateRoute
   '/general/master/item/raw-material/group': typeof AuthenticatedGeneralMasterItemRawMaterialGroupRoute
   '/general/master/item/raw-material/processing': typeof AuthenticatedGeneralMasterItemRawMaterialProcessingRoute
   '/general/master/item/raw-material/product': typeof AuthenticatedGeneralMasterItemRawMaterialProductRoute
@@ -754,6 +774,7 @@ export interface FileRoutesById {
   '/_authenticated/prd/master/section': typeof AuthenticatedPrdMasterSectionRoute
   '/_authenticated/prd/master/sub-section': typeof AuthenticatedPrdMasterSubSectionRoute
   '/_authenticated/pur/master/billing-term': typeof AuthenticatedPurMasterBillingTermRoute
+  '/_authenticated/general/master/item/raw-material/generate': typeof AuthenticatedGeneralMasterItemRawMaterialGenerateRoute
   '/_authenticated/general/master/item/raw-material/group': typeof AuthenticatedGeneralMasterItemRawMaterialGroupRoute
   '/_authenticated/general/master/item/raw-material/processing': typeof AuthenticatedGeneralMasterItemRawMaterialProcessingRoute
   '/_authenticated/general/master/item/raw-material/product': typeof AuthenticatedGeneralMasterItemRawMaterialProductRoute
@@ -795,6 +816,7 @@ export interface FileRouteTypes {
     | '/prd/master/section'
     | '/prd/master/sub-section'
     | '/pur/master/billing-term'
+    | '/general/master/item/raw-material/generate'
     | '/general/master/item/raw-material/group'
     | '/general/master/item/raw-material/processing'
     | '/general/master/item/raw-material/product'
@@ -832,6 +854,7 @@ export interface FileRouteTypes {
     | '/prd/master/section'
     | '/prd/master/sub-section'
     | '/pur/master/billing-term'
+    | '/general/master/item/raw-material/generate'
     | '/general/master/item/raw-material/group'
     | '/general/master/item/raw-material/processing'
     | '/general/master/item/raw-material/product'
@@ -870,6 +893,7 @@ export interface FileRouteTypes {
     | '/_authenticated/prd/master/section'
     | '/_authenticated/prd/master/sub-section'
     | '/_authenticated/pur/master/billing-term'
+    | '/_authenticated/general/master/item/raw-material/generate'
     | '/_authenticated/general/master/item/raw-material/group'
     | '/_authenticated/general/master/item/raw-material/processing'
     | '/_authenticated/general/master/item/raw-material/product'
@@ -936,6 +960,7 @@ export const routeTree = rootRoute
         "/_authenticated/prd/master/section",
         "/_authenticated/prd/master/sub-section",
         "/_authenticated/pur/master/billing-term",
+        "/_authenticated/general/master/item/raw-material/generate",
         "/_authenticated/general/master/item/raw-material/group",
         "/_authenticated/general/master/item/raw-material/processing",
         "/_authenticated/general/master/item/raw-material/product",
@@ -1059,6 +1084,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/pur/master/billing-term": {
       "filePath": "_authenticated/pur/master/billing-term.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/general/master/item/raw-material/generate": {
+      "filePath": "_authenticated/general/master/item/raw-material/generate.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/general/master/item/raw-material/group": {

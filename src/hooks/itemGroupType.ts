@@ -17,12 +17,19 @@ const useItemGroupTypesQuery = (params: ItemGroupTypeParams) => {
   });
 };
 
-const useItemGroupTypesInfinityQuery = ({ search }: { search: string }) => {
+const useItemGroupTypesInfinityQuery = ({
+  search,
+  idItemGroup,
+}: {
+  search: string;
+  idItemGroup: string;
+}) => {
   return useInfiniteQuery<ApiResponse<Result<ItemGroupType[]>>, Error>({
-    queryKey: ["InfinityItemGroupTypes", search],
+    queryKey: ["InfinityItemGroupTypes", search, idItemGroup],
     queryFn: ({ pageParam }: { pageParam?: unknown }) => {
       const page = pageParam as number;
       return getItemGroupTypes({
+        idItemGroup,
         page,
         rows: "10",
         search,
