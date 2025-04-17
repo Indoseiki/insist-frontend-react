@@ -202,8 +202,6 @@ const ItemRawMaterialPage = () => {
 
   const { mutate: mutateUpdateItemRawMaterial } = useUpdateItemRawMaterial();
 
-  const { mutate: mutateDeleteItemRawMaterial } = useDeleteItemRawMaterial();
-
   const os = useOs();
   const { data: dataUser } = useUserInfoQuery();
   const { data: dataItemRawMaterialPermission } = useRolePermissionQuery(
